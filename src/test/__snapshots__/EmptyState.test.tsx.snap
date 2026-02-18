@@ -1,0 +1,59 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`EmptyState Component > normal: should match snapshot 1`] = `
+<div>
+  <div
+    class="_container_3d390e"
+  >
+    <div
+      class="_icon_3d390e"
+    >
+      <svg
+        fill="none"
+        height="64"
+        viewBox="0 0 24 24"
+        width="64"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          height="14"
+          rx="2"
+          stroke="currentColor"
+          stroke-width="1.5"
+          width="20"
+          x="2"
+          y="3"
+        />
+        <path
+          d="M8 21h8"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+        <path
+          d="M12 17v4"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+        <path
+          d="M2 7h20"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+      </svg>
+    </div>
+    <h2
+      class="_title_3d390e"
+    >
+      No saved tabs
+    </h2>
+    <p
+      class="_description_3d390e"
+    >
+      Click "Save Current" or "Save All" to save your tabs for later.
+    </p>
+  </div>
+</div>
+`;

@@ -1,0 +1,596 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Header Component > abnormal: loading state > abnormal: should match snapshot when loading 1`] = `
+<div>
+  <header
+    class="_header_f4f7a7"
+  >
+    <div
+      class="_brand_f4f7a7"
+    >
+      <svg
+        class="_logo_f4f7a7"
+        fill="none"
+        height="28"
+        viewBox="0 0 24 24"
+        width="28"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          height="14"
+          rx="2"
+          stroke="currentColor"
+          stroke-width="2"
+          width="18"
+          x="3"
+          y="4"
+        />
+        <path
+          d="M7 8h10"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="2"
+        />
+        <path
+          d="M12 12v4"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="2"
+        />
+      </svg>
+      <h1
+        class="_title_f4f7a7"
+      >
+        Tab Maestro
+      </h1>
+      <span
+        class="_badge_f4f7a7"
+      >
+        2
+      </span>
+    </div>
+    <div
+      class="_actions_f4f7a7"
+    >
+      <button
+        class="_buttonPrimary_f4f7a7"
+        disabled=""
+      >
+        <svg
+          fill="none"
+          height="16"
+          viewBox="0 0 24 24"
+          width="16"
+        >
+          <path
+            d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+          <polyline
+            points="17,21 17,13 7,13 7,21"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+          <path
+            d="M12 11v6"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+          <path
+            d="M9 14h6"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+        </svg>
+        Save Current
+      </button>
+      <button
+        class="_buttonSecondary_f4f7a7"
+        disabled=""
+      >
+        <svg
+          fill="none"
+          height="16"
+          viewBox="0 0 24 24"
+          width="16"
+        >
+          <rect
+            height="14"
+            rx="2"
+            stroke="currentColor"
+            stroke-width="2"
+            width="20"
+            x="2"
+            y="3"
+          />
+          <path
+            d="M8 21h8"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-width="2"
+          />
+          <path
+            d="M12 17v4"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-width="2"
+          />
+        </svg>
+        Save All
+      </button>
+      <button
+        class="_buttonDanger_f4f7a7"
+      >
+        <svg
+          fill="none"
+          height="16"
+          viewBox="0 0 24 24"
+          width="16"
+        >
+          <polyline
+            points="3,6 5,6 21,6"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+          <path
+            d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+        </svg>
+        Clear All
+      </button>
+    </div>
+  </header>
+</div>
+`;
+
+exports[`Header Component > edge: empty state > edge: should match snapshot without tabs 1`] = `
+<div>
+  <header
+    class="_header_f4f7a7"
+  >
+    <div
+      class="_brand_f4f7a7"
+    >
+      <svg
+        class="_logo_f4f7a7"
+        fill="none"
+        height="28"
+        viewBox="0 0 24 24"
+        width="28"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          height="14"
+          rx="2"
+          stroke="currentColor"
+          stroke-width="2"
+          width="18"
+          x="3"
+          y="4"
+        />
+        <path
+          d="M7 8h10"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="2"
+        />
+        <path
+          d="M12 12v4"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="2"
+        />
+      </svg>
+      <h1
+        class="_title_f4f7a7"
+      >
+        Tab Maestro
+      </h1>
+    </div>
+    <div
+      class="_actions_f4f7a7"
+    >
+      <button
+        class="_buttonPrimary_f4f7a7"
+      >
+        <svg
+          fill="none"
+          height="16"
+          viewBox="0 0 24 24"
+          width="16"
+        >
+          <path
+            d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+          <polyline
+            points="17,21 17,13 7,13 7,21"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+          <path
+            d="M12 11v6"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+          <path
+            d="M9 14h6"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+        </svg>
+        Save Current
+      </button>
+      <button
+        class="_buttonSecondary_f4f7a7"
+      >
+        <svg
+          fill="none"
+          height="16"
+          viewBox="0 0 24 24"
+          width="16"
+        >
+          <rect
+            height="14"
+            rx="2"
+            stroke="currentColor"
+            stroke-width="2"
+            width="20"
+            x="2"
+            y="3"
+          />
+          <path
+            d="M8 21h8"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-width="2"
+          />
+          <path
+            d="M12 17v4"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-width="2"
+          />
+        </svg>
+        Save All
+      </button>
+    </div>
+  </header>
+</div>
+`;
+
+exports[`Header Component > normal: rendering with tabs > normal: should match snapshot with tabs 1`] = `
+<div>
+  <header
+    class="_header_f4f7a7"
+  >
+    <div
+      class="_brand_f4f7a7"
+    >
+      <svg
+        class="_logo_f4f7a7"
+        fill="none"
+        height="28"
+        viewBox="0 0 24 24"
+        width="28"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          height="14"
+          rx="2"
+          stroke="currentColor"
+          stroke-width="2"
+          width="18"
+          x="3"
+          y="4"
+        />
+        <path
+          d="M7 8h10"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="2"
+        />
+        <path
+          d="M12 12v4"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="2"
+        />
+      </svg>
+      <h1
+        class="_title_f4f7a7"
+      >
+        Tab Maestro
+      </h1>
+      <span
+        class="_badge_f4f7a7"
+      >
+        3
+      </span>
+    </div>
+    <div
+      class="_actions_f4f7a7"
+    >
+      <button
+        class="_buttonPrimary_f4f7a7"
+      >
+        <svg
+          fill="none"
+          height="16"
+          viewBox="0 0 24 24"
+          width="16"
+        >
+          <path
+            d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+          <polyline
+            points="17,21 17,13 7,13 7,21"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+          <path
+            d="M12 11v6"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+          <path
+            d="M9 14h6"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+        </svg>
+        Save Current
+      </button>
+      <button
+        class="_buttonSecondary_f4f7a7"
+      >
+        <svg
+          fill="none"
+          height="16"
+          viewBox="0 0 24 24"
+          width="16"
+        >
+          <rect
+            height="14"
+            rx="2"
+            stroke="currentColor"
+            stroke-width="2"
+            width="20"
+            x="2"
+            y="3"
+          />
+          <path
+            d="M8 21h8"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-width="2"
+          />
+          <path
+            d="M12 17v4"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-width="2"
+          />
+        </svg>
+        Save All
+      </button>
+      <button
+        class="_buttonDanger_f4f7a7"
+      >
+        <svg
+          fill="none"
+          height="16"
+          viewBox="0 0 24 24"
+          width="16"
+        >
+          <polyline
+            points="3,6 5,6 21,6"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+          <path
+            d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+        </svg>
+        Clear All
+      </button>
+    </div>
+  </header>
+</div>
+`;
+
+exports[`Header Component > snapshot tests > should match snapshot with multiple tabs 1`] = `
+<div>
+  <header
+    class="_header_f4f7a7"
+  >
+    <div
+      class="_brand_f4f7a7"
+    >
+      <svg
+        class="_logo_f4f7a7"
+        fill="none"
+        height="28"
+        viewBox="0 0 24 24"
+        width="28"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          height="14"
+          rx="2"
+          stroke="currentColor"
+          stroke-width="2"
+          width="18"
+          x="3"
+          y="4"
+        />
+        <path
+          d="M7 8h10"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="2"
+        />
+        <path
+          d="M12 12v4"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="2"
+        />
+      </svg>
+      <h1
+        class="_title_f4f7a7"
+      >
+        Tab Maestro
+      </h1>
+      <span
+        class="_badge_f4f7a7"
+      >
+        10
+      </span>
+    </div>
+    <div
+      class="_actions_f4f7a7"
+    >
+      <button
+        class="_buttonPrimary_f4f7a7"
+      >
+        <svg
+          fill="none"
+          height="16"
+          viewBox="0 0 24 24"
+          width="16"
+        >
+          <path
+            d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+          <polyline
+            points="17,21 17,13 7,13 7,21"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+          <path
+            d="M12 11v6"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+          <path
+            d="M9 14h6"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+        </svg>
+        Save Current
+      </button>
+      <button
+        class="_buttonSecondary_f4f7a7"
+      >
+        <svg
+          fill="none"
+          height="16"
+          viewBox="0 0 24 24"
+          width="16"
+        >
+          <rect
+            height="14"
+            rx="2"
+            stroke="currentColor"
+            stroke-width="2"
+            width="20"
+            x="2"
+            y="3"
+          />
+          <path
+            d="M8 21h8"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-width="2"
+          />
+          <path
+            d="M12 17v4"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-width="2"
+          />
+        </svg>
+        Save All
+      </button>
+      <button
+        class="_buttonDanger_f4f7a7"
+      >
+        <svg
+          fill="none"
+          height="16"
+          viewBox="0 0 24 24"
+          width="16"
+        >
+          <polyline
+            points="3,6 5,6 21,6"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+          <path
+            d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+        </svg>
+        Clear All
+      </button>
+    </div>
+  </header>
+</div>
+`;

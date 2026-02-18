@@ -1,0 +1,11 @@
+@use './styles/variables' as *;
+
+.app {
+  min-height: 100vh;
+  background-color: $bg-primary;
+}
+
+.main {
+  max-width: 720px;
+  margin: 0 auto;
+}

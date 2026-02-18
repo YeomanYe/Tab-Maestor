@@ -1,0 +1,36 @@
+@use '../../styles/variables' as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-xl * 2;
+  text-align: center;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  background-color: $bg-secondary;
+  border-radius: 50%;
+  margin-bottom: $spacing-lg;
+  color: $text-muted;
+}
+
+.title {
+  font-size: $font-size-h2;
+  font-weight: 600;
+  color: $text-primary;
+  margin-bottom: $spacing-sm;
+}
+
+.description {
+  font-size: $font-size-body;
+  color: $text-secondary;
+  max-width: 300px;
+  line-height: 1.6;
+}

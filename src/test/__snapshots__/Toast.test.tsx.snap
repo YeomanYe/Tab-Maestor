@@ -1,0 +1,199 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Toast Component > edge: empty message > edge: should match snapshot with empty message 1`] = `
+<div>
+  <div
+    class="toast toast--success"
+  >
+    <svg
+      fill="none"
+      height="16"
+      viewBox="0 0 24 24"
+      width="16"
+    >
+      <path
+        d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+      />
+      <polyline
+        points="22,4 12,14.01 9,11.01"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+      />
+    </svg>
+    <span />
+  </div>
+</div>
+`;
+
+exports[`Toast Component > edge: long message > edge: should match snapshot with long message 1`] = `
+<div>
+  <div
+    class="toast toast--error"
+  >
+    <svg
+      fill="none"
+      height="16"
+      viewBox="0 0 24 24"
+      width="16"
+    >
+      <circle
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        stroke-width="2"
+      />
+      <line
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-width="2"
+        x1="12"
+        x2="12"
+        y1="8"
+        y2="12"
+      />
+      <line
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-width="2"
+        x1="12"
+        x2="12.01"
+        y1="16"
+        y2="16"
+      />
+    </svg>
+    <span>
+      This is a very long message that might wrap to multiple lines
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Toast Component > edge: special characters in message > edge: should match snapshot with special characters 1`] = `
+<div>
+  <div
+    class="toast toast--error"
+  >
+    <svg
+      fill="none"
+      height="16"
+      viewBox="0 0 24 24"
+      width="16"
+    >
+      <circle
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        stroke-width="2"
+      />
+      <line
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-width="2"
+        x1="12"
+        x2="12"
+        y1="8"
+        y2="12"
+      />
+      <line
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-width="2"
+        x1="12"
+        x2="12.01"
+        y1="16"
+        y2="16"
+      />
+    </svg>
+    <span>
+      Error: &lt;script&gt;alert("xss")&lt;/script&gt;
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Toast Component > normal: error toast > normal: should match snapshot for error toast 1`] = `
+<div>
+  <div
+    class="toast toast--error"
+  >
+    <svg
+      fill="none"
+      height="16"
+      viewBox="0 0 24 24"
+      width="16"
+    >
+      <circle
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        stroke-width="2"
+      />
+      <line
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-width="2"
+        x1="12"
+        x2="12"
+        y1="8"
+        y2="12"
+      />
+      <line
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-width="2"
+        x1="12"
+        x2="12.01"
+        y1="16"
+        y2="16"
+      />
+    </svg>
+    <span>
+      Failed to save tab
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Toast Component > normal: no toast > normal: should match snapshot when no toast 1`] = `<div />`;
+
+exports[`Toast Component > normal: success toast > normal: should match snapshot for success toast 1`] = `
+<div>
+  <div
+    class="toast toast--success"
+  >
+    <svg
+      fill="none"
+      height="16"
+      viewBox="0 0 24 24"
+      width="16"
+    >
+      <path
+        d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+      />
+      <polyline
+        points="22,4 12,14.01 9,11.01"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+      />
+    </svg>
+    <span>
+      Tab saved successfully
+    </span>
+  </div>
+</div>
+`;

@@ -1,0 +1,107 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`TabCard Component > normal: rendering with valid tab data > normal: should match snapshot with complete tab data 1`] = `
+<div>
+  <div
+    class="_card_f10852"
+  >
+    <div
+      class="_favicon_f10852"
+    >
+      <img
+        alt=""
+        src="data:image/svg+xml,%0A%20%20%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2371717a%22%20stroke-width%3D%222%22%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%2210%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cline%20x1%3D%222%22%20y1%3D%2212%22%20x2%3D%2222%22%20y2%3D%2212%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M12%202a15.3%2015.3%200%200%201%204%2010%2015.3%2015.3%200%200%201-4%2010%2015.3%2015.3%200%200%201-4-10%2015.3%2015.3%200%200%201%204-10z%22%2F%3E%0A%20%20%20%20%20%20%3C%2Fsvg%3E%0A%20%20%20%20"
+      />
+    </div>
+    <div
+      class="_content_f10852"
+    >
+      <h3
+        class="_title_f10852"
+      >
+        Test Tab Title
+      </h3>
+      <p
+        class="_url_f10852"
+      >
+        example.com
+      </p>
+    </div>
+    <div
+      class="_meta_f10852"
+    >
+      <span
+        class="_time_f10852"
+      >
+        Just now
+      </span>
+      <div
+        class="_actions_f10852"
+      >
+        <button
+          class="_actionButton_f10852"
+          title="Open tab"
+        >
+          <svg
+            fill="none"
+            height="16"
+            viewBox="0 0 24 24"
+            width="16"
+          >
+            <path
+              d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+            <polyline
+              points="15,3 21,3 21,9"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+            <line
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              x1="10"
+              x2="21"
+              y1="14"
+              y2="3"
+            />
+          </svg>
+        </button>
+        <button
+          class="_actionButton_f10852 _deleteButton_f10852"
+          title="Delete tab"
+        >
+          <svg
+            fill="none"
+            height="16"
+            viewBox="0 0 24 24"
+            width="16"
+          >
+            <polyline
+              points="3,6 5,6 21,6"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+            <path
+              d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
