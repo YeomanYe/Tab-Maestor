@@ -1,3 +1,5 @@
+[English](README.md) | [中文](README.zh-CN.md)
+
 # Tab Maestro
 
 A Chrome extension for saving and managing browser tabs.
