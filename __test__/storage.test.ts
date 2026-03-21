@@ -13,13 +13,9 @@ describe('Storage Utilities', () => {
     localStorage.clear();
 
     // Get references to the mocked chrome functions
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     chromeStorageGet = window.chrome!.storage!.local!.get as ReturnType<typeof vi.fn>;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     chromeStorageSet = window.chrome!.storage!.local!.set as ReturnType<typeof vi.fn>;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     chromeTabsQuery = window.chrome!.tabs!.query as ReturnType<typeof vi.fn>;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     chromeTabsCreate = window.chrome!.tabs!.create as ReturnType<typeof vi.fn>;
   });
 

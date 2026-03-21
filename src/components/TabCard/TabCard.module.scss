@@ -112,7 +112,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (width <= 480px) {
   .card {
     flex-wrap: wrap;
   }
