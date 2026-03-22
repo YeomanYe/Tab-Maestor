@@ -66,7 +66,9 @@ class TabStore {
         return;
       }
 
-      let savedCount = 0;
+      const tabsToSave: SavedTab[] = [];
+      const tabIdsToClose: number[] = [];
+
       for (const tab of tabs) {
         if (tab.url && !tab.url.startsWith('chrome://')) {
           const tabInfo: TabInfo = {
@@ -87,14 +89,27 @@ class TabStore {
               savedAt: Date.now(),
               originalTabId: tabInfo.originalTabId,
             };
-            this.tabs.unshift(newTab);
-            savedCount++;
+            tabsToSave.push(newTab);
+            tabIdsToClose.push(tab.id as number);
           }
         }
       }
 
+      if (tabsToSave.length === 0) {
+        this.showToast('All tabs already saved', 'error');
+        return;
+      }
+
+      // Add new tabs to the list
+      this.tabs = [...tabsToSave, ...this.tabs];
       await saveTabs(this.tabs);
-      this.showToast(`Saved ${savedCount} tab(s)`, 'success');
+
+      // Close the saved tabs
+      if (tabIdsToClose.length > 0) {
+        await closeAllStoredTabs(tabIdsToClose);
+      }
+
+      this.showToast(`Saved and closed ${tabsToSave.length} tab(s)`, 'success');
     } catch {
       this.showToast('Failed to save tabs', 'error');
     }
@@ -140,21 +155,6 @@ class TabStore {
     this.tabs = [];
     await saveTabs([]);
     this.showToast('All tabs cleared', 'success');
-  }
-
-  async closeAllTabs(): Promise<void> {
-    const tabsToClose = this.tabs.filter((t) => t.originalTabId !== undefined);
-    if (tabsToClose.length === 0) {
-      this.showToast('No tabs to close', 'error');
-      return;
-    }
-
-    const tabIds = tabsToClose.map((t) => t.originalTabId as number);
-    await closeAllStoredTabs(tabIds);
-
-    this.tabs = [];
-    await saveTabs([]);
-    this.showToast(`Closed ${tabIds.length} tab(s)`, 'success');
   }
 
   showToast(message: string, type: 'success' | 'error'): void {

@@ -457,36 +457,6 @@ exports[`App Component > normal: snapshot tests > normal: should match snapshot 
           Save All
         </button>
         <button
-          class="_buttonSecondary_f4f7a7"
-        >
-          <svg
-            fill="none"
-            height="16"
-            viewBox="0 0 24 24"
-            width="16"
-          >
-            <line
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-width="2"
-              x1="18"
-              x2="6"
-              y1="6"
-              y2="18"
-            />
-            <line
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-width="2"
-              x1="6"
-              x2="18"
-              y1="6"
-              y2="18"
-            />
-          </svg>
-          Close All
-        </button>
-        <button
           class="_buttonDanger_f4f7a7"
         >
           <svg

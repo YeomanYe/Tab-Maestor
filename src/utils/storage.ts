@@ -3,27 +3,38 @@ import { SavedTab } from '@/types';
 const STORAGE_KEY = 'tab-maestro-tabs';
 
 export const getStoredTabs = async (): Promise<SavedTab[]> => {
-  try {
-    const result = await window.chrome?.storage?.local?.get(STORAGE_KEY);
-    return (result?.[STORAGE_KEY] as SavedTab[]) || [];
-  } catch {
-    // Fallback for development environment
+  // Check if we're in Chrome extension environment
+  if (typeof window !== 'undefined' && window.chrome?.storage?.local) {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? JSON.parse(stored) : [];
+      const result = await window.chrome.storage.local.get(STORAGE_KEY);
+      return (result?.[STORAGE_KEY] as SavedTab[]) || [];
     } catch {
-      return [];
+      console.warn('Failed to get tabs from chrome storage, trying localStorage');
     }
+  }
+
+  // Fallback for development environment
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
   }
 };
 
 export const saveTabs = async (tabs: SavedTab[]): Promise<void> => {
-  try {
-    await window.chrome?.storage?.local?.set({ [STORAGE_KEY]: tabs });
-  } catch {
-    // Fallback for development environment
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(tabs));
+  // Check if we're in Chrome extension environment
+  if (typeof window !== 'undefined' && window.chrome?.storage?.local) {
+    try {
+      await window.chrome.storage.local.set({ [STORAGE_KEY]: tabs });
+      return;
+    } catch {
+      console.warn('Failed to save tabs to chrome storage, using localStorage');
+    }
   }
+
+  // Fallback for development environment
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(tabs));
 };
 
 export const getCurrentTab = async (): Promise<ChromeTab | null> => {

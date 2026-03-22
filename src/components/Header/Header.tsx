@@ -17,12 +17,6 @@ const Header = observer(() => {
     }
   };
 
-  const handleCloseAll = async () => {
-    if (window.confirm('Are you sure you want to close all saved tabs from the browser?')) {
-      await tabStore.closeAllTabs();
-    }
-  };
-
   return (
     <header className={styles.header}>
       <div className={styles.brand}>
@@ -106,14 +100,6 @@ const Header = observer(() => {
 
         {tabStore.tabCount > 0 && (
           <>
-            <button className={styles.buttonSecondary} onClick={handleCloseAll}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              </svg>
-              Close All
-            </button>
-
             <button className={styles.buttonDanger} onClick={handleClearAll}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                 <polyline
