@@ -3,38 +3,50 @@ import { SavedTab } from '@/types';
 const STORAGE_KEY = 'tab-maestro-tabs';
 
 export const getStoredTabs = async (): Promise<SavedTab[]> => {
-  // Check if we're in Chrome extension environment
+  // Try chrome.storage.local first
   if (typeof window !== 'undefined' && window.chrome?.storage?.local) {
     try {
       const result = await window.chrome.storage.local.get(STORAGE_KEY);
-      return (result?.[STORAGE_KEY] as SavedTab[]) || [];
-    } catch {
-      console.warn('Failed to get tabs from chrome storage, trying localStorage');
+      const tabs = (result?.[STORAGE_KEY] as SavedTab[]) || [];
+      if (tabs.length > 0) {
+        console.log('[Storage] Loaded', tabs.length, 'tabs from chrome.storage');
+        return tabs;
+      }
+    } catch (err) {
+      console.warn('[Storage] Chrome storage read failed:', err);
     }
   }
 
-  // Fallback for development environment
+  // Fallback to localStorage
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : [];
+    const tabs = stored ? JSON.parse(stored) : [];
+    console.log('[Storage] Loaded', tabs.length, 'tabs from localStorage');
+    return tabs;
   } catch {
     return [];
   }
 };
 
 export const saveTabs = async (tabs: SavedTab[]): Promise<void> => {
-  // Check if we're in Chrome extension environment
+  // Always save to both storages for reliability
+  // Chrome storage is the primary
   if (typeof window !== 'undefined' && window.chrome?.storage?.local) {
     try {
       await window.chrome.storage.local.set({ [STORAGE_KEY]: tabs });
-      return;
-    } catch {
-      console.warn('Failed to save tabs to chrome storage, using localStorage');
+      console.log('[Storage] Saved', tabs.length, 'tabs to chrome.storage');
+    } catch (err) {
+      console.warn('[Storage] Chrome storage write failed:', err);
     }
   }
 
-  // Fallback for development environment
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(tabs));
+  // Also save to localStorage as backup
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tabs));
+    console.log('[Storage] Saved', tabs.length, 'tabs to localStorage');
+  } catch (err) {
+    console.warn('[Storage] localStorage write failed:', err);
+  }
 };
 
 export const getCurrentTab = async (): Promise<ChromeTab | null> => {
