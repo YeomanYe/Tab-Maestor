@@ -49,7 +49,13 @@ export const getCurrentTab = async (): Promise<ChromeTab | null> => {
 export const getAllTabs = async (): Promise<ChromeTab[]> => {
   try {
     const tabs = await window.chrome?.tabs?.query({}) || [];
-    return tabs.filter((tab) => tab.url && !tab.url.startsWith('chrome://') && !tab.pinned);
+    return tabs.filter(
+      (tab) =>
+        tab.url &&
+        !tab.url.startsWith('chrome://') &&
+        !tab.url.startsWith('chrome-extension://') &&
+        !tab.pinned
+    );
   } catch {
     return [];
   }

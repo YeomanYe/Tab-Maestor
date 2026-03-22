@@ -26,8 +26,8 @@ class TabStore {
       runInAction(() => {
         this.tabs = tabs.sort((a, b) => b.savedAt - a.savedAt);
       });
-    } catch (error) {
-      this.showToast('Failed to load tabs', 'error');
+    } catch {
+      // Silently fail - empty tabs is acceptable
     } finally {
       runInAction(() => {
         this.isLoading = false;
@@ -70,7 +70,11 @@ class TabStore {
       const tabIdsToClose: number[] = [];
 
       for (const tab of tabs) {
-        if (tab.url && !tab.url.startsWith('chrome://')) {
+        if (
+          tab.url &&
+          !tab.url.startsWith('chrome://') &&
+          !tab.url.startsWith('chrome-extension://')
+        ) {
           const tabInfo: TabInfo = {
             id: tab.id,
             title: tab.title || 'Untitled',
