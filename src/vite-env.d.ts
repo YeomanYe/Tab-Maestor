@@ -19,6 +19,7 @@ interface Window {
     tabs?: {
       query: (query: object) => Promise<ChromeTab[]>;
       create: (props: { url: string; active?: boolean }) => Promise<ChromeTab>;
+      remove: (tabIds: number | number[]) => Promise<void>;
     };
   };
 }

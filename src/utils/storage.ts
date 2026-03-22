@@ -38,7 +38,7 @@ export const getCurrentTab = async (): Promise<ChromeTab | null> => {
 export const getAllTabs = async (): Promise<ChromeTab[]> => {
   try {
     const tabs = await window.chrome?.tabs?.query({}) || [];
-    return tabs.filter((tab) => tab.url && !tab.url.startsWith('chrome://'));
+    return tabs.filter((tab) => tab.url && !tab.url.startsWith('chrome://') && !tab.pinned);
   } catch {
     return [];
   }
@@ -49,5 +49,21 @@ export const openTab = async (url: string): Promise<void> => {
     await window.chrome?.tabs?.create({ url, active: true });
   } catch {
     window.open(url, '_blank');
+  }
+};
+
+export const closeTab = async (tabId: number): Promise<void> => {
+  try {
+    await window.chrome?.tabs?.remove(tabId);
+  } catch {
+    // Ignore errors when closing tabs
+  }
+};
+
+export const closeAllTabs = async (tabIds: number[]): Promise<void> => {
+  try {
+    await window.chrome?.tabs?.remove(tabIds);
+  } catch {
+    // Ignore errors when closing tabs
   }
 };

@@ -17,6 +17,12 @@ const Header = observer(() => {
     }
   };
 
+  const handleCloseAll = async () => {
+    if (window.confirm('Are you sure you want to close all saved tabs from the browser?')) {
+      await tabStore.closeAllTabs();
+    }
+  };
+
   return (
     <header className={styles.header}>
       <div className={styles.brand}>
@@ -99,25 +105,35 @@ const Header = observer(() => {
         </button>
 
         {tabStore.tabCount > 0 && (
-          <button className={styles.buttonDanger} onClick={handleClearAll}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <polyline
-                points="3,6 5,6 21,6"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            Clear All
-          </button>
+          <>
+            <button className={styles.buttonSecondary} onClick={handleCloseAll}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+              Close All
+            </button>
+
+            <button className={styles.buttonDanger} onClick={handleClearAll}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <polyline
+                  points="3,6 5,6 21,6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              Clear All
+            </button>
+          </>
         )}
       </div>
     </header>

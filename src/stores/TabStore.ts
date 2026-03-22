@@ -7,6 +7,7 @@ import {
   getCurrentTab,
   getAllTabs,
   openTab,
+  closeAllTabs as closeAllStoredTabs,
 } from '@/utils/storage';
 
 class TabStore {
@@ -47,6 +48,7 @@ class TabStore {
         title: tab.title || 'Untitled',
         url: tab.url,
         favIconUrl: tab.favIconUrl || '',
+        originalTabId: tab.id,
       };
 
       await this.addTab(tabInfo);
@@ -72,6 +74,7 @@ class TabStore {
             title: tab.title || 'Untitled',
             url: tab.url,
             favIconUrl: tab.favIconUrl || '',
+            originalTabId: tab.id,
           };
 
           const exists = this.tabs.some((t) => t.url === tabInfo.url);
@@ -82,6 +85,7 @@ class TabStore {
               url: tabInfo.url,
               favicon: tabInfo.favIconUrl,
               savedAt: Date.now(),
+              originalTabId: tabInfo.originalTabId,
             };
             this.tabs.unshift(newTab);
             savedCount++;
@@ -109,6 +113,7 @@ class TabStore {
       url: tabInfo.url,
       favicon: tabInfo.favIconUrl,
       savedAt: Date.now(),
+      originalTabId: tabInfo.originalTabId,
     };
 
     this.tabs.unshift(newTab);
@@ -135,6 +140,21 @@ class TabStore {
     this.tabs = [];
     await saveTabs([]);
     this.showToast('All tabs cleared', 'success');
+  }
+
+  async closeAllTabs(): Promise<void> {
+    const tabsToClose = this.tabs.filter((t) => t.originalTabId !== undefined);
+    if (tabsToClose.length === 0) {
+      this.showToast('No tabs to close', 'error');
+      return;
+    }
+
+    const tabIds = tabsToClose.map((t) => t.originalTabId as number);
+    await closeAllStoredTabs(tabIds);
+
+    this.tabs = [];
+    await saveTabs([]);
+    this.showToast(`Closed ${tabIds.length} tab(s)`, 'success');
   }
 
   showToast(message: string, type: 'success' | 'error'): void {

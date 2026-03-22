@@ -4,6 +4,7 @@ export interface SavedTab {
   url: string;
   favicon: string;
   savedAt: number;
+  originalTabId?: number;
 }
 
 export interface TabInfo {
@@ -11,4 +12,5 @@ export interface TabInfo {
   title: string;
   url: string;
   favIconUrl: string;
+  originalTabId?: number;
 }

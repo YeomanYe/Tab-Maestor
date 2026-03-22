@@ -12,6 +12,7 @@ declare global {
       tabs?: {
         query: (query: Record<string, unknown>, callback?: (tabs: ChromeTab[]) => void) => Promise<ChromeTab[]>;
         create: (props: { url: string; active?: boolean }) => Promise<ChromeTab>;
+        remove: (tabIds: number | number[]) => Promise<void>;
       };
       runtime?: {
         onInstalled?: {
@@ -37,5 +38,6 @@ declare global {
     favIconUrl?: string;
     active?: boolean;
     windowId?: number;
+    pinned?: boolean;
   }
 }
