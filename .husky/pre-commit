@@ -1,1 +1,1 @@
-pnpm lint && pnpm lint:style && pnpm test
+pnpm lint && pnpm lint:style

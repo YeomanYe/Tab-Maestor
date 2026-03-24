@@ -1,5 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import { tabStore } from '@/stores/TabStore';
+import { ThemeSwitcher } from '@/components/ThemeSwitcher/ThemeSwitcher';
 import styles from './Header.module.scss';
 
 const Header = observer(() => {
@@ -121,6 +122,8 @@ const Header = observer(() => {
             </button>
           </>
         )}
+
+        <ThemeSwitcher />
       </div>
     </header>
   );

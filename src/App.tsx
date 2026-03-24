@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { tabStore } from '@/stores/TabStore';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 import Header from '@/components/Header/Header';
 import TabList from '@/components/TabList/TabList';
 import Toast from '@/components/Toast/Toast';
 import styles from './App.module.scss';
 
-const App = observer(() => {
+const AppContent = observer(() => {
   useEffect(() => {
     tabStore.loadTabs();
   }, []);
@@ -21,5 +22,13 @@ const App = observer(() => {
     </div>
   );
 });
+
+const App = () => {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
+  );
+};
 
 export default App;

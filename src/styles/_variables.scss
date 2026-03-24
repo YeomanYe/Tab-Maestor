@@ -1,15 +1,47 @@
-// Color Palette
-$bg-primary: #0f0f0f;
-$bg-secondary: #1a1a1a;
-$bg-tertiary: #252525;
-$accent-primary: #6366f1;
-$accent-hover: #818cf8;
-$text-primary: #fafafa;
-$text-secondary: #a1a1aa;
-$text-muted: #71717a;
-$border-color: #27272a;
-$success: #22c55e;
-$danger: #ef4444;
+// Color Palette using CSS Variables
+
+// Default Dark Theme (defined in global.scss)
+:root {
+  --bg-primary: #0f0f0f;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #252525;
+  --accent-primary: #6366f1;
+  --accent-hover: #818cf8;
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --border-color: #27272a;
+  --success: #22c55e;
+  --danger: #ef4444;
+}
+
+// Light Theme
+[data-theme='light'] {
+  --bg-primary: #fff;
+  --bg-secondary: #f4f4f5;
+  --bg-tertiary: #e4e4e7;
+  --accent-primary: #6366f1;
+  --accent-hover: #818cf8;
+  --text-primary: #18181b;
+  --text-secondary: #52525b;
+  --text-muted: #71717a;
+  --border-color: #e4e4e7;
+  --success: #22c55e;
+  --danger: #ef4444;
+}
+
+// SCSS Variables mapped to CSS Variables
+$bg-primary: var(--bg-primary);
+$bg-secondary: var(--bg-secondary);
+$bg-tertiary: var(--bg-tertiary);
+$accent-primary: var(--accent-primary);
+$accent-hover: var(--accent-hover);
+$text-primary: var(--text-primary);
+$text-secondary: var(--text-secondary);
+$text-muted: var(--text-muted);
+$border-color: var(--border-color);
+$success: var(--success);
+$danger: var(--danger);
 
 // Spacing
 $spacing-xs: 4px;

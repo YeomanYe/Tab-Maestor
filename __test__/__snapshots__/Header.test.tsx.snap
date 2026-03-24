@@ -153,6 +153,31 @@ exports[`Header Component > abnormal: loading state > abnormal: should match sna
         </svg>
         Clear All
       </button>
+      <div
+        class="_container_d23c62"
+      >
+        <button
+          aria-expanded="false"
+          aria-label="Theme settings"
+          class="_trigger_d23c62"
+        >
+          <span
+            class="_icon_d23c62"
+          >
+            🌙
+          </span>
+          <span
+            class="_label_d23c62"
+          >
+            Dark
+          </span>
+          <span
+            class="_arrow_d23c62 "
+          >
+            ▼
+          </span>
+        </button>
+      </div>
     </div>
   </header>
 </div>
@@ -278,6 +303,31 @@ exports[`Header Component > edge: empty state > edge: should match snapshot with
         </svg>
         Save All
       </button>
+      <div
+        class="_container_d23c62"
+      >
+        <button
+          aria-expanded="false"
+          aria-label="Theme settings"
+          class="_trigger_d23c62"
+        >
+          <span
+            class="_icon_d23c62"
+          >
+            🌙
+          </span>
+          <span
+            class="_label_d23c62"
+          >
+            Dark
+          </span>
+          <span
+            class="_arrow_d23c62 "
+          >
+            ▼
+          </span>
+        </button>
+      </div>
     </div>
   </header>
 </div>
@@ -434,6 +484,31 @@ exports[`Header Component > normal: rendering with tabs > normal: should match s
         </svg>
         Clear All
       </button>
+      <div
+        class="_container_d23c62"
+      >
+        <button
+          aria-expanded="false"
+          aria-label="Theme settings"
+          class="_trigger_d23c62"
+        >
+          <span
+            class="_icon_d23c62"
+          >
+            🌙
+          </span>
+          <span
+            class="_label_d23c62"
+          >
+            Dark
+          </span>
+          <span
+            class="_arrow_d23c62 "
+          >
+            ▼
+          </span>
+        </button>
+      </div>
     </div>
   </header>
 </div>
@@ -590,6 +665,31 @@ exports[`Header Component > snapshot tests > should match snapshot with multiple
         </svg>
         Clear All
       </button>
+      <div
+        class="_container_d23c62"
+      >
+        <button
+          aria-expanded="false"
+          aria-label="Theme settings"
+          class="_trigger_d23c62"
+        >
+          <span
+            class="_icon_d23c62"
+          >
+            🌙
+          </span>
+          <span
+            class="_label_d23c62"
+          >
+            Dark
+          </span>
+          <span
+            class="_arrow_d23c62 "
+          >
+            ▼
+          </span>
+        </button>
+      </div>
     </div>
   </header>
 </div>
