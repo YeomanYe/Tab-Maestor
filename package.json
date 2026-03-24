@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:all": "concurrently \"vite\" \"pnpm build:watch\"",
     "build": "tsc && vite build",
+    "build:watch": "tsc --watch --noEmit & vite build --watch",
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --ext ts,tsx --fix",
@@ -46,7 +48,8 @@
     "typescript": "^5.3.3",
     "vite": "^5.0.8",
     "vite-plugin-chrome-extension": "^0.0.1",
-    "vitest": "^1.1.0"
+    "vitest": "^1.1.0",
+    "concurrently": "^8.2.2"
   },
   "packageManager": "pnpm@10.29.3"
 }
