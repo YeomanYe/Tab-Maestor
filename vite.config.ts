@@ -21,7 +21,12 @@ export default defineConfig({
         background: resolve(__dirname, 'src/background/index.ts'),
       },
       output: {
-        entryFileNames: 'assets/[name].js',
+        entryFileNames: (chunkInfo) => {
+          if (chunkInfo.name === 'background') {
+            return 'background.js';
+          }
+          return 'assets/[name].js';
+        },
       },
     },
   },
