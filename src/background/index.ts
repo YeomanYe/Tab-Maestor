@@ -11,24 +11,38 @@ interface SavedTab {
   originalTabId?: number;
 }
 
+// Create context menu items
+function createContextMenus() {
+  // Remove existing menus first to avoid duplicates
+  chrome.contextMenus.removeAll().then(() => {
+    chrome.contextMenus.create({
+      id: 'saveCurrentTab',
+      title: 'Save Current Tab',
+      contexts: ['action'],
+    });
+
+    chrome.contextMenus.create({
+      id: 'saveAllTabs',
+      title: 'Save All Tabs',
+      contexts: ['action'],
+    });
+  });
+}
+
 // Initialize context menus when extension is installed
 chrome.runtime.onInstalled.addListener(() => {
   // Initialize storage with empty array
   chrome.storage.local.set({ [STORAGE_KEY]: [] });
-
-  // Create context menu items
-  chrome.contextMenus.create({
-    id: 'saveCurrentTab',
-    title: 'Save Current Tab',
-    contexts: ['action'],
-  });
-
-  chrome.contextMenus.create({
-    id: 'saveAllTabs',
-    title: 'Save All Tabs',
-    contexts: ['action'],
-  });
+  createContextMenus();
 });
+
+// Also create menus when service worker starts (for development)
+chrome.runtime.onStartup.addListener(() => {
+  createContextMenus();
+});
+
+// Create menus immediately on service worker load
+createContextMenus();
 
 // Handle context menu clicks
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
