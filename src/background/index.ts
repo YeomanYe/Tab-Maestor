@@ -12,25 +12,34 @@ interface SavedTab {
 }
 
 // Create context menu items
-function createContextMenus() {
-  // Remove existing menus first to avoid duplicates
-  chrome.contextMenus.removeAll().then(() => {
-    chrome.contextMenus.create({
+async function createContextMenus() {
+  try {
+    // Remove existing menus first to avoid duplicates
+    await chrome.contextMenus.removeAll();
+
+    // Create menu for current tab - show on both extension icon and page context
+    await chrome.contextMenus.create({
       id: 'saveCurrentTab',
       title: 'Save Current Tab',
-      contexts: ['action'],
+      contexts: ['action', 'page'],
     });
+    console.log('[Background] Created Save Current Tab menu');
 
-    chrome.contextMenus.create({
+    // Create menu for all tabs
+    await chrome.contextMenus.create({
       id: 'saveAllTabs',
       title: 'Save All Tabs',
-      contexts: ['action'],
+      contexts: ['action', 'page'],
     });
-  });
+    console.log('[Background] Created Save All Tabs menu');
+  } catch (error) {
+    console.error('[Background] Failed to create context menus:', error);
+  }
 }
 
 // Initialize context menus when extension is installed
 chrome.runtime.onInstalled.addListener(() => {
+  console.log('[Background] Extension installed, initializing...');
   // Initialize storage with empty array
   chrome.storage.local.set({ [STORAGE_KEY]: [] });
   createContextMenus();
@@ -38,6 +47,7 @@ chrome.runtime.onInstalled.addListener(() => {
 
 // Also create menus when service worker starts (for development)
 chrome.runtime.onStartup.addListener(() => {
+  console.log('[Background] Extension started, creating menus...');
   createContextMenus();
 });
 
