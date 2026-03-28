@@ -3,6 +3,7 @@
   "name": "Tab Maestro",
   "version": "1.0.0",
   "description": "Save and manage your browser tabs with ease",
+  "type": "module",
   "permissions": ["tabs", "storage", "contextMenus", "notifications"],
   "background": {
     "service_worker": "background.js"
