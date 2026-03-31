@@ -22,6 +22,7 @@ export default defineConfig({
       },
       output: {
         format: 'iife',
+        inlineDynamicImports: false,
         entryFileNames: (chunkInfo) => {
           if (chunkInfo.name === 'background') {
             return 'background.js';
