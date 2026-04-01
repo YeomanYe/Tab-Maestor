@@ -8,6 +8,10 @@ declare global {
           get: (key: string) => Promise<Record<string, unknown>>;
           set: (data: Record<string, unknown>) => Promise<void>;
         };
+        sync?: {
+          get: (key: string) => Promise<Record<string, unknown>>;
+          set: (data: Record<string, unknown>) => Promise<void>;
+        };
       };
       tabs?: {
         query: (query: Record<string, unknown>, callback?: (tabs: ChromeTab[]) => void) => Promise<ChromeTab[]>;
