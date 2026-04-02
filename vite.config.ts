@@ -42,7 +42,7 @@ export default defineConfig({
         background: resolve(__dirname, 'src/background/index.ts'),
       },
       output: {
-        format: 'iife',
+        format: 'es',
         inlineDynamicImports: false,
         entryFileNames: (chunkInfo) => {
           if (chunkInfo.name === 'background') {
