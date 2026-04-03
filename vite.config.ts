@@ -39,11 +39,9 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-        background: resolve(__dirname, 'src/background/index.ts'),
       },
       output: {
         format: 'es',
-        inlineDynamicImports: false,
         entryFileNames: (chunkInfo) => {
           if (chunkInfo.name === 'background') {
             return 'background.js';
