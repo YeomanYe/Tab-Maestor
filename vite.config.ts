@@ -15,7 +15,6 @@ export default defineConfig({
         manifest_version: 3,
         background: {
           service_worker: 'src/background/index.ts',
-          type: 'module',
         },
         action: {
           default_title: 'Open Tab Maestro',
@@ -39,15 +38,6 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-      },
-      output: {
-        format: 'es',
-        entryFileNames: (chunkInfo) => {
-          if (chunkInfo.name === 'background') {
-            return 'background.js';
-          }
-          return 'assets/[name].js';
-        },
       },
     },
   },
