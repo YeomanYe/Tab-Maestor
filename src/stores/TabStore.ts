@@ -146,6 +146,15 @@ class TabStore {
     }
   }
 
+  async openAndDeleteTab(tabId: string): Promise<void> {
+    const tab = this.tabs.find((t) => t.id === tabId);
+    if (tab) {
+      const url = tab.url;
+      await this.deleteTab(tabId);
+      await openTab(url);
+    }
+  }
+
   async deleteTab(tabId: string): Promise<void> {
     const index = this.tabs.findIndex((t) => t.id === tabId);
     if (index !== -1) {

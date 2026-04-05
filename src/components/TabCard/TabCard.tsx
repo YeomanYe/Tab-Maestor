@@ -7,35 +7,13 @@ interface TabCardProps {
 }
 
 const TabCard = ({ tab }: TabCardProps) => {
-  const handleOpen = async () => {
-    await tabStore.openTab(tab.id);
+  const handleClick = async () => {
+    await tabStore.openAndDeleteTab(tab.id);
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     await tabStore.deleteTab(tab.id);
-  };
-
-  const formatTime = (timestamp: number): string => {
-    const now = Date.now();
-    const diff = now - timestamp;
-    const minutes = Math.floor(diff / 60000);
-    const hours = Math.floor(diff / 3600000);
-    const days = Math.floor(diff / 86400000);
-
-    if (minutes < 1) return 'Just now';
-    if (minutes < 60) return `${minutes}m ago`;
-    if (hours < 24) return `${hours}h ago`;
-    if (days < 7) return `${days}d ago`;
-    return new Date(timestamp).toLocaleDateString();
-  };
-
-  const getDomain = (url: string): string => {
-    try {
-      const urlObj = new URL(url);
-      return urlObj.hostname;
-    } catch {
-      return url;
-    }
   };
 
   const getDefaultFavicon = (): string => {
@@ -49,7 +27,7 @@ const TabCard = ({ tab }: TabCardProps) => {
   };
 
   return (
-    <div className={styles.card}>
+    <div className={styles.card} onClick={handleClick}>
       <div className={styles.favicon}>
         <img
           src={tab.favicon || getDefaultFavicon()}
@@ -61,70 +39,34 @@ const TabCard = ({ tab }: TabCardProps) => {
         />
       </div>
 
-      <div className={styles.content} onClick={handleOpen}>
-        <h3 className={styles.title}>{tab.title}</h3>
-        <p className={styles.url}>{getDomain(tab.url)}</p>
-      </div>
+      <span className={styles.url}>{tab.url}</span>
 
-      <div className={styles.meta}>
-        <span className={styles.time}>{formatTime(tab.savedAt)}</span>
-        <div className={styles.actions}>
-          <button
-            className={styles.actionButton}
-            onClick={handleOpen}
-            title="Open tab"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <polyline
-                points="15,3 21,3 21,9"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <line
-                x1="10"
-                y1="14"
-                x2="21"
-                y2="3"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-          <button
-            className={`${styles.actionButton} ${styles.deleteButton}`}
-            onClick={handleDelete}
-            title="Delete tab"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <polyline
-                points="3,6 5,6 21,6"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-        </div>
-      </div>
+      <button
+        className={`${styles.deleteButton}`}
+        onClick={handleDelete}
+        title="Delete tab"
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+          <line
+            x1="18"
+            y1="6"
+            x2="6"
+            y2="18"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+          <line
+            x1="6"
+            y1="6"
+            x2="18"
+            y2="18"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+        </svg>
+      </button>
     </div>
   );
 };
