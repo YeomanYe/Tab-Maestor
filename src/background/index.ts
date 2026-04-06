@@ -113,6 +113,33 @@ async function saveCurrentTab(): Promise<void> {
   }
 }
 
+async function getExtensionUrl(): Promise<string> {
+  // Get the extension ID dynamically
+  return chrome.runtime.getURL('index.html');
+}
+
+async function focusOrOpenOptionsPage(): Promise<void> {
+  const extensionUrl = await getExtensionUrl();
+
+  // Query for tabs with the options page URL
+  const tabs = await chrome.tabs.query({ url: extensionUrl });
+
+  if (tabs.length > 0) {
+    // Options page is already open, focus the first match
+    const existingTab = tabs[0];
+    if (existingTab.id) {
+      await chrome.tabs.update(existingTab.id, { active: true });
+      // Also focus the window if it's in a different window
+      if (existingTab.windowId) {
+        await chrome.windows.update(existingTab.windowId, { focused: true });
+      }
+    }
+  } else {
+    // Options page is not open, open it
+    await chrome.tabs.create({ url: extensionUrl });
+  }
+}
+
 async function saveAllTabs(): Promise<void> {
   try {
     const allTabs = await chrome.tabs.query({});
@@ -152,6 +179,7 @@ async function saveAllTabs(): Promise<void> {
 
     if (tabsToSave.length === 0) {
       await showNotification('Tab Maestro', 'All tabs already saved');
+      await focusOrOpenOptionsPage();
       return;
     }
 
@@ -164,6 +192,9 @@ async function saveAllTabs(): Promise<void> {
     }
 
     await showNotification('Tab Maestro', `Saved and closed ${tabsToSave.length} tab(s)`);
+
+    // Focus or open options page
+    await focusOrOpenOptionsPage();
   } catch {
     await showNotification('Tab Maestro', 'Failed to save tabs');
   }
