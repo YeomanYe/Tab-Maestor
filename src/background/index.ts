@@ -133,6 +133,8 @@ async function focusOrOpenOptionsPage(): Promise<void> {
       if (existingTab.windowId) {
         await chrome.windows.update(existingTab.windowId, { focused: true });
       }
+      // Refresh the options page
+      await chrome.tabs.reload(existingTab.id);
     }
   } else {
     // Options page is not open, open it
@@ -161,9 +163,9 @@ async function saveAllTabs(): Promise<void> {
     const tabsToSave: SavedTab[] = [];
     const tabIdsToClose: number[] = [];
 
+    // Save all tabs (no deduplication) and collect all tab IDs to close
     for (const tab of validTabs) {
-      const exists = storedTabs.some((t) => t.url === tab.url);
-      if (!exists && tab.id) {
+      if (tab.id) {
         const newTab: SavedTab = {
           id: uuidv4(),
           title: tab.title || 'Untitled',
@@ -178,22 +180,21 @@ async function saveAllTabs(): Promise<void> {
     }
 
     if (tabsToSave.length === 0) {
-      await showNotification('Tab Maestro', 'All tabs already saved');
-      await focusOrOpenOptionsPage();
+      await showNotification('Tab Maestro', 'No tabs to save');
       return;
     }
 
     const updatedTabs = [...tabsToSave, ...storedTabs];
     await saveStoredTabs(updatedTabs);
 
-    // Close saved tabs
+    // Close all valid tabs
     if (tabIdsToClose.length > 0) {
       await chrome.tabs.remove(tabIdsToClose);
     }
 
     await showNotification('Tab Maestro', `Saved and closed ${tabsToSave.length} tab(s)`);
 
-    // Focus or open options page
+    // Focus or open options page (will refresh if already open)
     await focusOrOpenOptionsPage();
   } catch {
     await showNotification('Tab Maestro', 'Failed to save tabs');
