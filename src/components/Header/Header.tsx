@@ -4,10 +4,6 @@ import { ThemeSwitcher } from '@/components/ThemeSwitcher/ThemeSwitcher';
 import styles from './Header.module.scss';
 
 const Header = observer(() => {
-  const handleSaveCurrent = async () => {
-    await tabStore.saveCurrentTab();
-  };
-
   const handleSaveAll = async () => {
     await tabStore.saveAllTabs();
   };
@@ -40,44 +36,6 @@ const Header = observer(() => {
       </div>
 
       <div className={styles.actions}>
-        <button
-          className={styles.buttonPrimary}
-          onClick={handleSaveCurrent}
-          disabled={tabStore.isLoading}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <polyline
-              points="17,21 17,13 7,13 7,21"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M12 11v6"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M9 14h6"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          Save Current
-        </button>
-
         <button
           className={styles.buttonSecondary}
           onClick={handleSaveAll}
