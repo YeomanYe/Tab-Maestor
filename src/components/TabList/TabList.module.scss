@@ -3,8 +3,25 @@
 .list {
   display: flex;
   flex-direction: column;
-  gap: $spacing-sm;
+  gap: $spacing-lg;
   padding: $spacing-lg;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+}
+
+.groupHeader {
+  font-size: $font-size-caption;
+  font-weight: 500;
+  color: $text-muted;
+  padding: $spacing-sm $spacing-md;
+}
+
+.groupContent {
+  display: flex;
+  flex-direction: column;
 }
 
 .loading {

@@ -1,5 +1,6 @@
 import { SavedTab } from '@/types';
 import { tabStore } from '@/stores/TabStore';
+import { formatTabTime } from '@/utils/date';
 import styles from './TabCard.module.scss';
 
 interface TabCardProps {
@@ -40,6 +41,8 @@ const TabCard = ({ tab }: TabCardProps) => {
       </div>
 
       <span className={styles.url}>{tab.url}</span>
+
+      <span className={styles.time}>{formatTabTime(tab.savedAt)}</span>
 
       <button
         className={`${styles.deleteButton}`}
