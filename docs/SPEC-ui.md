@@ -54,9 +54,10 @@
 ### 1. Header
 
 - App logo (简单图标 + 文字)
-- "Save Current Tab" 按钮 (主要操作)
-- "Save All Tabs" 按钮 (次要操作)
+- "Save All Tabs" 按钮
 - 标签页计数徽章
+
+> 注意: "Save Current Tab" 功能仅通过扩展图标右键菜单提供
 
 ### 2. Tab Card
 

@@ -54,3 +54,22 @@ Invalid value "iife" for option "output.format" - UMD and IIFE output formats ar
 **问题**: 缺少 `public` 目录导致 Vite dev 模式报错
 
 **解决方案**: 创建空的 `public` 目录。
+
+### 6. Save All 功能更新
+
+**改动**:
+- Save All 不再去重，所有标签页都会被保存（允许重复）
+- 保存后关闭所有有效标签页
+- 保存完成后自动切换到 options 页面，如果已打开则刷新显示
+
+**相关文件**:
+- `src/background/index.ts`
+
+### 7. 移除 Save Current 按钮
+
+**改动**:
+- 从 options 页面 Header 中移除 "Save Current" 按钮
+- "Save Current" 功能仅通过扩展图标的右键菜单提供
+
+**相关文件**:
+- `src/components/Header/Header.tsx`
