@@ -54,7 +54,7 @@ const Header = observer(() => {
             <path d="M8 21h8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             <path d="M12 17v4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           </svg>
-          Save All
+          Save All Tabs
         </button>
 
         {tabStore.tabCount > 0 && (
@@ -76,7 +76,7 @@ const Header = observer(() => {
                   strokeLinejoin="round"
                 />
               </svg>
-              Clear All
+              Clear All Tabs
             </button>
           </>
         )}
