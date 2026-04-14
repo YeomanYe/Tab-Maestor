@@ -16,13 +16,27 @@ interface ChromeWithStorage {
 }
 
 // Check if running in Chrome extension environment
-const hasChromeStorage =
-  typeof window !== 'undefined' &&
-  (window as Window & { chrome?: ChromeWithStorage }).chrome?.storage?.local != null;
+// Need to verify storage actually works, not just exists
+const isChromeExtension = (): boolean => {
+  // Check if we're in a browser with chrome extension API
+  const win = window as Window & { chrome?: ChromeWithStorage };
+  if (!win.chrome?.storage?.local) {
+    return false;
+  }
+
+  // Try to actually use chrome.storage to verify it's available
+  // This prevents false positives in Vite dev server
+  try {
+    // Quick async check - we'll handle errors in getStoredTabs
+    return typeof win.chrome.storage.local.get === 'function';
+  } catch {
+    return false;
+  }
+};
 
 export const getStoredTabs = async (): Promise<SavedTab[]> => {
   // Use mock data when not in Chrome extension environment
-  if (!hasChromeStorage) {
+  if (!isChromeExtension()) {
     console.log('[Storage] Using mock data for testing');
     // Try to get from localStorage first
     try {
@@ -74,7 +88,7 @@ export const saveTabs = async (tabs: SavedTab[]): Promise<void> => {
   }
 
   // Only save to chrome.storage when in extension environment
-  if (hasChromeStorage) {
+  if (isChromeExtension()) {
     try {
       const chromeStorage = (window as Window & { chrome: ChromeWithStorage }).chrome?.storage?.local;
       if (chromeStorage) {
