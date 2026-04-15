@@ -27,6 +27,17 @@ const TabCard = ({ tab }: TabCardProps) => {
     `)}`;
   };
 
+  const getDomain = (url: string): string => {
+    try {
+      const urlObj = new URL(url);
+      return urlObj.hostname;
+    } catch {
+      return '';
+    }
+  };
+
+  const domain = getDomain(tab.url);
+
   return (
     <div className={styles.card} onClick={handleClick}>
       <div className={styles.favicon}>
@@ -40,7 +51,10 @@ const TabCard = ({ tab }: TabCardProps) => {
         />
       </div>
 
-      <span className={styles.url}>{tab.url}</span>
+      <span className={styles.title}>
+        {tab.title}
+        {domain && <span className={styles.domain}> ({domain})</span>}
+      </span>
 
       <span className={styles.time}>{formatTabTime(tab.savedAt)}</span>
 
