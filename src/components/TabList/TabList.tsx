@@ -47,7 +47,39 @@ const TabList = observer(() => {
     <div className={styles.list}>
       {sortedGroups.map((groupKey) => (
         <div key={groupKey} className={styles.group}>
-          <div className={styles.groupHeader}>{getGroupLabel(groupKey)}</div>
+          <div className={styles.groupHeader}>
+            <span className={styles.groupTitle}>{getGroupLabel(groupKey)}</span>
+            <button
+              className={styles.clearGroupButton}
+              onClick={() => {
+                if (window.confirm(`Clear all tabs from ${getGroupLabel(groupKey)}?`)) {
+                  tabStore.deleteTabsByGroup(groupKey);
+                }
+              }}
+              title="Clear group"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                <line
+                  x1="18"
+                  y1="6"
+                  x2="6"
+                  y2="18"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+                <line
+                  x1="6"
+                  y1="6"
+                  x2="18"
+                  y2="18"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
+          </div>
           <div className={styles.groupContent}>
             {groupedTabs[groupKey].map((tab) => (
               <TabCard key={tab.id} tab={tab} />

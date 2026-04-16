@@ -9,6 +9,7 @@ import {
   openTab,
   closeAllTabs as closeAllStoredTabs,
 } from '@/utils/storage';
+import { getTabGroupKey } from '@/utils/date';
 
 class TabStore {
   tabs: SavedTab[] = [];
@@ -168,6 +169,15 @@ class TabStore {
     this.tabs = [];
     await saveTabs([]);
     this.showToast('All tabs cleared', 'success');
+  }
+
+  async deleteTabsByGroup(groupKey: string): Promise<void> {
+    const tabsToDelete = this.tabs.filter((tab) => getTabGroupKey(tab.savedAt) === groupKey);
+    const tabIds = tabsToDelete.map((tab) => tab.id);
+
+    this.tabs = this.tabs.filter((tab) => !tabIds.includes(tab.id));
+    await saveTabs(this.tabs);
+    this.showToast(`${tabsToDelete.length} tabs cleared`, 'success');
   }
 
   showToast(message: string, type: 'success' | 'error'): void {

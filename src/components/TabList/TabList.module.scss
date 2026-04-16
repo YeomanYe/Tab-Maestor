@@ -13,10 +13,40 @@
 }
 
 .groupHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   font-size: $font-size-caption;
-  font-weight: 500;
-  color: $text-muted;
+  font-weight: 600;
+  color: $text-secondary;
   padding: $spacing-sm $spacing-md;
+}
+
+.groupTitle {
+  font-weight: 600;
+}
+
+.clearGroupButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background-color: transparent;
+  color: $text-muted;
+  border-radius: $border-radius-sm;
+  transition: all $transition-base;
+  opacity: 0;
+  cursor: pointer;
+
+  .groupHeader:hover & {
+    opacity: 1;
+  }
+
+  &:hover {
+    background-color: rgba($danger, 0.1);
+    color: $danger;
+  }
 }
 
 .groupContent {
