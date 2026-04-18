@@ -1,6 +1,9 @@
+import { getCurrentLanguage } from '@/utils/i18n';
 import styles from './EmptyState.module.scss';
 
 const EmptyState = () => {
+  const lang = getCurrentLanguage();
+
   return (
     <div className={styles.container}>
       <div className={styles.icon}>
@@ -40,10 +43,11 @@ const EmptyState = () => {
           />
         </svg>
       </div>
-      <h2 className={styles.title}>No saved tabs</h2>
+      <h2 className={styles.title}>{lang === 'zh' ? '暂无保存的标签页' : 'No saved tabs'}</h2>
       <p className={styles.description}>
-        Click &quot;Save Current&quot; or &quot;Save All&quot; to save your tabs for
-        later.
+        {lang === 'zh'
+          ? '点击"保存所有标签页"来保存并关闭您打开的标签页'
+          : 'Click "Save All Tabs" to save and close your open tabs'}
       </p>
     </div>
   );

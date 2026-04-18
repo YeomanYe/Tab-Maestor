@@ -1,6 +1,7 @@
 import { SavedTab } from '@/types';
 import { tabStore } from '@/stores/TabStore';
 import { formatTabTime } from '@/utils/date';
+import { t } from '@/utils/i18n';
 import styles from './TabCard.module.scss';
 
 interface TabCardProps {
@@ -61,7 +62,7 @@ const TabCard = ({ tab }: TabCardProps) => {
       <button
         className={`${styles.deleteButton}`}
         onClick={handleDelete}
-        title="Delete tab"
+        title={t('deleteTab')}
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
           <line

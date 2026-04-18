@@ -1,3 +1,5 @@
+import { getCurrentLanguage } from './i18n';
+
 /**
  * Format timestamp for display in tab list
  * - Today: just time (e.g., "14:30")
@@ -55,12 +57,27 @@ export const getTabGroupKey = (timestamp: number): string => {
  * Get display label for group key
  */
 export const getGroupLabel = (key: string): string => {
-  switch (key) {
-    case 'today':
-      return '今天';
-    case 'yesterday':
-      return '昨天';
-    default:
-      return key;
+  const lang = getCurrentLanguage();
+  const now = new Date();
+
+  if (key === 'today') {
+    // Show today with date
+    const dateStr = now.toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US', {
+      month: 'short',
+      day: 'numeric',
+    });
+    return lang === 'zh' ? `今天 ${dateStr}` : `Today ${dateStr}`;
   }
+
+  if (key === 'yesterday') {
+    // Show yesterday with date
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const dateStr = yesterday.toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US', {
+      month: 'short',
+      day: 'numeric',
+    });
+    return lang === 'zh' ? `昨天 ${dateStr}` : `Yesterday ${dateStr}`;
+  }
+
+  return key;
 };

@@ -1,6 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import { tabStore } from '@/stores/TabStore';
 import { ThemeSwitcher } from '@/components/ThemeSwitcher/ThemeSwitcher';
+import { t, getCurrentLanguage } from '@/utils/i18n';
 import styles from './Header.module.scss';
 
 const Header = observer(() => {
@@ -9,7 +10,11 @@ const Header = observer(() => {
   };
 
   const handleClearAll = async () => {
-    if (window.confirm('Are you sure you want to clear all saved tabs?')) {
+    const lang = getCurrentLanguage();
+    const confirmMessage = lang === 'zh'
+      ? '确定要清除所有已保存的标签页吗？'
+      : 'Are you sure you want to clear all saved tabs?';
+    if (window.confirm(confirmMessage)) {
       await tabStore.clearAll();
     }
   };
@@ -29,7 +34,7 @@ const Header = observer(() => {
           <path d="M7 8h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           <path d="M12 12v4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
         </svg>
-        <h1 className={styles.title}>Tab Maestro</h1>
+        <h1 className={styles.title}>{t('appTitle')}</h1>
         {tabStore.tabCount > 0 && (
           <span className={styles.badge}>{tabStore.tabCount}</span>
         )}
@@ -54,7 +59,7 @@ const Header = observer(() => {
             <path d="M8 21h8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             <path d="M12 17v4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           </svg>
-          Save All Tabs
+          {t('saveAllTabs')}
         </button>
 
         {tabStore.tabCount > 0 && (
@@ -76,7 +81,7 @@ const Header = observer(() => {
                   strokeLinejoin="round"
                 />
               </svg>
-              Clear All Tabs
+              {t('clearAllTabs')}
             </button>
           </>
         )}

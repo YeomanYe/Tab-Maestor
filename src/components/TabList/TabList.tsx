@@ -1,6 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import { tabStore } from '@/stores/TabStore';
 import { getTabGroupKey, getGroupLabel } from '@/utils/date';
+import { t, getCurrentLanguage } from '@/utils/i18n';
 import TabCard from '../TabCard/TabCard';
 import EmptyState from '../EmptyState/EmptyState';
 import styles from './TabList.module.scss';
@@ -52,11 +53,15 @@ const TabList = observer(() => {
             <button
               className={styles.clearGroupButton}
               onClick={() => {
-                if (window.confirm(`Clear all tabs from ${getGroupLabel(groupKey)}?`)) {
+                const lang = getCurrentLanguage();
+                const confirmMessage = lang === 'zh'
+                  ? `确定要清除 ${getGroupLabel(groupKey)} 的所有标签页吗？`
+                  : `Clear all tabs from ${getGroupLabel(groupKey)}?`;
+                if (window.confirm(confirmMessage)) {
                   tabStore.deleteTabsByGroup(groupKey);
                 }
               }}
-              title="Clear group"
+              title={t('clearGroup')}
             >
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
                 <line
