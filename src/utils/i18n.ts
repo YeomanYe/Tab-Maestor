@@ -83,41 +83,41 @@ const translations: Record<Language, Translations> = {
   zh: {
     // Header
     appTitle: 'Tab Maestro',
-    saveAllTabs: 'Save All Tabs',
-    clearAllTabs: 'Clear All Tabs',
+    saveAllTabs: '保存所有标签页',
+    clearAllTabs: '清除所有标签页',
     clearAllConfirm: '确定要清除所有已保存的标签页吗？',
 
     // Tab list
-    noSavedTabs: 'No saved tabs',
-    noSavedTabsDescription: 'Use "Save All Tabs" to save and close your open tabs',
+    noSavedTabs: '暂无保存的标签页',
+    noSavedTabsDescription: '点击"保存所有标签页"来保存并关闭您打开的标签页',
 
     // Group labels
-    today: 'Today',
-    yesterday: 'Yesterday',
+    today: '今天',
+    yesterday: '昨天',
 
     // Notifications
-    tabSaved: 'Tab saved successfully',
-    tabAlreadySaved: 'Tab already saved',
-    tabDeleted: 'Tab deleted',
-    allTabsCleared: 'All tabs cleared',
-    tabsCleared: 'tabs cleared',
-    noTabsToSave: 'No tabs to save',
-    savedAndClosed: 'Saved and closed',
-    failedToSave: 'Failed to save tabs',
+    tabSaved: '标签页保存成功',
+    tabAlreadySaved: '标签页已存在',
+    tabDeleted: '标签页已删除',
+    allTabsCleared: '已清除所有标签页',
+    tabsCleared: '个标签页已清除',
+    noTabsToSave: '没有可保存的标签页',
+    savedAndClosed: '已保存并关闭',
+    failedToSave: '保存标签页失败',
 
     // Group clear confirm
-    clearGroupConfirm: 'Clear all tabs from',
+    clearGroupConfirm: '清除该组所有标签页',
 
     // Delete button
-    deleteTab: 'Delete tab',
+    deleteTab: '删除标签页',
 
     // Clear group button
-    clearGroup: 'Clear group',
+    clearGroup: '清除该组',
 
     // Theme
-    light: 'Light',
-    dark: 'Dark',
-    system: 'System',
+    light: '浅色',
+    dark: '深色',
+    system: '跟随系统',
   },
 };
 
