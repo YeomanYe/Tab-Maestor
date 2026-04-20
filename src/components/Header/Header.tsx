@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import { tabStore } from '@/stores/TabStore';
 import { ThemeSwitcher } from '@/components/ThemeSwitcher/ThemeSwitcher';
-import { t, getCurrentLanguage } from '@/utils/i18n';
+import { t } from '@/utils/i18n';
 import styles from './Header.module.scss';
 
 const Header = observer(() => {
@@ -10,11 +10,7 @@ const Header = observer(() => {
   };
 
   const handleClearAll = async () => {
-    const lang = getCurrentLanguage();
-    const confirmMessage = lang === 'zh'
-      ? '确定要清除所有已保存的标签页吗？'
-      : 'Are you sure you want to clear all saved tabs?';
-    if (window.confirm(confirmMessage)) {
+    if (window.confirm(t('clearAllConfirm'))) {
       await tabStore.clearAll();
     }
   };
