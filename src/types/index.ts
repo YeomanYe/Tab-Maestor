@@ -14,3 +14,12 @@ export interface TabInfo {
   favIconUrl: string;
   originalTabId?: number;
 }
+
+export interface SaveRule {
+  id: string;
+  domain: string;
+  enabled: boolean;
+  days: number[];
+  startTime: string;
+  endTime: string;
+}

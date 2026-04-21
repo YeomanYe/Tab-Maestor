@@ -1,0 +1,131 @@
+@use '../styles/variables' as *;
+
+.popup {
+  width: 320px;
+  min-height: 200px;
+  padding: $spacing-md;
+  background-color: $bg-primary;
+  color: $text-primary;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-md;
+}
+
+.title {
+  font-size: $font-size-h2;
+  font-weight: 600;
+}
+
+.addButton {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-xs $spacing-sm;
+  background-color: $accent-primary;
+  color: white;
+  border: none;
+  border-radius: $border-radius-sm;
+  font-size: $font-size-body;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $accent-hover;
+  }
+}
+
+.ruleList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.ruleItem {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  padding: $spacing-sm;
+  background-color: $bg-secondary;
+  border-radius: $border-radius-md;
+}
+
+.ruleHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ruleDomain {
+  font-size: $font-size-body;
+  font-weight: 500;
+  color: $text-primary;
+}
+
+.ruleActions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+}
+
+.ruleTime {
+  font-size: $font-size-caption;
+  color: $text-muted;
+}
+
+.iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background-color: transparent;
+  color: $text-muted;
+  border: none;
+  border-radius: $border-radius-sm;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $bg-tertiary;
+    color: $text-primary;
+  }
+
+  &.danger:hover {
+    background-color: rgba($danger, 0.1);
+    color: $danger;
+  }
+}
+
+.toggle {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  background-color: $border-color;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color $transition-base;
+
+  &.active {
+    background-color: $accent-primary;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform $transition-base;
+  }
+
+  &.active::after {
+    transform: translateX(16px);
+  }
+}

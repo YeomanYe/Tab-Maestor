@@ -17,6 +17,7 @@ export default defineConfig({
           service_worker: 'src/background/index.ts',
         },
         action: {
+          default_popup: 'popup.html',
           default_title: 'Open Tab Maestro',
         },
         options_page: 'index.html',
@@ -38,6 +39,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
+        popup: resolve(__dirname, 'popup.html'),
       },
     },
   },

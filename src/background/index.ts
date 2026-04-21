@@ -1,6 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
+import type { SaveRule } from '../types';
 
 const STORAGE_KEY = 'tab-maestro-tabs';
+const RULES_STORAGE_KEY = 'tab-maestro-rules';
 
 interface SavedTab {
   id: string;
@@ -76,6 +78,70 @@ async function showNotification(title: string, message: string): Promise<void> {
     title,
     message,
   });
+}
+
+// Get saved rules
+async function getRules(): Promise<SaveRule[]> {
+  try {
+    const result = await chrome.storage.local.get(RULES_STORAGE_KEY);
+    return (result[RULES_STORAGE_KEY] as SaveRule[]) || [];
+  } catch {
+    return [];
+  }
+}
+
+// Check if domain matches rule pattern
+function matchDomain(url: string, pattern: string): boolean {
+  try {
+    const urlObj = new URL(url);
+    const urlDomain = urlObj.hostname.replace(/^www\./, '');
+
+    // Convert pattern to regex
+    // *.example.com -> matches example.com, sub.example.com, etc.
+    const regexPattern = pattern
+      .replace(/\./g, '\\.')
+      .replace(/\*/g, '.*');
+
+    const regex = new RegExp(`^${regexPattern}$`, 'i');
+    return regex.test(urlDomain);
+  } catch {
+    return false;
+  }
+}
+
+// Check if current time matches rule time
+function matchTime(rule: SaveRule): boolean {
+  const now = new Date();
+  const currentDay = now.getDay();
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+  // Parse rule time
+  const [startHour, startMin] = rule.startTime.split(':').map(Number);
+  const [endHour, endMin] = rule.endTime.split(':').map(Number);
+  const startMinutes = startHour * 60 + startMin;
+  const endMinutes = endHour * 60 + endMin;
+
+  // Check day
+  const dayMatch = rule.days.length === 0 || rule.days.includes(currentDay);
+
+  // Check time
+  const timeMatch = currentMinutes >= startMinutes && currentMinutes <= endMinutes;
+
+  return dayMatch && timeMatch;
+}
+
+// Check if URL should be blocked by rules
+async function shouldBlockByRules(url: string): Promise<boolean> {
+  const rules = await getRules();
+  const enabledRules = rules.filter((r) => r.enabled);
+
+  for (const rule of enabledRules) {
+    if (matchDomain(url, rule.domain) && matchTime(rule)) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 async function saveCurrentTab(): Promise<void> {
@@ -162,10 +228,19 @@ async function saveAllTabs(): Promise<void> {
     const storedTabs = await getStoredTabs();
     const tabsToSave: SavedTab[] = [];
     const tabIdsToClose: number[] = [];
+    const blockedTabs: string[] = [];
 
     // Save all tabs (no deduplication) and collect all tab IDs to close
+    // Also check each tab against rules
     for (const tab of validTabs) {
-      if (tab.id) {
+      if (tab.id && tab.url) {
+        // Check if blocked by rules
+        const isBlocked = await shouldBlockByRules(tab.url);
+        if (isBlocked) {
+          blockedTabs.push(tab.url);
+          continue;
+        }
+
         const newTab: SavedTab = {
           id: uuidv4(),
           title: tab.title || 'Untitled',
@@ -192,7 +267,12 @@ async function saveAllTabs(): Promise<void> {
       await chrome.tabs.remove(tabIdsToClose);
     }
 
-    await showNotification('Tab Maestro', `Saved and closed ${tabsToSave.length} tab(s)`);
+    // Build notification message
+    let message = `Saved and closed ${tabsToSave.length} tab(s)`;
+    if (blockedTabs.length > 0) {
+      message += `, blocked ${blockedTabs.length} tab(s) by rules`;
+    }
+    await showNotification('Tab Maestro', message);
 
     // Focus or open options page (will refresh if already open)
     await focusOrOpenOptionsPage();
