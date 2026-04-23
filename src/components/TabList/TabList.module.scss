@@ -23,7 +23,7 @@
 }
 
 .groupTitle {
-  font-size: $font-size-body;
+  font-size: 24px;
   font-weight: 600;
 }
 
@@ -39,6 +39,7 @@
   transition: all $transition-base;
   opacity: 0;
   cursor: pointer;
+  font-weight: bold;
 
   .groupHeader:hover & {
     opacity: 1;
