@@ -5,6 +5,15 @@ import { getRules, saveRules, createDefaultRule } from '@/utils/rulesStorage';
 import RuleEditor from './RuleEditor';
 import styles from './Popup.module.scss';
 
+// Convert domain to wildcard pattern: www.baidu.com -> *.baidu.com, github.com -> github.com
+const toWildcardDomain = (domain: string): string => {
+  const parts = domain.split('.');
+  if (parts.length > 2) {
+    return `*.${parts.slice(-2).join('.')}`;
+  }
+  return domain;
+};
+
 const Popup = observer(() => {
   const [rules, setRules] = useState<SaveRule[]>([]);
   const [currentDomain, setCurrentDomain] = useState<string>('');
@@ -29,7 +38,10 @@ const Popup = observer(() => {
         try {
           const url = new URL(tab.url);
           const domain = url.hostname.replace(/^www\./, '');
-          setCurrentDomain(domain);
+          const wildcardDomain = toWildcardDomain(domain);
+          setCurrentDomain(wildcardDomain);
+          // Open add rule interface by default when domain is loaded
+          setEditingRule(createDefaultRule(wildcardDomain || 'example.com'));
         } catch {
           // Ignore invalid URLs
         }
@@ -38,6 +50,11 @@ const Popup = observer(() => {
       // Ignore errors
     }
   };
+
+  useEffect(() => {
+    loadRules();
+    getCurrentTabDomain();
+  }, []);
 
   const handleAddRule = () => {
     const newRule = createDefaultRule(currentDomain || 'example.com');
