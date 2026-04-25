@@ -65,7 +65,7 @@ const TabList = observer(() => {
               }}
               title={t('clearGroup')}
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                 <polyline
                   points="3,6 5,6 21,6"
                   stroke="currentColor"
