@@ -14,22 +14,22 @@
 
 .favicon {
   flex-shrink: 0;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
 
   img {
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
     object-fit: contain;
   }
 }
 
 .title {
   flex: 1;
-  font-size: $font-size-caption;
+  font-size: $font-size-body;
   color: $text-primary;
   white-space: nowrap;
   overflow: hidden;
@@ -45,7 +45,7 @@
 .time {
   flex-shrink: 0;
   width: 50px;
-  font-size: $font-size-caption;
+  font-size: $font-size-body;
   color: $text-muted;
   text-align: right;
 }
