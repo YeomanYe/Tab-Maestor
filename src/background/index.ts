@@ -78,8 +78,8 @@ if (chrome.commands) {
 }
 
 // Handle context menu clicks
-chrome.contextMenus.onClicked.addListener(async (info) => {
-  console.log('[Background] Context menu clicked:', info.menuItemId);
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+  console.log('[Background] Context menu clicked:', info.menuItemId, 'tab:', tab);
 
   if (info.menuItemId === 'saveCurrentTab') {
     await saveCurrentTab();
@@ -181,12 +181,15 @@ async function shouldBlockByRules(url: string): Promise<boolean> {
 }
 
 async function saveCurrentTab(): Promise<void> {
+  console.log('[Background] saveCurrentTab called');
   try {
     const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    console.log('[Background] Query result tabs:', tabs);
     const tab = tabs[0];
 
     if (!tab || !tab.url || tab.url.startsWith('chrome://') || tab.url.startsWith('chrome-extension://')) {
       await showNotification('Tab Maestro', 'No valid tab to save');
+      console.log('[Background] No valid tab');
       return;
     }
 
@@ -195,10 +198,12 @@ async function saveCurrentTab(): Promise<void> {
 
     if (exists) {
       await showNotification('Tab Maestro', 'Tab already saved');
+      console.log('[Background] Tab already saved');
       return;
     }
 
     const tabId = tab.id;
+    console.log('[Background] Saving tab:', tab.title, 'id:', tabId);
 
     const newTab: SavedTab = {
       id: uuidv4(),
@@ -218,7 +223,9 @@ async function saveCurrentTab(): Promise<void> {
     }
 
     await showNotification('Tab Maestro', `Saved: ${newTab.title}`);
-  } catch {
+    console.log('[Background] Tab saved and closed');
+  } catch (error) {
+    console.error('[Background] saveCurrentTab error:', error);
     await showNotification('Tab Maestro', 'Failed to save tab');
   }
 }
