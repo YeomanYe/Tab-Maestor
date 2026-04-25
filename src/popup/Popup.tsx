@@ -7,11 +7,14 @@ import styles from './Popup.module.scss';
 
 // Convert domain to wildcard pattern: www.baidu.com -> *.baidu.com, github.com -> github.com
 const toWildcardDomain = (domain: string): string => {
+  // First convert to wildcard, then remove www. prefix
   const parts = domain.split('.');
+  let result = domain;
   if (parts.length > 2) {
-    return `*.${parts.slice(-2).join('.')}`;
+    result = `*.${parts.slice(-2).join('.')}`;
   }
-  return domain;
+  // Remove www. prefix from the result
+  return result.replace(/^www\./, '');
 };
 
 const Popup = observer(() => {
@@ -37,8 +40,7 @@ const Popup = observer(() => {
       if (tab?.url) {
         try {
           const url = new URL(tab.url);
-          const domain = url.hostname.replace(/^www\./, '');
-          const wildcardDomain = toWildcardDomain(domain);
+          const wildcardDomain = toWildcardDomain(url.hostname);
           setCurrentDomain(wildcardDomain);
           // Open add rule interface by default when domain is loaded
           setEditingRule(createDefaultRule(wildcardDomain || 'example.com'));
