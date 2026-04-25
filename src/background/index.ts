@@ -217,9 +217,6 @@ async function saveCurrentTab(): Promise<void> {
       await chrome.tabs.remove(tabId);
     }
 
-    // Focus or open options page
-    await focusOrOpenOptionsPage();
-
     await showNotification('Tab Maestro', `Saved: ${newTab.title}`);
   } catch {
     await showNotification('Tab Maestro', 'Failed to save tab');
