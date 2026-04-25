@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { tabStore } from '@/stores/TabStore';
-import { SavedTab } from '@/types';
 
 describe('TabStore', () => {
   beforeEach(() => {
