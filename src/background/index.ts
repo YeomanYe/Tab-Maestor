@@ -52,6 +52,16 @@ chrome.runtime.onStartup.addListener(() => {
 // Create menus immediately on service worker load
 createContextMenus();
 
+// Handle keyboard commands
+chrome.commands.onCommand.addListener(async (command) => {
+  console.log('[Background] Command triggered:', command);
+  if (command === 'save-current-tab') {
+    await saveCurrentTab();
+  } else if (command === 'save-all-tabs') {
+    await saveAllTabs();
+  }
+});
+
 // Handle context menu clicks
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (!tab?.id) return;

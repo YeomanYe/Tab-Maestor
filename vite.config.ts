@@ -22,6 +22,22 @@ export default defineConfig({
         },
         options_page: 'index.html',
         permissions: ['tabs', 'storage', 'contextMenus', 'notifications'],
+        commands: {
+          'save-current-tab': {
+            suggested_key: {
+              default: 'Ctrl+Q',
+              mac: 'Command+Q',
+            },
+            description: 'Save the current tab',
+          },
+          'save-all-tabs': {
+            suggested_key: {
+              default: 'Ctrl+Shift+Q',
+              mac: 'Command+Shift+Q',
+            },
+            description: 'Save all tabs',
+          },
+        },
       },
     }),
   ],
