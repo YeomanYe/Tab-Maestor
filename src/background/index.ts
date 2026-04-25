@@ -1,6 +1,17 @@
 import { v4 as uuidv4 } from 'uuid';
 import type { SaveRule } from '../types';
 
+// Global error handler
+self.onerror = (message, source, lineno, colno, error) => {
+  console.error('[Background] Global error:', { message, source, lineno, colno, error });
+};
+
+self.onunhandledrejection = (event) => {
+  console.error('[Background] Unhandled promise rejection:', event.reason);
+};
+
+console.log('[Background] Service worker starting...');
+
 const STORAGE_KEY = 'tab-maestro-tabs';
 const RULES_STORAGE_KEY = 'tab-maestro-rules';
 
@@ -52,15 +63,19 @@ chrome.runtime.onStartup.addListener(() => {
 // Create menus immediately on service worker load
 createContextMenus();
 
-// Handle keyboard commands
-chrome.commands.onCommand.addListener(async (command) => {
-  console.log('[Background] Command triggered:', command);
-  if (command === 'save-current-tab') {
-    await saveCurrentTab();
-  } else if (command === 'save-all-tabs') {
-    await saveAllTabs();
-  }
-});
+// Handle keyboard commands - with safety check
+if (chrome.commands) {
+  chrome.commands.onCommand.addListener(async (command) => {
+    console.log('[Background] Command triggered:', command);
+    if (command === 'save-current-tab') {
+      await saveCurrentTab();
+    } else if (command === 'save-all-tabs') {
+      await saveAllTabs();
+    }
+  });
+} else {
+  console.warn('[Background] Commands API not available');
+}
 
 // Handle context menu clicks
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
