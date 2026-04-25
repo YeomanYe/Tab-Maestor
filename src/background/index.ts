@@ -198,17 +198,28 @@ async function saveCurrentTab(): Promise<void> {
       return;
     }
 
+    const tabId = tab.id;
+
     const newTab: SavedTab = {
       id: uuidv4(),
       title: tab.title || 'Untitled',
       url: tab.url,
       favicon: tab.favIconUrl || '',
       savedAt: Date.now(),
-      originalTabId: tab.id,
+      originalTabId: tabId,
     };
 
     storedTabs.unshift(newTab);
     await saveStoredTabs(storedTabs);
+
+    // Close the current tab
+    if (tabId) {
+      await chrome.tabs.remove(tabId);
+    }
+
+    // Focus or open options page
+    await focusOrOpenOptionsPage();
+
     await showNotification('Tab Maestro', `Saved: ${newTab.title}`);
   } catch {
     await showNotification('Tab Maestro', 'Failed to save tab');
