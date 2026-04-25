@@ -99,15 +99,9 @@ async function saveStoredTabs(tabs: SavedTab[]): Promise<void> {
 
 async function showNotification(title: string, message: string): Promise<void> {
   try {
-    const manifest = chrome.runtime.getManifest();
-    const icons = manifest.icons || {};
-    const iconUrl = icons['128'] || icons['48'] || icons['16']
-      ? chrome.runtime.getURL(icons['128'] || icons['48'] || icons['16'])
-      : '';
-
+    // Don't use iconUrl for now since icons may not exist
     await chrome.notifications.create({
       type: 'basic',
-      iconUrl,
       title,
       message,
     });
