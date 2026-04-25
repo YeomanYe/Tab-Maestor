@@ -1,0 +1,57 @@
+@use '@/styles/variables' as *;
+
+.container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  max-width: 300px;
+}
+
+.icon {
+  position: absolute;
+  left: $spacing-sm;
+  color: $text-muted;
+  pointer-events: none;
+}
+
+.input {
+  width: 100%;
+  padding: $spacing-xs $spacing-xl $spacing-xs $spacing-xl;
+  background: $bg-secondary;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-md;
+  color: $text-primary;
+  font-size: $font-size-body;
+  outline: none;
+  transition: border-color $transition-base, box-shadow $transition-base;
+
+  &::placeholder {
+    color: $text-muted;
+  }
+
+  &:focus {
+    border-color: $accent-primary;
+    box-shadow: 0 0 0 2px rgba($accent-primary, 0.2);
+  }
+}
+
+.clearButton {
+  position: absolute;
+  right: $spacing-xs;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  color: $text-muted;
+  border-radius: $border-radius-sm;
+  cursor: pointer;
+  transition: all $transition-base;
+
+  &:hover {
+    background: $bg-tertiary;
+    color: $text-primary;
+  }
+}

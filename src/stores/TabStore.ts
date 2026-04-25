@@ -13,6 +13,7 @@ import { getTabGroupKey } from '@/utils/date';
 
 class TabStore {
   tabs: SavedTab[] = [];
+  searchQuery = '';
   isLoading = false;
   toast: { message: string; type: 'success' | 'error' } | null = null;
 
@@ -191,6 +192,22 @@ class TabStore {
 
   get tabCount(): number {
     return this.tabs.length;
+  }
+
+  get filteredTabs(): SavedTab[] {
+    if (!this.searchQuery.trim()) {
+      return this.tabs;
+    }
+    const query = this.searchQuery.toLowerCase();
+    return this.tabs.filter(
+      (tab) =>
+        tab.title.toLowerCase().includes(query) ||
+        tab.url.toLowerCase().includes(query)
+    );
+  }
+
+  setSearchQuery(query: string): void {
+    this.searchQuery = query;
   }
 
   get isEmpty(): boolean {

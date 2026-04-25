@@ -2,6 +2,7 @@ import { observer } from 'mobx-react-lite';
 import { tabStore } from '@/stores/TabStore';
 import { ThemeSwitcher } from '@/components/ThemeSwitcher/ThemeSwitcher';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher/LanguageSwitcher';
+import SearchBox from '@/components/SearchBox/SearchBox';
 import { t } from '@/utils/i18n';
 import styles from './Header.module.scss';
 
@@ -36,6 +37,8 @@ const Header = observer(() => {
           <span className={styles.badge}>{tabStore.tabCount}</span>
         )}
       </div>
+
+      <SearchBox />
 
       <div className={styles.actions}>
         <button

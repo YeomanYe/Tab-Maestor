@@ -7,6 +7,9 @@ export interface Translations {
   clearAllTabs: string;
   clearAllConfirm: string;
 
+  // Search
+  searchPlaceholder: string;
+
   // Tab list
   noSavedTabs: string;
   noSavedTabsDescription: string;
@@ -48,6 +51,9 @@ const translations: Record<Language, Translations> = {
     clearAllTabs: 'Clear All Tabs',
     clearAllConfirm: 'Are you sure you want to clear all saved tabs?',
 
+    // Search
+    searchPlaceholder: 'Search tabs...',
+
     // Tab list
     noSavedTabs: 'No saved tabs',
     noSavedTabsDescription: 'Use "Save All Tabs" to save and close your open tabs',
@@ -86,6 +92,9 @@ const translations: Record<Language, Translations> = {
     saveAllTabs: '保存所有标签页',
     clearAllTabs: '清除所有标签页',
     clearAllConfirm: '确定要清除所有已保存的标签页吗？',
+
+    // Search
+    searchPlaceholder: '搜索标签页...',
 
     // Tab list
     noSavedTabs: '暂无保存的标签页',
