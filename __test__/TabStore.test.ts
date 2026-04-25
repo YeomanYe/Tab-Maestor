@@ -1,11 +1,13 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { tabStore } from '@/stores/TabStore';
+import { SavedTab } from '@/types';
 
 describe('TabStore', () => {
   beforeEach(() => {
     // Reset store state
     tabStore.tabs = [];
     tabStore.toast = null;
+    tabStore.searchQuery = '';
   });
 
   describe('initial state', () => {
@@ -114,6 +116,82 @@ describe('TabStore', () => {
       await tabStore.clearAll();
       expect(tabStore.tabs).toEqual([]);
       expect(tabStore.tabCount).toBe(0);
+    });
+  });
+
+  describe('searchQuery', () => {
+    beforeEach(() => {
+      tabStore.tabs = [
+        {
+          id: 'tab-1',
+          title: 'Google Search',
+          url: 'https://google.com',
+          favicon: '',
+          savedAt: Date.now(),
+        },
+        {
+          id: 'tab-2',
+          title: 'GitHub Repo',
+          url: 'https://github.com/user/repo',
+          favicon: '',
+          savedAt: Date.now(),
+        },
+        {
+          id: 'tab-3',
+          title: 'YouTube Video',
+          url: 'https://youtube.com/watch?v=123',
+          favicon: '',
+          savedAt: Date.now(),
+        },
+      ];
+    });
+
+    it('normal: should have empty searchQuery initially', () => {
+      expect(tabStore.searchQuery).toBe('');
+    });
+
+    it('normal: setSearchQuery should update searchQuery', () => {
+      tabStore.setSearchQuery('google');
+      expect(tabStore.searchQuery).toBe('google');
+    });
+
+    it('normal: filteredTabs should return all tabs when searchQuery is empty', () => {
+      tabStore.setSearchQuery('');
+      expect(tabStore.filteredTabs.length).toBe(3);
+    });
+
+    it('normal: filteredTabs should filter by title (case insensitive)', () => {
+      tabStore.setSearchQuery('github');
+      expect(tabStore.filteredTabs.length).toBe(1);
+      expect(tabStore.filteredTabs[0].title).toBe('GitHub Repo');
+    });
+
+    it('normal: filteredTabs should filter by URL', () => {
+      tabStore.setSearchQuery('youtube');
+      expect(tabStore.filteredTabs.length).toBe(1);
+      expect(tabStore.filteredTabs[0].title).toBe('YouTube Video');
+    });
+
+    it('normal: filteredTabs should return empty array when no match', () => {
+      tabStore.setSearchQuery('nonexistent');
+      expect(tabStore.filteredTabs.length).toBe(0);
+    });
+
+    it('edge: should handle case insensitive search', () => {
+      tabStore.setSearchQuery('GOOGLE');
+      expect(tabStore.filteredTabs.length).toBe(1);
+      expect(tabStore.filteredTabs[0].title).toBe('Google Search');
+    });
+
+    it('edge: should handle whitespace-only searchQuery', () => {
+      tabStore.setSearchQuery('   ');
+      expect(tabStore.filteredTabs.length).toBe(3);
+    });
+
+    it('edge: should handle partial URL matching', () => {
+      tabStore.setSearchQuery('google.com');
+      expect(tabStore.filteredTabs.length).toBe(1);
+      expect(tabStore.filteredTabs[0].title).toBe('Google Search');
     });
   });
 });

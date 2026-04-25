@@ -52,7 +52,7 @@ exports[`EmptyState Component > normal: should match snapshot 1`] = `
     <p
       class="_description_3d390e"
     >
-      Click "Save Current" or "Save All" to save your tabs for later.
+      Use "Save All Tabs" to save and close your open tabs
     </p>
   </div>
 </div>
