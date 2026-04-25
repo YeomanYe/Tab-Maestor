@@ -78,8 +78,8 @@ if (chrome.commands) {
 }
 
 // Handle context menu clicks
-chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  if (!tab?.id) return;
+chrome.contextMenus.onClicked.addListener(async (info) => {
+  console.log('[Background] Context menu clicked:', info.menuItemId);
 
   if (info.menuItemId === 'saveCurrentTab') {
     await saveCurrentTab();
