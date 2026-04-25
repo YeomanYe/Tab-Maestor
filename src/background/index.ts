@@ -98,11 +98,22 @@ async function saveStoredTabs(tabs: SavedTab[]): Promise<void> {
 }
 
 async function showNotification(title: string, message: string): Promise<void> {
-  await chrome.notifications.create({
-    type: 'basic',
-    title,
-    message,
-  });
+  try {
+    const manifest = chrome.runtime.getManifest();
+    const icons = manifest.icons || {};
+    const iconUrl = icons['128'] || icons['48'] || icons['16']
+      ? chrome.runtime.getURL(icons['128'] || icons['48'] || icons['16'])
+      : '';
+
+    await chrome.notifications.create({
+      type: 'basic',
+      iconUrl,
+      title,
+      message,
+    });
+  } catch (err) {
+    console.warn('[Background] Notification failed:', err);
+  }
 }
 
 // Get saved rules
