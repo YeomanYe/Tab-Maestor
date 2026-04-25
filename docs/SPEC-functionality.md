@@ -36,6 +36,25 @@
 
 - 清除所有已保存标签页 (需确认)
 
+### 7. Popup 页面规则管理
+
+- 点击扩展图标打开 popup 页面
+- 自动打开添加规则界面，显示当前标签页域名
+- 域名自动转换为通配符格式:
+  - `www.baidu.com` → `*.baidu.com`
+  - `docs.github.com` → `*.github.com`
+  - `github.com` → `github.com` (两级域名保持不变)
+- 支持添加、编辑、删除规则
+- 支持启用/禁用规则
+- 支持配置日期和时间段
+
+### 8. 规则自动保存标签页
+
+- 根据规则自动保存符合条件的标签页
+- 规则匹配: 域名模式 + 时间段
+- 支持通配符域名 (`*.example.com`)
+- 支持按星期和时间段控制
+
 ## 数据处理
 
 ### 存储
@@ -52,6 +71,15 @@ interface SavedTab {
   url: string;
   favicon: string;     // URL 或 data URI
   savedAt: number;     // Unix timestamp
+}
+
+interface SaveRule {
+  id: string;          // UUID
+  domain: string;      // 域名，支持通配符 (*.example.com)
+  enabled: boolean;   // 是否启用
+  days: number[];     // 星期几 (0-6，0为周日，空数组表示每天)
+  startTime: string;  // 开始时间 (HH:mm)
+  endTime: string;    // 结束时间 (HH:mm)
 }
 ```
 

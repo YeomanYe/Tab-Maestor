@@ -2,6 +2,18 @@ import { SaveRule } from '@/types';
 
 const RULES_STORAGE_KEY = 'tab-maestro-rules';
 
+// Convert domain to wildcard pattern: www.baidu.com -> *.baidu.com, github.com -> github.com
+export const toWildcardDomain = (domain: string): string => {
+  // First convert to wildcard, then remove www. prefix
+  const parts = domain.split('.');
+  let result = domain;
+  if (parts.length > 2) {
+    result = `*.${parts.slice(-2).join('.')}`;
+  }
+  // Remove www. prefix from the result
+  return result.replace(/^www\./, '');
+};
+
 // Chrome storage API type
 interface ChromeStorage {
   local: {

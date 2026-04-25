@@ -1,21 +1,9 @@
 import { useState, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { SaveRule } from '@/types';
-import { getRules, saveRules, createDefaultRule } from '@/utils/rulesStorage';
+import { getRules, saveRules, createDefaultRule, toWildcardDomain } from '@/utils/rulesStorage';
 import RuleEditor from './RuleEditor';
 import styles from './Popup.module.scss';
-
-// Convert domain to wildcard pattern: www.baidu.com -> *.baidu.com, github.com -> github.com
-const toWildcardDomain = (domain: string): string => {
-  // First convert to wildcard, then remove www. prefix
-  const parts = domain.split('.');
-  let result = domain;
-  if (parts.length > 2) {
-    result = `*.${parts.slice(-2).join('.')}`;
-  }
-  // Remove www. prefix from the result
-  return result.replace(/^www\./, '');
-};
 
 const Popup = observer(() => {
   const [rules, setRules] = useState<SaveRule[]>([]);
