@@ -15,38 +15,61 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: $spacing-md;
-  max-width: 720px;
+  gap: $spacing-lg;
+  max-width: 900px;
   margin: 0 auto;
+  flex-wrap: wrap;
 }
 
-.label {
-  font-size: $font-size-body;
+.quickFilters {
+  display: flex;
+  gap: $spacing-xs;
+}
+
+.quickButton {
+  padding: $spacing-xs $spacing-md;
+  background-color: $bg-tertiary;
+  border: 1px solid transparent;
+  border-radius: $border-radius-md;
   color: $text-secondary;
-  white-space: nowrap;
+  font-size: $font-size-caption;
   font-weight: 500;
+  cursor: pointer;
+  transition: all $transition-base;
+
+  &:hover {
+    background-color: $accent-subtle;
+    color: $accent-primary;
+  }
+
+  &.active {
+    background: linear-gradient(135deg, $accent-primary 0%, $accent-hover 100%);
+    color: white;
+    border-color: transparent;
+    font-weight: 600;
+  }
 }
 
-.controls {
+.dateRange {
   display: flex;
   align-items: center;
   gap: $spacing-sm;
 }
 
 .dateInput {
-  padding: $spacing-sm $spacing-md;
+  padding: $spacing-xs $spacing-md;
   background-color: $bg-primary;
   border: 1px solid $border-color;
   border-radius: $border-radius-md;
   color: $text-primary;
-  font-size: $font-size-body;
+  font-size: $font-size-caption;
   font-family: inherit;
   transition: all $transition-base;
 
   &:focus {
     outline: none;
     border-color: $accent-primary;
-    box-shadow: 0 0 0 3px rgba($accent-primary, 0.15);
+    box-shadow: 0 0 0 2px $accent-primary / 15%;
   }
 
   &::-webkit-calendar-picker-indicator {
@@ -60,51 +83,26 @@
   }
 }
 
-.timeInput {
-  padding: $spacing-sm $spacing-md;
-  background-color: $bg-primary;
-  border: 1px solid $border-color;
-  border-radius: $border-radius-md;
-  color: $text-primary;
-  font-size: $font-size-body;
-  font-family: inherit;
-
-  &:focus {
-    outline: none;
-    border-color: $accent-primary;
-    box-shadow: 0 0 0 3px rgba($accent-primary, 0.15);
-  }
-
-  &::-webkit-calendar-picker-indicator {
-    cursor: pointer;
-    opacity: 0.6;
-
-    &:hover {
-      opacity: 1;
-    }
-  }
-}
-
-.timeSeparator {
+.separator {
   color: $accent-primary;
   font-weight: 600;
-  font-size: $font-size-body;
+  font-size: $font-size-caption;
 }
 
-.clearButton {
-  padding: $spacing-sm $spacing-md;
-  background-color: $bg-tertiary;
-  border: 1px solid $border-color;
-  border-radius: $border-radius-md;
-  color: $text-secondary;
-  font-size: $font-size-caption;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all $transition-base;
+@media (width <= 640px) {
+  .filterRow {
+    flex-direction: column;
+    gap: $spacing-md;
+  }
 
-  &:hover {
-    background-color: $accent-subtle;
-    border-color: $accent-primary;
-    color: $accent-primary;
+  .quickFilters {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .dateRange {
+    width: 100%;
+    justify-content: center;
   }
 }

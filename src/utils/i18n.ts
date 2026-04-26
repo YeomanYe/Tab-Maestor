@@ -55,6 +55,9 @@ export interface Translations {
   dateFilterAll: string;
   dateFilterPlaceholder: string;
   dateTo: string;
+  dateToday: string;
+  dateThisWeek: string;
+  dateThisMonth: string;
 
   // Auto save
   autoSave: string;
@@ -119,6 +122,9 @@ const translations: Record<Language, Translations> = {
     dateFilterAll: 'All',
     dateFilterPlaceholder: 'Select date',
     dateTo: 'to',
+    dateToday: 'Today',
+    dateThisWeek: 'This Week',
+    dateThisMonth: 'This Month',
 
     // Auto save
     autoSave: 'Auto-save after',
@@ -181,6 +187,9 @@ const translations: Record<Language, Translations> = {
     dateFilterAll: '全部',
     dateFilterPlaceholder: '选择日期',
     dateTo: '到',
+    dateToday: '今天',
+    dateThisWeek: '本周',
+    dateThisMonth: '本月',
 
     // Auto save
     autoSave: '自动保存于',

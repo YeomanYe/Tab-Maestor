@@ -41,6 +41,13 @@ const DateFilterBar = observer(() => {
     tabStore.setEndDateFilter(null);
   };
 
+  const handleQuickFilter = (days: number) => {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    tabStore.setDateFilter(today);
+    tabStore.setEndDateFilter(today + (days - 1) * 24 * 60 * 60 * 1000);
+  };
+
   const formatDateForInput = (timestamp: number | null): string => {
     if (!timestamp) return '';
     const date = new Date(timestamp);
@@ -63,13 +70,37 @@ const DateFilterBar = observer(() => {
     return formatDateForInput(tabStore.dateFilter);
   };
 
-  const hasActiveFilter = tabStore.dateFilter !== null;
-
   return (
     <div className={styles.container}>
       <div className={styles.filterRow}>
-        <label className={styles.label}>{t('dateFilter')}</label>
-        <div className={styles.controls}>
+        <div className={styles.quickFilters}>
+          <button
+            className={`${styles.quickButton} ${!tabStore.dateFilter && !tabStore.endDateFilter ? styles.active : ''}`}
+            onClick={handleClearFilter}
+          >
+            {t('dateFilterAll')}
+          </button>
+          <button
+            className={styles.quickButton}
+            onClick={() => handleQuickFilter(1)}
+          >
+            {t('dateToday')}
+          </button>
+          <button
+            className={styles.quickButton}
+            onClick={() => handleQuickFilter(7)}
+          >
+            {t('dateThisWeek')}
+          </button>
+          <button
+            className={styles.quickButton}
+            onClick={() => handleQuickFilter(30)}
+          >
+            {t('dateThisMonth')}
+          </button>
+        </div>
+
+        <div className={styles.dateRange}>
           <input
             type="date"
             className={styles.dateInput}
@@ -78,7 +109,7 @@ const DateFilterBar = observer(() => {
             placeholder={t('dateFilterPlaceholder')}
             max={getStartDateMax()}
           />
-          <span className={styles.timeSeparator}>{t('dateTo')}</span>
+          <span className={styles.separator}>{t('dateTo')}</span>
           <input
             type="date"
             className={styles.dateInput}
@@ -87,16 +118,6 @@ const DateFilterBar = observer(() => {
             placeholder={t('dateFilterPlaceholder')}
             min={getEndDateMin()}
           />
-          {hasActiveFilter && (
-            <button className={styles.clearButton} onClick={handleClearFilter}>
-              {t('dateFilterAll')}
-            </button>
-          )}
-          {!hasActiveFilter && tabStore.dateFilter === null && (
-            <button className={styles.clearButton} onClick={handleClearFilter}>
-              {t('dateFilterAll')}
-            </button>
-          )}
         </div>
       </div>
     </div>
