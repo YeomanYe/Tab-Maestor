@@ -38,6 +38,9 @@ export interface Translations {
   pinTab: string;
   unpinTab: string;
   pinnedTabs: string;
+  pinAllTabs: string;
+  openAllTabs: string;
+  deleteAllPinned: string;
 
   // Clear group button
   clearGroup: string;
@@ -99,6 +102,9 @@ const translations: Record<Language, Translations> = {
     pinTab: 'Pin tab',
     unpinTab: 'Unpin tab',
     pinnedTabs: 'Pinned',
+    pinAllTabs: 'Pin all',
+    openAllTabs: 'Open all',
+    deleteAllPinned: 'Delete all pinned',
 
     // Clear group button
     clearGroup: 'Clear group',
@@ -158,6 +164,9 @@ const translations: Record<Language, Translations> = {
     pinTab: '固定标签页',
     unpinTab: '取消固定',
     pinnedTabs: '固定的标签页',
+    pinAllTabs: '固定全部',
+    openAllTabs: '打开全部',
+    deleteAllPinned: '删除全部固定',
 
     // Clear group button
     clearGroup: '清除该组',

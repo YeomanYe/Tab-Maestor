@@ -52,6 +52,160 @@ const TabList = observer(() => {
     return new Date(b).getTime() - new Date(a).getTime();
   });
 
+  // Render group actions
+  const renderGroupActions = (groupKey: string, showPinAction = true) => (
+    <div className={styles.groupActions}>
+      {showPinAction && (
+        <button
+          className={styles.groupActionButton}
+          onClick={() => tabStore.pinAllTabsInGroup(groupKey)}
+          title={t('pinAllTabs')}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 2L12 8M12 8L8 4M12 8L16 4M5 12H19M5 12L7 22H17L19 12"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+            />
+          </svg>
+        </button>
+      )}
+      <button
+        className={styles.groupActionButton}
+        onClick={() => tabStore.openAllTabsInGroup(groupKey)}
+        title={t('openAllTabs')}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <polyline
+            points="15 3 21 3 21 9"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <line
+            x1="10"
+            y1="14"
+            x2="21"
+            y2="3"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+      <button
+        className={`${styles.groupActionButton} ${styles.danger}`}
+        onClick={() => {
+          const lang = getCurrentLanguage();
+          const confirmMessage = lang === 'zh'
+            ? `确定要清除 ${getGroupLabel(groupKey)} 的所有标签页吗？`
+            : `Clear all tabs from ${getGroupLabel(groupKey)}?`;
+          if (window.confirm(confirmMessage)) {
+            tabStore.deleteTabsByGroup(groupKey);
+          }
+        }}
+        title={t('clearGroup')}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+          <polyline
+            points="3,6 5,6 21,6"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+    </div>
+  );
+
+  // Render pinned group actions
+  const renderPinnedGroupActions = () => (
+    <div className={styles.groupActions}>
+      <button
+        className={styles.groupActionButton}
+        onClick={() => tabStore.openPinnedTabs()}
+        title={t('openAllTabs')}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <polyline
+            points="15 3 21 3 21 9"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <line
+            x1="10"
+            y1="14"
+            x2="21"
+            y2="3"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+      <button
+        className={`${styles.groupActionButton} ${styles.danger}`}
+        onClick={() => {
+          const lang = getCurrentLanguage();
+          const confirmMessage = lang === 'zh'
+            ? '确定要删除所有固定的标签页吗？'
+            : 'Delete all pinned tabs?';
+          if (window.confirm(confirmMessage)) {
+            tabStore.deletePinnedTabs();
+          }
+        }}
+        title={t('deleteAllPinned')}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+          <polyline
+            points="3,6 5,6 21,6"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+    </div>
+  );
+
   return (
     <div className={styles.list}>
       {/* Pinned tabs group */}
@@ -60,10 +214,11 @@ const TabList = observer(() => {
           <div className={styles.groupHeader}>
             <span className={styles.groupTitle}>{t('pinnedTabs')}</span>
             <span className={styles.groupCount}>({pinnedTabs.length})</span>
+            {renderPinnedGroupActions()}
           </div>
           <div className={styles.groupContent}>
             {pinnedTabs.map((tab) => (
-              <TabCard key={tab.id} tab={tab} />
+              <TabCard key={tab.id} tab={tab} showPinButton={false} />
             ))}
           </div>
         </div>
@@ -74,36 +229,8 @@ const TabList = observer(() => {
         <div key={groupKey} className={styles.group}>
           <div className={styles.groupHeader}>
             <span className={styles.groupTitle}>{getGroupLabel(groupKey)}</span>
-            <button
-              className={styles.clearGroupButton}
-              onClick={() => {
-                const lang = getCurrentLanguage();
-                const confirmMessage = lang === 'zh'
-                  ? `确定要清除 ${getGroupLabel(groupKey)} 的所有标签页吗？`
-                  : `Clear all tabs from ${getGroupLabel(groupKey)}?`;
-                if (window.confirm(confirmMessage)) {
-                  tabStore.deleteTabsByGroup(groupKey);
-                }
-              }}
-              title={t('clearGroup')}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <polyline
-                  points="3,6 5,6 21,6"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
+            <span className={styles.groupCount}>({groupedTabs[groupKey].length})</span>
+            {renderGroupActions(groupKey)}
           </div>
           <div className={styles.groupContent}>
             {groupedTabs[groupKey].map((tab) => (

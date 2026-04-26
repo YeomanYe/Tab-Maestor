@@ -34,6 +34,41 @@
   margin-left: $spacing-xs;
 }
 
+.groupActions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  opacity: 0;
+  transition: opacity $transition-base;
+
+  .groupHeader:hover & {
+    opacity: 1;
+  }
+}
+
+.groupActionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background-color: transparent;
+  color: $text-muted;
+  border-radius: $border-radius-sm;
+  transition: all $transition-base;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba($accent-primary, 0.1);
+    color: $accent-primary;
+  }
+
+  &.danger:hover {
+    background-color: rgba($danger, 0.1);
+    color: $danger;
+  }
+}
+
 .clearGroupButton {
   display: flex;
   align-items: center;

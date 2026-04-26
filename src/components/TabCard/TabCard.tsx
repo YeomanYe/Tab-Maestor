@@ -6,9 +6,10 @@ import styles from './TabCard.module.scss';
 
 interface TabCardProps {
   tab: SavedTab;
+  showPinButton?: boolean;
 }
 
-const TabCard = ({ tab }: TabCardProps) => {
+const TabCard = ({ tab, showPinButton = true }: TabCardProps) => {
   const handleClick = async () => {
     await tabStore.openAndDeleteTab(tab.id);
   };
@@ -64,21 +65,23 @@ const TabCard = ({ tab }: TabCardProps) => {
 
       <span className={styles.time}>{formatTabTime(tab.savedAt)}</span>
 
-      <button
-        className={`${styles.pinButton} ${tab.pinned ? styles.pinned : ''}`}
-        onClick={handlePin}
-        title={tab.pinned ? t('unpinTab') : t('pinTab')}
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <path
-            d="M12 2v8m0 0l4-4m-4 4l-4-4m4 12v6m0 0l4-4m-4 4l-4-4"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </button>
+      {showPinButton && (
+        <button
+          className={`${styles.pinButton} ${tab.pinned ? styles.pinned : ''}`}
+          onClick={handlePin}
+          title={tab.pinned ? t('unpinTab') : t('pinTab')}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill={tab.pinned ? 'currentColor' : 'none'}>
+            <path
+              d="M12 2L12 8M12 8L8 4M12 8L16 4M5 12H19M5 12L7 22H17L19 12"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+      )}
 
       <button
         className={`${styles.deleteButton}`}
