@@ -30,8 +30,6 @@ const Popup = observer(() => {
           const url = new URL(tab.url);
           const wildcardDomain = toWildcardDomain(url.hostname);
           setCurrentDomain(wildcardDomain);
-          // Open add rule interface by default when domain is loaded
-          setEditingRule(createDefaultRule(wildcardDomain || 'example.com'));
         } catch {
           // Ignore invalid URLs
         }
@@ -40,11 +38,6 @@ const Popup = observer(() => {
       // Ignore errors
     }
   };
-
-  useEffect(() => {
-    loadRules();
-    getCurrentTabDomain();
-  }, []);
 
   const handleAddRule = () => {
     const newRule = createDefaultRule(currentDomain || 'example.com');
@@ -91,26 +84,34 @@ const Popup = observer(() => {
   const formatTime = (rule: SaveRule): string => {
     if (rule.days.length === 0) {
       if (rule.startTime === '00:00' && rule.endTime === '23:59') {
-        return '每天 全天';
+        return '全天';
       }
-      return `每天 ${rule.startTime}-${rule.endTime}`;
+      return `${rule.startTime} - ${rule.endTime}`;
     }
 
     const dayNames = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
     const days = rule.days.map((d) => dayNames[d]).join('、');
-    return `${days} ${rule.startTime}-${rule.endTime}`;
+    return `${days} ${rule.startTime} - ${rule.endTime}`;
   };
 
   return (
     <div className={styles.popup}>
       <div className={styles.header}>
-        <h1 className={styles.title}>Tab Maestro</h1>
+        <div className={styles.brand}>
+          <div className={styles.logo}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <line x1="9" y1="3" x2="9" y2="21" />
+            </svg>
+          </div>
+          <h1 className={styles.title}>Tab Maestro</h1>
+        </div>
         <button className={styles.addButton} onClick={handleAddRule}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-            <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" strokeWidth="2" />
-            <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" strokeWidth="2" />
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
-          添加规则
+          添加
         </button>
       </div>
 
@@ -123,14 +124,30 @@ const Popup = observer(() => {
       ) : (
         <div className={styles.ruleList}>
           {rules.length === 0 ? (
-            <p style={{ color: '#71717a', textAlign: 'center', padding: '20px' }}>
-              暂无规则，点击添加按钮创建规则
-            </p>
+            <div className={styles.emptyState}>
+              <div className={styles.emptyIcon}>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+              </div>
+              <p className={styles.emptyTitle}>暂无自动保存规则</p>
+              <p className={styles.emptyDesc}>
+                点击上方「添加」按钮<br />
+                为当前网站创建自动保存规则
+              </p>
+            </div>
           ) : (
             rules.map((rule) => (
-              <div key={rule.id} className={styles.ruleItem}>
+              <div key={rule.id} className={styles.ruleCard}>
                 <div className={styles.ruleHeader}>
-                  <span className={styles.ruleDomain}>{rule.domain}</span>
+                  <span className={`${styles.ruleDomain} ${!rule.enabled ? styles.disabled : ''}`}>
+                    {rule.domain}
+                    {rule.days.length === 0 && (
+                      <span className={styles.domainBadge}>每天</span>
+                    )}
+                  </span>
                   <div className={styles.ruleActions}>
                     <button
                       className={`${styles.toggle} ${rule.enabled ? styles.active : ''}`}
@@ -142,9 +159,9 @@ const Popup = observer(() => {
                       onClick={() => handleEditRule(rule)}
                       title="编辑"
                     >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                        <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor" strokeWidth="2" />
-                        <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" strokeWidth="2" />
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                        <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
                       </svg>
                     </button>
                     <button
@@ -152,19 +169,36 @@ const Popup = observer(() => {
                       onClick={() => handleDeleteRule(rule.id)}
                       title="删除"
                     >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                        <polyline points="3,6 5,6 21,6" stroke="currentColor" strokeWidth="2" />
-                        <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" stroke="currentColor" strokeWidth="2" />
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <polyline points="3,6 5,6 21,6" />
+                        <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
                       </svg>
                     </button>
                   </div>
                 </div>
-                <span className={styles.ruleTime}>{formatTime(rule)}</span>
+                <span className={styles.ruleTime}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12,6 12,12 16,14" />
+                  </svg>
+                  {formatTime(rule)}
+                </span>
               </div>
             ))
           )}
         </div>
       )}
+
+      <div className={styles.footer}>
+        <button className={styles.openFullButton}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+            <polyline points="15,3 21,3 21,9" />
+            <line x1="10" y1="14" x2="21" y2="3" />
+          </svg>
+          打开完整面板
+        </button>
+      </div>
     </div>
   );
 });

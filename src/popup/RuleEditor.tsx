@@ -24,6 +24,22 @@ const RuleEditor = ({ rule, onSave, onCancel }: RuleEditorProps) => {
     }
   };
 
+  const handleSelectAllDays = () => {
+    if (days.length === 7) {
+      setDays([]);
+    } else {
+      setDays([0, 1, 2, 3, 4, 5, 6]);
+    }
+  };
+
+  const handleSelectWeekdays = () => {
+    setDays([1, 2, 3, 4, 5]);
+  };
+
+  const handleSelectWeekends = () => {
+    setDays([0, 6]);
+  };
+
   const handleSave = () => {
     onSave({
       ...rule,
@@ -37,7 +53,7 @@ const RuleEditor = ({ rule, onSave, onCancel }: RuleEditorProps) => {
   return (
     <div className={styles.editor}>
       <div className={styles.field}>
-        <label className={styles.label}>域名</label>
+        <label className={styles.label}>网站域名</label>
         <input
           type="text"
           className={styles.input}
@@ -45,10 +61,34 @@ const RuleEditor = ({ rule, onSave, onCancel }: RuleEditorProps) => {
           onChange={(e) => setDomain(e.target.value)}
           placeholder="example.com 或 *.example.com"
         />
+        <span className={styles.hint}>支持通配符 * 匹配子域名</span>
       </div>
 
       <div className={styles.field}>
-        <label className={styles.label}>日期（留空表示每天）</label>
+        <label className={styles.label}>生效日期</label>
+        <div className={styles.quickSelect}>
+          <button
+            type="button"
+            className={`${styles.quickButton} ${days.length === 7 ? styles.active : ''}`}
+            onClick={handleSelectAllDays}
+          >
+            每天
+          </button>
+          <button
+            type="button"
+            className={styles.quickButton}
+            onClick={handleSelectWeekdays}
+          >
+            工作日
+          </button>
+          <button
+            type="button"
+            className={styles.quickButton}
+            onClick={handleSelectWeekends}
+          >
+            周末
+          </button>
+        </div>
         <div className={styles.daySelector}>
           {dayNames.map((name, index) => (
             <button
@@ -57,14 +97,14 @@ const RuleEditor = ({ rule, onSave, onCancel }: RuleEditorProps) => {
               className={`${styles.dayButton} ${days.includes(index) ? styles.active : ''}`}
               onClick={() => handleDayToggle(index)}
             >
-              周{name}
+              {name}
             </button>
           ))}
         </div>
       </div>
 
       <div className={styles.field}>
-        <label className={styles.label}>时间段</label>
+        <label className={styles.label}>生效时间段</label>
         <div className={styles.timeRow}>
           <input
             type="time"
@@ -72,7 +112,7 @@ const RuleEditor = ({ rule, onSave, onCancel }: RuleEditorProps) => {
             value={startTime}
             onChange={(e) => setStartTime(e.target.value)}
           />
-          <span className={styles.timeSeparator}>-</span>
+          <span className={styles.timeSeparator}>至</span>
           <input
             type="time"
             className={styles.timeInput}
@@ -83,11 +123,22 @@ const RuleEditor = ({ rule, onSave, onCancel }: RuleEditorProps) => {
       </div>
 
       <div className={styles.actions}>
-        <button type="button" className={`${styles.button} ${styles.secondary}`} onClick={onCancel}>
+        <button
+          type="button"
+          className={`${styles.button} ${styles.secondary}`}
+          onClick={onCancel}
+        >
           取消
         </button>
-        <button type="button" className={`${styles.button} ${styles.primary}`} onClick={handleSave}>
-          保存
+        <button
+          type="button"
+          className={`${styles.button} ${styles.primary}`}
+          onClick={handleSave}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <polyline points="20,6 9,17 4,12" />
+          </svg>
+          保存规则
         </button>
       </div>
     </div>

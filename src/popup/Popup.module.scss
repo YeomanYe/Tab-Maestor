@@ -1,9 +1,9 @@
 @use '../styles/variables' as *;
 
 .popup {
-  width: 320px;
-  min-height: 200px;
-  padding: $spacing-md;
+  width: 360px;
+  min-height: 400px;
+  padding: 0;
   background-color: $bg-primary;
   color: $text-primary;
 }
@@ -12,46 +12,111 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: $spacing-md;
+  padding: $spacing-md $spacing-lg;
+  background: linear-gradient(135deg, $accent-primary 0%, $accent-hover 100%);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgb(255 255 255 / 20%);
+  border-radius: $border-radius-md;
+  color: white;
 }
 
 .title {
   font-size: $font-size-h2;
-  font-weight: 600;
+  font-weight: 700;
+  color: white;
+  letter-spacing: -0.5px;
 }
 
 .addButton {
   display: flex;
   align-items: center;
   gap: $spacing-xs;
-  padding: $spacing-xs $spacing-sm;
-  background-color: $accent-primary;
+  padding: $spacing-xs $spacing-md;
+  background: rgb(255 255 255 / 20%);
   color: white;
   border: none;
-  border-radius: $border-radius-sm;
-  font-size: $font-size-body;
+  border-radius: $border-radius-md;
+  font-size: $font-size-caption;
+  font-weight: 600;
   cursor: pointer;
+  transition: all $transition-base;
 
   &:hover {
-    background-color: $accent-hover;
+    background: rgb(255 255 255 / 30%);
+    transform: translateY(-1px);
   }
 }
 
 .ruleList {
   display: flex;
   flex-direction: column;
+  padding: $spacing-md;
   gap: $spacing-sm;
-  max-height: 400px;
+  max-height: 360px;
   overflow-y: auto;
 }
 
-.ruleItem {
+.emptyState {
   display: flex;
   flex-direction: column;
-  gap: $spacing-xs;
-  padding: $spacing-sm;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-xl * 2 $spacing-lg;
+  text-align: center;
+}
+
+.emptyIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, $accent-subtle 0%, $bg-tertiary 100%);
+  border-radius: 50%;
+  margin-bottom: $spacing-md;
+  color: $accent-primary;
+}
+
+.emptyTitle {
+  font-size: $font-size-body;
+  font-weight: 600;
+  color: $text-primary;
+  margin-bottom: $spacing-xs;
+}
+
+.emptyDesc {
+  font-size: $font-size-caption;
+  color: $text-muted;
+  line-height: 1.5;
+}
+
+.ruleCard {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  padding: $spacing-md;
   background-color: $bg-secondary;
-  border-radius: $border-radius-md;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-lg;
+  transition: all $transition-base;
+
+  &:hover {
+    border-color: $accent-subtle;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 5%);
+  }
 }
 
 .ruleHeader {
@@ -62,8 +127,27 @@
 
 .ruleDomain {
   font-size: $font-size-body;
-  font-weight: 500;
+  font-weight: 600;
   color: $text-primary;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+
+  &.disabled {
+    color: $text-muted;
+    text-decoration: line-through;
+  }
+}
+
+.domainBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px $spacing-xs;
+  background: $accent-subtle;
+  color: $accent-primary;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 4px;
 }
 
 .ruleActions {
@@ -73,30 +157,15 @@
 }
 
 .ruleTime {
-  font-size: $font-size-caption;
-  color: $text-muted;
-}
-
-.iconButton {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  background-color: transparent;
+  gap: $spacing-xs;
+  font-size: $font-size-caption;
   color: $text-muted;
-  border: none;
-  border-radius: $border-radius-sm;
-  cursor: pointer;
 
-  &:hover {
-    background-color: $bg-tertiary;
-    color: $text-primary;
-  }
-
-  &.danger:hover {
-    background-color: rgba($danger, 0.1);
-    color: $danger;
+  svg {
+    width: 12px;
+    height: 12px;
   }
 }
 
@@ -105,6 +174,7 @@
   width: 36px;
   height: 20px;
   background-color: $border-color;
+  border: none;
   border-radius: 10px;
   cursor: pointer;
   transition: background-color $transition-base;
@@ -127,5 +197,59 @@
 
   &.active::after {
     transform: translateX(16px);
+  }
+}
+
+.iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background-color: transparent;
+  color: $text-muted;
+  border: none;
+  border-radius: $border-radius-sm;
+  cursor: pointer;
+  transition: all $transition-base;
+
+  &:hover {
+    background-color: $bg-tertiary;
+    color: $text-primary;
+  }
+
+  &.danger:hover {
+    background-color: rgba($danger, 0.1);
+    color: $danger;
+  }
+}
+
+.footer {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  padding: $spacing-md;
+  background: linear-gradient(180deg, transparent 0%, $bg-primary 20%);
+}
+
+.openFullButton {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-lg;
+  background-color: $bg-tertiary;
+  color: $text-secondary;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-lg;
+  font-size: $font-size-caption;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all $transition-base;
+
+  &:hover {
+    background-color: $accent-subtle;
+    border-color: $accent-primary;
+    color: $accent-primary;
   }
 }
