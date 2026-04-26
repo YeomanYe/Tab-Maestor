@@ -30,13 +30,11 @@ class TabStore {
   private async loadSettings(): Promise<void> {
     try {
       if (typeof window !== 'undefined' && window.chrome?.storage?.sync) {
-        const result = await window.chrome.storage.sync.get([
-          DATE_FILTER_KEY,
-          AUTO_SAVE_HOURS_KEY,
-        ]);
+        const dateFilterResult = await window.chrome.storage.sync.get(DATE_FILTER_KEY);
+        const autoSaveResult = await window.chrome.storage.sync.get(AUTO_SAVE_HOURS_KEY);
         runInAction(() => {
-          this.dateFilter = (result[DATE_FILTER_KEY] as number | null) ?? null;
-          this.autoSaveHours = (result[AUTO_SAVE_HOURS_KEY] as number | null) ?? null;
+          this.dateFilter = (dateFilterResult[DATE_FILTER_KEY] as number | null) ?? null;
+          this.autoSaveHours = (autoSaveResult[AUTO_SAVE_HOURS_KEY] as number | null) ?? null;
         });
       }
     } catch {

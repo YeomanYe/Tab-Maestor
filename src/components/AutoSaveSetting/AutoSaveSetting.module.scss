@@ -12,6 +12,12 @@
   white-space: nowrap;
 }
 
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+}
+
 .select {
   padding: $spacing-xs $spacing-sm;
   padding-right: $spacing-lg;
@@ -33,5 +39,29 @@
 
   &:hover {
     border-color: $text-muted;
+  }
+}
+
+.input {
+  width: 60px;
+  padding: $spacing-xs $spacing-sm;
+  background-color: $bg-secondary;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-sm;
+  color: $text-primary;
+  font-size: $font-size-caption;
+
+  &:focus {
+    outline: none;
+    border-color: $accent-primary;
+  }
+
+  &:hover {
+    border-color: $text-muted;
+  }
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    margin: 0;
   }
 }

@@ -50,7 +50,8 @@ export interface Translations {
   // Auto save
   autoSave: string;
   autoSaveDisabled: string;
-  autoSaveHours: string;
+  autoSaveMinutes: string;
+  autoSaveCustom: string;
 }
 
 const translations: Record<Language, Translations> = {
@@ -104,7 +105,8 @@ const translations: Record<Language, Translations> = {
     // Auto save
     autoSave: 'Auto-save after',
     autoSaveDisabled: 'Disabled',
-    autoSaveHours: 'hours',
+    autoSaveMinutes: 'minutes',
+    autoSaveCustom: 'Custom',
   },
   zh: {
     // Header
@@ -156,7 +158,8 @@ const translations: Record<Language, Translations> = {
     // Auto save
     autoSave: '自动保存于',
     autoSaveDisabled: '已禁用',
-    autoSaveHours: '小时',
+    autoSaveMinutes: '分钟',
+    autoSaveCustom: '自定义',
   },
 };
 
