@@ -46,6 +46,10 @@ export interface Translations {
   dateFilter: string;
   dateFilterAll: string;
   dateFilterPlaceholder: string;
+  timeFrom: string;
+  timeTo: string;
+  timeStartPlaceholder: string;
+  timeEndPlaceholder: string;
 
   // Auto save
   autoSave: string;
@@ -101,6 +105,10 @@ const translations: Record<Language, Translations> = {
     dateFilter: 'Filter by date',
     dateFilterAll: 'All',
     dateFilterPlaceholder: 'Select date',
+    timeFrom: 'from',
+    timeTo: 'to',
+    timeStartPlaceholder: 'Start',
+    timeEndPlaceholder: 'End',
 
     // Auto save
     autoSave: 'Auto-save after',
@@ -154,6 +162,10 @@ const translations: Record<Language, Translations> = {
     dateFilter: '按日期筛选',
     dateFilterAll: '全部',
     dateFilterPlaceholder: '选择日期',
+    timeFrom: '从',
+    timeTo: '到',
+    timeStartPlaceholder: '开始',
+    timeEndPlaceholder: '结束',
 
     // Auto save
     autoSave: '自动保存于',

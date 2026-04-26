@@ -51,6 +51,30 @@
   }
 }
 
+.timeInput {
+  padding: $spacing-xs $spacing-sm;
+  background-color: $bg-primary;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-sm;
+  color: $text-primary;
+  font-size: $font-size-body;
+
+  &:focus {
+    outline: none;
+    border-color: $accent-primary;
+  }
+
+  &::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(0.5);
+  }
+}
+
+.timeSeparator {
+  color: $text-muted;
+  font-size: $font-size-body;
+}
+
 .clearButton {
   padding: $spacing-xs $spacing-sm;
   background-color: transparent;
