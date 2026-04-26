@@ -227,6 +227,14 @@ class TabStore {
     }
   }
 
+  async togglePinTab(tabId: string): Promise<void> {
+    const tab = this.tabs.find((t) => t.id === tabId);
+    if (tab) {
+      tab.pinned = !tab.pinned;
+      await saveTabs(this.tabs);
+    }
+  }
+
   async clearAll(): Promise<void> {
     this.tabs = [];
     await saveTabs([]);
@@ -286,7 +294,12 @@ class TabStore {
       );
     }
 
-    return result;
+    // Sort: pinned tabs first, then by savedAt descending
+    const pinned = result.filter((tab) => tab.pinned);
+    const unpinned = result.filter((tab) => !tab.pinned);
+    unpinned.sort((a, b) => b.savedAt - a.savedAt);
+
+    return [...pinned, ...unpinned];
   }
 
   setSearchQuery(query: string): void {

@@ -10,6 +10,10 @@
   &:hover {
     background-color: $bg-tertiary;
   }
+
+  &.pinned {
+    background-color: rgba($accent-primary, 0.1);
+  }
 }
 
 .favicon {
@@ -48,6 +52,32 @@
   font-size: $font-size-body;
   color: $text-muted;
   text-align: right;
+}
+
+.pinButton {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background-color: transparent;
+  color: $text-muted;
+  border-radius: $border-radius-sm;
+  transition: all $transition-base;
+
+  &:hover {
+    background-color: rgba($accent-primary, 0.1);
+    color: $accent-primary;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &.pinned {
+    color: $accent-primary;
+  }
 }
 
 .deleteButton {

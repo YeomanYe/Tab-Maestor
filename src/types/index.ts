@@ -5,6 +5,7 @@ export interface SavedTab {
   favicon: string;
   savedAt: number;
   visitedAt?: number; // Last visited timestamp for auto-save feature
+  pinned?: boolean; // Pinned tabs always appear at top
   originalTabId?: number;
 }
 

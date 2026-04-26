@@ -34,6 +34,10 @@ export interface Translations {
   // Delete button
   deleteTab: string;
 
+  // Pin button
+  pinTab: string;
+  unpinTab: string;
+
   // Clear group button
   clearGroup: string;
 
@@ -90,6 +94,10 @@ const translations: Record<Language, Translations> = {
     // Delete button
     deleteTab: 'Delete tab',
 
+    // Pin button
+    pinTab: 'Pin tab',
+    unpinTab: 'Unpin tab',
+
     // Clear group button
     clearGroup: 'Clear group',
 
@@ -143,6 +151,10 @@ const translations: Record<Language, Translations> = {
 
     // Delete button
     deleteTab: '删除标签页',
+
+    // Pin button
+    pinTab: '固定标签页',
+    unpinTab: '取消固定',
 
     // Clear group button
     clearGroup: '清除该组',

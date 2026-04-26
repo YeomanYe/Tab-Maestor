@@ -18,6 +18,11 @@ const TabCard = ({ tab }: TabCardProps) => {
     await tabStore.deleteTab(tab.id);
   };
 
+  const handlePin = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    await tabStore.togglePinTab(tab.id);
+  };
+
   const getDefaultFavicon = (): string => {
     return `data:image/svg+xml,${encodeURIComponent(`
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#71717a" stroke-width="2">
@@ -40,7 +45,7 @@ const TabCard = ({ tab }: TabCardProps) => {
   const domain = getDomain(tab.url);
 
   return (
-    <div className={styles.card} onClick={handleClick}>
+    <div className={`${styles.card} ${tab.pinned ? styles.pinned : ''}`} onClick={handleClick}>
       <div className={styles.favicon}>
         <img
           src={tab.favicon || getDefaultFavicon()}
@@ -58,6 +63,22 @@ const TabCard = ({ tab }: TabCardProps) => {
       </span>
 
       <span className={styles.time}>{formatTabTime(tab.savedAt)}</span>
+
+      <button
+        className={`${styles.pinButton} ${tab.pinned ? styles.pinned : ''}`}
+        onClick={handlePin}
+        title={tab.pinned ? t('unpinTab') : t('pinTab')}
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M12 2v8m0 0l4-4m-4 4l-4-4m4 12v6m0 0l4-4m-4 4l-4-4"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
 
       <button
         className={`${styles.deleteButton}`}
