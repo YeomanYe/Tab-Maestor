@@ -108,30 +108,11 @@ async function saveStoredTabs(tabs: SavedTab[]): Promise<void> {
 
 async function showNotification(title: string, message: string): Promise<void> {
   try {
-    // Get icon from manifest if available
-    let iconUrl = '';
-    try {
-      const manifest = chrome.runtime.getManifest();
-      if (manifest.icons && manifest.icons['128']) {
-        iconUrl = chrome.runtime.getURL(manifest.icons['128']);
-      }
-    } catch {
-      // Ignore icon errors
-    }
-
-    // Create notification options
-    const options: chrome.notifications.NotificationOptions = {
+    await chrome.notifications.create({
       type: 'basic',
       title,
       message,
-    };
-
-    // Only add iconUrl if we have one
-    if (iconUrl) {
-      options.iconUrl = iconUrl;
-    }
-
-    await chrome.notifications.create(options);
+    });
   } catch (err) {
     console.warn('[Background] Notification failed:', err);
   }
