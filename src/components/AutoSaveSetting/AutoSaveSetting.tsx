@@ -1,31 +1,37 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { tabStore } from '@/stores/TabStore';
 import { t } from '@/utils/i18n';
 import styles from './AutoSaveSetting.module.scss';
 
 // Options in minutes
-const PRESET_OPTIONS: Array<{ value: number | string | null; label?: string; labelKey?: 'autoSaveDisabled' | 'autoSaveCustom' }> = [
-  { value: null, labelKey: 'autoSaveDisabled' },
+const PRESET_OPTIONS: Array<{ value: number | null; label: string }> = [
+  { value: null, label: '0' },
   { value: 15, label: '15' },
   { value: 30, label: '30' },
   { value: 45, label: '45' },
-  { value: 60, label: '1' },
-  { value: 90, label: '1.5' },
-  { value: 120, label: '2' },
-  { value: 'custom', labelKey: 'autoSaveCustom' },
+  { value: 60, label: '60' },
+  { value: 90, label: '90' },
+  { value: 120, label: '120' },
 ];
 
 const AutoSaveSetting = observer(() => {
   const [customValue, setCustomValue] = useState('');
 
+  // Sync custom value when store changes
+  useEffect(() => {
+    if (tabStore.autoSaveHours !== null) {
+      const isPreset = PRESET_OPTIONS.some(o => o.value === tabStore.autoSaveHours);
+      if (!isPreset) {
+        setCustomValue(String(tabStore.autoSaveHours));
+      }
+    }
+  }, []);
+
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
 
-    if (value === 'custom') {
-      // Keep custom input, set store to null temporarily
-      tabStore.setAutoSaveHours(null);
-    } else if (value === '') {
+    if (value === '') {
       tabStore.setAutoSaveHours(null);
       setCustomValue('');
     } else {
@@ -47,12 +53,12 @@ const AutoSaveSetting = observer(() => {
     }
   };
 
-  const isCustomSelected = tabStore.autoSaveHours !== null &&
-    !PRESET_OPTIONS.some(o => o.value === tabStore.autoSaveHours);
+  const isPresetSelected = tabStore.autoSaveHours !== null &&
+    PRESET_OPTIONS.some(o => o.value === tabStore.autoSaveHours);
 
-  const selectValue = isCustomSelected
-    ? 'custom'
-    : (tabStore.autoSaveHours ?? '');
+  const selectValue = isPresetSelected
+    ? (tabStore.autoSaveHours ?? '')
+    : '';
 
   return (
     <div className={styles.container}>
@@ -63,25 +69,23 @@ const AutoSaveSetting = observer(() => {
           value={selectValue}
           onChange={handleSelectChange}
         >
-          {PRESET_OPTIONS.map((option) => (
-            <option
-              key={option.value ?? 'disabled'}
-              value={option.value ?? ''}
-            >
-              {option.labelKey ? t(option.labelKey) : `${option.label} ${t('autoSaveMinutes')}`}
-            </option>
-          ))}
+        {PRESET_OPTIONS.map((option) => (
+          <option
+            key={option.value ?? 'disabled'}
+            value={option.value ?? ''}
+          >
+            {option.value === null ? t('autoSaveDisabled') : `${option.label} ${t('autoSaveMinutes')}`}
+          </option>
+        ))}
         </select>
-        {(selectValue === 'custom' || isCustomSelected) && (
-          <input
-            type="number"
-            className={styles.input}
-            value={isCustomSelected ? String(tabStore.autoSaveHours) : customValue}
-            onChange={handleCustomChange}
-            placeholder={t('autoSaveMinutes')}
-            min="1"
-          />
-        )}
+        <input
+          type="number"
+          className={styles.input}
+          value={customValue}
+          onChange={handleCustomChange}
+          placeholder={t('autoSaveMinutes')}
+          min="1"
+        />
       </div>
     </div>
   );
