@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 import { tabStore } from '@/stores/TabStore';
 import { t } from '@/utils/i18n';
 import styles from './AutoSaveSetting.module.scss';
 
 // Options in minutes
-const PRESET_OPTIONS = [
+const PRESET_OPTIONS: Array<{ value: number | null; label: string }> = [
   { value: null, label: t('autoSaveDisabled') },
   { value: 15, label: '15' },
   { value: 30, label: '30' },
@@ -16,50 +16,34 @@ const PRESET_OPTIONS = [
 ];
 
 const AutoSaveSetting = observer(() => {
-  const [selectValue, setSelectValue] = useState<string>('');
-  const [inputValue, setInputValue] = useState('');
+  const [value, setValue] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  // Sync values when store changes
+  // Sync value when store changes
   useEffect(() => {
-    const hours = tabStore.autoSaveHours;
-    if (hours !== null) {
-      const isPreset = PRESET_OPTIONS.some(o => o.value === hours);
-      if (isPreset) {
-        setSelectValue(String(hours));
-        setInputValue('');
-      } else {
-        setSelectValue('custom');
-        setInputValue(String(hours));
-      }
+    if (tabStore.autoSaveHours !== null) {
+      setValue(String(tabStore.autoSaveHours));
     } else {
-      setSelectValue('');
-      setInputValue('');
+      setValue('');
     }
   }, []);
 
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
-    setSelectValue(value);
-    setInputValue('');
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setValue(newValue);
 
-    if (value === '' || value === 'custom') {
-      tabStore.setAutoSaveHours(null);
-    } else {
-      const minutes = parseInt(value, 10);
+    const minutes = parseInt(newValue, 10);
+    if (!isNaN(minutes) && minutes > 0) {
       tabStore.setAutoSaveHours(minutes);
+    } else if (newValue === '') {
+      tabStore.setAutoSaveHours(null);
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setInputValue(value);
-    setSelectValue('custom');
-
-    const minutes = parseInt(value, 10);
-    if (!isNaN(minutes) && minutes > 0) {
-      tabStore.setAutoSaveHours(minutes);
-    } else if (value === '') {
-      tabStore.setAutoSaveHours(null);
+  const handleFocus = () => {
+    // Show dropdown on focus
+    if (inputRef.current) {
+      inputRef.current.showPicker?.();
     }
   };
 
@@ -67,30 +51,23 @@ const AutoSaveSetting = observer(() => {
     <div className={styles.container}>
       <label className={styles.label}>{t('autoSave')}</label>
       <div className={styles.wrapper}>
-        <select
-          className={styles.select}
-          value={selectValue}
-          onChange={handleSelectChange}
-        >
-          {PRESET_OPTIONS.map((option) => (
-            <option
-              key={option.value ?? 'disabled'}
-              value={option.value ?? ''}
-            >
-              {option.label}
-            </option>
-          ))}
-          <option value="custom">{t('autoSaveCustom')}</option>
-        </select>
         <input
+          ref={inputRef}
           type="number"
           className={styles.input}
-          value={inputValue}
-          onChange={handleInputChange}
+          value={value}
+          onChange={handleChange}
+          onFocus={handleFocus}
           placeholder={t('autoSaveMinutes')}
           min="1"
+          list="auto-save-presets"
         />
         <span className={styles.unit}>{t('autoSaveMinutes')}</span>
+        <datalist id="auto-save-presets">
+          {PRESET_OPTIONS.filter(o => o.value !== null).map((option) => (
+            <option key={option.value} value={String(option.value)} />
+          ))}
+        </datalist>
       </div>
     </div>
   );
