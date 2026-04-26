@@ -41,6 +41,16 @@ export interface Translations {
   light: string;
   dark: string;
   system: string;
+
+  // Date filter
+  dateFilter: string;
+  dateFilterAll: string;
+  dateFilterPlaceholder: string;
+
+  // Auto save
+  autoSave: string;
+  autoSaveDisabled: string;
+  autoSaveHours: string;
 }
 
 const translations: Record<Language, Translations> = {
@@ -85,6 +95,16 @@ const translations: Record<Language, Translations> = {
     light: 'Light',
     dark: 'Dark',
     system: 'System',
+
+    // Date filter
+    dateFilter: 'Filter by date',
+    dateFilterAll: 'All',
+    dateFilterPlaceholder: 'Select date',
+
+    // Auto save
+    autoSave: 'Auto-save after',
+    autoSaveDisabled: 'Disabled',
+    autoSaveHours: 'hours',
   },
   zh: {
     // Header
@@ -127,6 +147,16 @@ const translations: Record<Language, Translations> = {
     light: '浅色',
     dark: '深色',
     system: '跟随系统',
+
+    // Date filter
+    dateFilter: '按日期筛选',
+    dateFilterAll: '全部',
+    dateFilterPlaceholder: '选择日期',
+
+    // Auto save
+    autoSave: '自动保存于',
+    autoSaveDisabled: '已禁用',
+    autoSaveHours: '小时',
   },
 };
 

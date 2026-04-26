@@ -1,0 +1,67 @@
+@use '../../styles/variables' as *;
+
+.container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: $spacing-md $spacing-lg;
+  background-color: $bg-secondary;
+  border-top: 1px solid $border-color;
+  z-index: 100;
+}
+
+.filterRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-md;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.label {
+  font-size: $font-size-body;
+  color: $text-secondary;
+  white-space: nowrap;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.dateInput {
+  padding: $spacing-xs $spacing-sm;
+  background-color: $bg-primary;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-sm;
+  color: $text-primary;
+  font-size: $font-size-body;
+
+  &:focus {
+    outline: none;
+    border-color: $accent-primary;
+  }
+
+  &::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(0.5);
+  }
+}
+
+.clearButton {
+  padding: $spacing-xs $spacing-sm;
+  background-color: transparent;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-sm;
+  color: $text-secondary;
+  font-size: $font-size-caption;
+  cursor: pointer;
+
+  &:hover {
+    border-color: $text-muted;
+    color: $text-primary;
+  }
+}

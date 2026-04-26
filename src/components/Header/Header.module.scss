@@ -7,6 +7,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
   padding: $spacing-lg $spacing-xl;
   background-color: $bg-secondary;
   border-bottom: 1px solid $border-color;

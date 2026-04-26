@@ -11,14 +11,59 @@ import {
 } from '@/utils/storage';
 import { getTabGroupKey } from '@/utils/date';
 
+const DATE_FILTER_KEY = 'tab-maestro-date-filter';
+const AUTO_SAVE_HOURS_KEY = 'tab-maestro-auto-save-hours';
+
 class TabStore {
   tabs: SavedTab[] = [];
   searchQuery = '';
   isLoading = false;
   toast: { message: string; type: 'success' | 'error' } | null = null;
+  dateFilter: number | null = null; // timestamp, null means no filter (show all)
+  autoSaveHours: number | null = null; // hours, null means disabled
 
   constructor() {
     makeAutoObservable(this);
+    this.loadSettings();
+  }
+
+  private async loadSettings(): Promise<void> {
+    try {
+      if (typeof window !== 'undefined' && window.chrome?.storage?.sync) {
+        const result = await window.chrome.storage.sync.get([
+          DATE_FILTER_KEY,
+          AUTO_SAVE_HOURS_KEY,
+        ]);
+        runInAction(() => {
+          this.dateFilter = (result[DATE_FILTER_KEY] as number | null) ?? null;
+          this.autoSaveHours = (result[AUTO_SAVE_HOURS_KEY] as number | null) ?? null;
+        });
+      }
+    } catch {
+      // Silently fail
+    }
+  }
+
+  async setDateFilter(timestamp: number | null): Promise<void> {
+    this.dateFilter = timestamp;
+    try {
+      if (typeof window !== 'undefined' && window.chrome?.storage?.sync) {
+        await window.chrome.storage.sync.set({ [DATE_FILTER_KEY]: timestamp });
+      }
+    } catch {
+      // Silently fail
+    }
+  }
+
+  async setAutoSaveHours(hours: number | null): Promise<void> {
+    this.autoSaveHours = hours;
+    try {
+      if (typeof window !== 'undefined' && window.chrome?.storage?.sync) {
+        await window.chrome.storage.sync.set({ [AUTO_SAVE_HOURS_KEY]: hours });
+      }
+    } catch {
+      // Silently fail
+    }
   }
 
   async loadTabs(): Promise<void> {
@@ -195,15 +240,24 @@ class TabStore {
   }
 
   get filteredTabs(): SavedTab[] {
-    if (!this.searchQuery.trim()) {
-      return this.tabs;
+    let result = this.tabs;
+
+    // Apply date filter
+    if (this.dateFilter) {
+      result = result.filter((tab) => tab.savedAt >= this.dateFilter!);
     }
-    const query = this.searchQuery.toLowerCase();
-    return this.tabs.filter(
-      (tab) =>
-        tab.title.toLowerCase().includes(query) ||
-        tab.url.toLowerCase().includes(query)
-    );
+
+    // Apply search filter
+    if (this.searchQuery.trim()) {
+      const query = this.searchQuery.toLowerCase();
+      result = result.filter(
+        (tab) =>
+          tab.title.toLowerCase().includes(query) ||
+          tab.url.toLowerCase().includes(query)
+      );
+    }
+
+    return result;
   }
 
   setSearchQuery(query: string): void {

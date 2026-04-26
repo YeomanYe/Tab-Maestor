@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/contexts/ThemeContext';
 import Header from '@/components/Header/Header';
 import TabList from '@/components/TabList/TabList';
 import Toast from '@/components/Toast/Toast';
+import DateFilterBar from '@/components/DateFilterBar/DateFilterBar';
 import styles from './App.module.scss';
 
 const AppContent = observer(() => {
@@ -18,6 +19,7 @@ const AppContent = observer(() => {
       <main className={styles.main}>
         <TabList />
       </main>
+      <DateFilterBar />
       <Toast />
     </div>
   );

@@ -4,6 +4,7 @@ export interface SavedTab {
   url: string;
   favicon: string;
   savedAt: number;
+  visitedAt?: number; // Last visited timestamp for auto-save feature
   originalTabId?: number;
 }
 

@@ -3,6 +3,7 @@ import { tabStore } from '@/stores/TabStore';
 import { ThemeSwitcher } from '@/components/ThemeSwitcher/ThemeSwitcher';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher/LanguageSwitcher';
 import SearchBox from '@/components/SearchBox/SearchBox';
+import AutoSaveSetting from '@/components/AutoSaveSetting/AutoSaveSetting';
 import { t } from '@/utils/i18n';
 import styles from './Header.module.scss';
 
@@ -39,6 +40,8 @@ const Header = observer(() => {
       </div>
 
       <SearchBox />
+
+      <AutoSaveSetting />
 
       <div className={styles.actions}>
         <button
