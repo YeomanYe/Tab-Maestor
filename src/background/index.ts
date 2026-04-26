@@ -189,9 +189,10 @@ async function saveCurrentTab(): Promise<void> {
     console.log('[Background] Query result tabs:', tabs);
     const tab = tabs[0];
 
-    if (!tab || !tab.url || tab.url.startsWith('chrome://') || tab.url.startsWith('chrome-extension://')) {
+    // Allow tabs with URL, even chrome:// URLs
+    if (!tab || !tab.url) {
       await showNotification('Tab Maestro', 'No valid tab to save');
-      console.log('[Background] No valid tab');
+      console.log('[Background] No valid tab - missing tab or URL');
       return;
     }
 
@@ -268,8 +269,6 @@ async function saveAllTabs(): Promise<void> {
     const validTabs = allTabs.filter(
       (tab) =>
         tab.url &&
-        !tab.url.startsWith('chrome://') &&
-        !tab.url.startsWith('chrome-extension://') &&
         !tab.pinned
     );
 
