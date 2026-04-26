@@ -36,46 +36,15 @@ const DateFilterBar = observer(() => {
     tabStore.setEndDateFilter(timestamp);
   };
 
-  const handleStartTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (!value) {
-      tabStore.setStartTimeFilter(null);
-      return;
-    }
-    const [hours, minutes] = value.split(':').map(Number);
-    const totalMinutes = hours * 60 + minutes;
-    tabStore.setStartTimeFilter(totalMinutes);
-  };
-
-  const handleEndTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (!value) {
-      tabStore.setEndTimeFilter(null);
-      return;
-    }
-    const [hours, minutes] = value.split(':').map(Number);
-    const totalMinutes = hours * 60 + minutes;
-    tabStore.setEndTimeFilter(totalMinutes);
-  };
-
   const handleClearFilter = () => {
     tabStore.setDateFilter(null);
     tabStore.setEndDateFilter(null);
-    tabStore.setStartTimeFilter(null);
-    tabStore.setEndTimeFilter(null);
   };
 
   const formatDateForInput = (timestamp: number | null): string => {
     if (!timestamp) return '';
     const date = new Date(timestamp);
     return date.toISOString().split('T')[0];
-  };
-
-  const formatTimeForInput = (minutes: number | null): string => {
-    if (minutes === null) return '';
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
   };
 
   const hasActiveFilter = tabStore.dateFilter !== null;
@@ -101,27 +70,9 @@ const DateFilterBar = observer(() => {
             placeholder={t('dateFilterPlaceholder')}
           />
           {hasActiveFilter && (
-            <>
-              <span className={styles.timeSeparator}>{t('timeFrom')}</span>
-              <input
-                type="time"
-                className={styles.timeInput}
-                value={formatTimeForInput(tabStore.startTimeFilter)}
-                onChange={handleStartTimeChange}
-                placeholder={t('timeStartPlaceholder')}
-              />
-              <span className={styles.timeSeparator}>{t('timeTo')}</span>
-              <input
-                type="time"
-                className={styles.timeInput}
-                value={formatTimeForInput(tabStore.endTimeFilter)}
-                onChange={handleEndTimeChange}
-                placeholder={t('timeEndPlaceholder')}
-              />
-              <button className={styles.clearButton} onClick={handleClearFilter}>
-                {t('dateFilterAll')}
-              </button>
-            </>
+            <button className={styles.clearButton} onClick={handleClearFilter}>
+              {t('dateFilterAll')}
+            </button>
           )}
           {!hasActiveFilter && tabStore.dateFilter === null && (
             <button className={styles.clearButton} onClick={handleClearFilter}>
