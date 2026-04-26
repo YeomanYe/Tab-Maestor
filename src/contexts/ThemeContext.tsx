@@ -16,7 +16,7 @@ const getSystemTheme = (): 'light' | 'dark' => {
   if (typeof window !== 'undefined' && window.matchMedia) {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
-  return 'dark';
+  return 'light';
 };
 
 const resolveTheme = (theme: Theme): 'light' | 'dark' => {
@@ -27,8 +27,8 @@ const resolveTheme = (theme: Theme): 'light' | 'dark' => {
 };
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [theme, setThemeState] = useState<Theme>('dark');
-  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('dark');
+  const [theme, setThemeState] = useState<Theme>('light');
+  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
   const themeRef = useRef(theme);
 
   // Keep ref in sync with theme state
