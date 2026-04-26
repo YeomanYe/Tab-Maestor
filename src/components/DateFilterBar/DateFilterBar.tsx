@@ -47,6 +47,18 @@ const DateFilterBar = observer(() => {
     return date.toISOString().split('T')[0];
   };
 
+  // Get max date for start date (end date if exists)
+  const getStartDateMax = (): string => {
+    if (!tabStore.endDateFilter) return '';
+    return formatDateForInput(tabStore.endDateFilter);
+  };
+
+  // Get min date for end date (start date if exists)
+  const getEndDateMin = (): string => {
+    if (!tabStore.dateFilter) return '';
+    return formatDateForInput(tabStore.dateFilter);
+  };
+
   const hasActiveFilter = tabStore.dateFilter !== null;
 
   return (
@@ -60,6 +72,7 @@ const DateFilterBar = observer(() => {
             value={formatDateForInput(tabStore.dateFilter)}
             onChange={handleDateChange}
             placeholder={t('dateFilterPlaceholder')}
+            max={getStartDateMax()}
           />
           <span className={styles.timeSeparator}>{t('dateTo')}</span>
           <input
@@ -68,6 +81,7 @@ const DateFilterBar = observer(() => {
             value={formatDateForInput(tabStore.endDateFilter)}
             onChange={handleEndDateChange}
             placeholder={t('dateFilterPlaceholder')}
+            min={getEndDateMin()}
           />
           {hasActiveFilter && (
             <button className={styles.clearButton} onClick={handleClearFilter}>
