@@ -27,6 +27,13 @@
   font-weight: 600;
 }
 
+.groupCount {
+  font-size: $font-size-caption;
+  font-weight: 400;
+  color: $text-muted;
+  margin-left: $spacing-xs;
+}
+
 .clearGroupButton {
   display: flex;
   align-items: center;

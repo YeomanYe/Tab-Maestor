@@ -10,6 +10,8 @@ interface GroupedTabs {
   [key: string]: typeof tabStore.tabs;
 }
 
+const Pinned_TABS_GROUP_KEY = 'pinned';
+
 const TabList = observer(() => {
   if (tabStore.isLoading) {
     return (
@@ -25,8 +27,12 @@ const TabList = observer(() => {
     return <EmptyState />;
   }
 
-  // Group tabs by day
-  const groupedTabs: GroupedTabs = tabStore.filteredTabs.reduce((acc, tab) => {
+  // Separate pinned and unpinned tabs
+  const pinnedTabs = tabStore.filteredTabs.filter((tab) => tab.pinned);
+  const unpinnedTabs = tabStore.filteredTabs.filter((tab) => !tab.pinned);
+
+  // Group unpinned tabs by day
+  const groupedTabs: GroupedTabs = unpinnedTabs.reduce((acc, tab) => {
     const key = getTabGroupKey(tab.savedAt);
     if (!acc[key]) {
       acc[key] = [];
@@ -48,6 +54,22 @@ const TabList = observer(() => {
 
   return (
     <div className={styles.list}>
+      {/* Pinned tabs group */}
+      {pinnedTabs.length > 0 && (
+        <div key={Pinned_TABS_GROUP_KEY} className={styles.group}>
+          <div className={styles.groupHeader}>
+            <span className={styles.groupTitle}>{t('pinnedTabs')}</span>
+            <span className={styles.groupCount}>({pinnedTabs.length})</span>
+          </div>
+          <div className={styles.groupContent}>
+            {pinnedTabs.map((tab) => (
+              <TabCard key={tab.id} tab={tab} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Regular grouped tabs */}
       {sortedGroups.map((groupKey) => (
         <div key={groupKey} className={styles.group}>
           <div className={styles.groupHeader}>
