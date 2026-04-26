@@ -9,6 +9,7 @@ export interface Translations {
 
   // Search
   searchPlaceholder: string;
+  clearSearch: string;
 
   // Tab list
   noSavedTabs: string;
@@ -58,6 +59,8 @@ export interface Translations {
   dateToday: string;
   dateThisWeek: string;
   dateThisMonth: string;
+  dateRange: string;
+  clearFilter: string;
 
   // Auto save
   autoSave: string;
@@ -76,6 +79,7 @@ const translations: Record<Language, Translations> = {
 
     // Search
     searchPlaceholder: 'Search tabs...',
+    clearSearch: 'Clear search',
 
     // Tab list
     noSavedTabs: 'No saved tabs',
@@ -125,8 +129,8 @@ const translations: Record<Language, Translations> = {
     dateToday: 'Today',
     dateThisWeek: 'This Week',
     dateThisMonth: 'This Month',
-
-    // Auto save
+    dateRange: 'Date Range',
+    clearFilter: 'Clear filter',
     autoSave: 'Auto-save after',
     autoSaveDisabled: 'Disabled',
     autoSaveMinutes: 'minutes',
@@ -141,6 +145,7 @@ const translations: Record<Language, Translations> = {
 
     // Search
     searchPlaceholder: '搜索标签页...',
+    clearSearch: '清除搜索',
 
     // Tab list
     noSavedTabs: '暂无保存的标签页',
@@ -190,8 +195,8 @@ const translations: Record<Language, Translations> = {
     dateToday: '今天',
     dateThisWeek: '本周',
     dateThisMonth: '本月',
-
-    // Auto save
+    dateRange: '日期范围',
+    clearFilter: '清除筛选',
     autoSave: '自动保存于',
     autoSaveDisabled: '已禁用',
     autoSaveMinutes: '分钟',

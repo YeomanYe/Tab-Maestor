@@ -70,9 +70,12 @@ const DateFilterBar = observer(() => {
     return formatDateForInput(tabStore.dateFilter);
   };
 
+  const hasDateFilter = tabStore.dateFilter !== null || tabStore.endDateFilter !== null;
+
   return (
     <div className={styles.container}>
       <div className={styles.filterRow}>
+        {/* Quick Filter Pills */}
         <div className={styles.quickFilters}>
           <button
             className={`${styles.quickButton} ${!tabStore.dateFilter && !tabStore.endDateFilter ? styles.active : ''}`}
@@ -81,7 +84,7 @@ const DateFilterBar = observer(() => {
             {t('dateFilterAll')}
           </button>
           <button
-            className={styles.quickButton}
+            className={`${styles.quickButton} ${tabStore.dateFilter && tabStore.endDateFilter === tabStore.dateFilter ? styles.active : ''}`}
             onClick={() => handleQuickFilter(1)}
           >
             {t('dateToday')}
@@ -100,24 +103,40 @@ const DateFilterBar = observer(() => {
           </button>
         </div>
 
-        <div className={styles.dateRange}>
-          <input
-            type="date"
-            className={styles.dateInput}
-            value={formatDateForInput(tabStore.dateFilter)}
-            onChange={handleDateChange}
-            placeholder={t('dateFilterPlaceholder')}
-            max={getStartDateMax()}
-          />
-          <span className={styles.separator}>{t('dateTo')}</span>
-          <input
-            type="date"
-            className={styles.dateInput}
-            value={formatDateForInput(tabStore.endDateFilter)}
-            onChange={handleEndDateChange}
-            placeholder={t('dateFilterPlaceholder')}
-            min={getEndDateMin()}
-          />
+        {/* Date Range Input */}
+        <div className={styles.dateRangeWrapper}>
+          <span className={styles.dateLabel}>{t('dateRange')}</span>
+          <div className={styles.dateRange}>
+            <input
+              type="date"
+              className={styles.dateInput}
+              value={formatDateForInput(tabStore.dateFilter)}
+              onChange={handleDateChange}
+              placeholder={t('dateFilterPlaceholder')}
+              max={getStartDateMax()}
+            />
+            <span className={styles.separator}>→</span>
+            <input
+              type="date"
+              className={styles.dateInput}
+              value={formatDateForInput(tabStore.endDateFilter)}
+              onChange={handleEndDateChange}
+              placeholder={t('dateFilterPlaceholder')}
+              min={getEndDateMin()}
+            />
+            {hasDateFilter && (
+              <button
+                className={styles.clearDates}
+                onClick={handleClearFilter}
+                title={t('clearFilter')}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
