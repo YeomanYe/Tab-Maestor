@@ -269,16 +269,19 @@ class TabStore {
     // Apply date filter
     if (this.dateFilter) {
       const dateStart = this.dateFilter;
-      // If endDateFilter is set, use it; otherwise use single day
-      const dateEnd = this.endDateFilter
-        ? this.endDateFilter + 24 * 60 * 60 * 1000 // End of end date (next day at 00:00:00)
-        : dateStart + 24 * 60 * 60 * 1000; // End of the selected day (next day at 00:00:00)
 
       result = result.filter((tab) => {
         const tabTime = tab.savedAt;
-        // Check if date is within range
-        if (tabTime < dateStart || tabTime >= dateEnd) {
+        // Must be on or after start date
+        if (tabTime < dateStart) {
           return false;
+        }
+        // If end date is set, must be before end of that day
+        if (this.endDateFilter) {
+          const dateEnd = this.endDateFilter + 24 * 60 * 60 * 1000; // End of end date (next day at 00:00:00)
+          if (tabTime >= dateEnd) {
+            return false;
+          }
         }
         return true;
       });
