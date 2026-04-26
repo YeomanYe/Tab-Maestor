@@ -72,6 +72,14 @@ const DateFilterBar = observer(() => {
 
   const hasDateFilter = tabStore.dateFilter !== null || tabStore.endDateFilter !== null;
 
+  // Check if current filter matches quick filter presets
+  const isTodayFilter = tabStore.dateFilter && tabStore.endDateFilter &&
+    tabStore.dateFilter === tabStore.endDateFilter;
+  const isWeekFilter = tabStore.dateFilter && tabStore.endDateFilter &&
+    tabStore.endDateFilter === tabStore.dateFilter + (7 - 1) * 24 * 60 * 60 * 1000;
+  const isMonthFilter = tabStore.dateFilter && tabStore.endDateFilter &&
+    tabStore.endDateFilter === tabStore.dateFilter + (30 - 1) * 24 * 60 * 60 * 1000;
+
   return (
     <div className={styles.container}>
       <div className={styles.filterRow}>
@@ -84,19 +92,19 @@ const DateFilterBar = observer(() => {
             {t('dateFilterAll')}
           </button>
           <button
-            className={`${styles.quickButton} ${tabStore.dateFilter && tabStore.endDateFilter === tabStore.dateFilter ? styles.active : ''}`}
+            className={`${styles.quickButton} ${isTodayFilter ? styles.active : ''}`}
             onClick={() => handleQuickFilter(1)}
           >
             {t('dateToday')}
           </button>
           <button
-            className={styles.quickButton}
+            className={`${styles.quickButton} ${isWeekFilter ? styles.active : ''}`}
             onClick={() => handleQuickFilter(7)}
           >
             {t('dateThisWeek')}
           </button>
           <button
-            className={styles.quickButton}
+            className={`${styles.quickButton} ${isMonthFilter ? styles.active : ''}`}
             onClick={() => handleQuickFilter(30)}
           >
             {t('dateThisMonth')}

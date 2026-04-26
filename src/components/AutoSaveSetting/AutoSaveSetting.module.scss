@@ -111,6 +111,48 @@
   }
 }
 
+.customInputWrapper {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-md;
+  border-bottom: 1px solid $border-color;
+}
+
+.customInput {
+  flex: 1;
+  padding: $spacing-xs $spacing-sm;
+  background: $bg-tertiary;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-sm;
+  color: $text-primary;
+  font-size: $font-size-body;
+  font-family: $font-family;
+  outline: none;
+  transition: all $transition-base;
+
+  &:focus {
+    border-color: $accent-primary;
+    box-shadow: 0 0 0 2px rgb($accent-primary / 15%);
+  }
+
+  &::placeholder {
+    color: $text-muted;
+  }
+}
+
+.customInputLabel {
+  font-size: $font-size-caption;
+  color: $text-muted;
+  white-space: nowrap;
+}
+
+.divider {
+  height: 1px;
+  background: $border-color;
+  margin: $spacing-xs 0;
+}
+
 .dropdownItem {
   display: flex;
   align-items: center;

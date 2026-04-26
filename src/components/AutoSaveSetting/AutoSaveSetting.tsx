@@ -17,7 +17,13 @@ const PRESET_OPTIONS: Array<{ value: number | null; label: string }> = [
 
 const AutoSaveSetting = observer(() => {
   const [isOpen, setIsOpen] = useState(false);
+  const [customValue, setCustomValue] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Check if current value is a custom value (not in presets)
+  const isCustomValue = tabStore.autoSaveHours !== null &&
+    !PRESET_OPTIONS.some(opt => opt.value === tabStore.autoSaveHours);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -31,13 +37,45 @@ const AutoSaveSetting = observer(() => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Focus input when dropdown opens
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      setTimeout(() => inputRef.current?.focus(), 50);
+    }
+  }, [isOpen]);
+
   const handleSelect = (value: number | null) => {
     tabStore.setAutoSaveHours(value);
     setIsOpen(false);
+    setCustomValue('');
+  };
+
+  const handleCustomInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setCustomValue(value);
+
+    // Allow typing numbers only
+    const minutes = parseInt(value, 10);
+    if (!isNaN(minutes) && minutes > 0) {
+      tabStore.setAutoSaveHours(minutes);
+    } else if (value === '') {
+      tabStore.setAutoSaveHours(null);
+    }
+  };
+
+  const handleCustomKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === 'Escape') {
+      setIsOpen(false);
+      setCustomValue('');
+    }
   };
 
   const currentOption = PRESET_OPTIONS.find(opt => opt.value === tabStore.autoSaveHours);
-  const currentLabel = currentOption?.value === null ? t('autoSaveDisabled') : currentOption?.label || '';
+  const currentLabel = isCustomValue
+    ? `${tabStore.autoSaveHours} min`
+    : currentOption?.value === null
+      ? t('autoSaveDisabled')
+      : currentOption?.label || '';
 
   return (
     <div className={styles.container}>
@@ -64,6 +102,23 @@ const AutoSaveSetting = observer(() => {
 
         {isOpen && (
           <div className={styles.dropdown}>
+            {/* Custom input field */}
+            <div className={styles.customInputWrapper}>
+              <input
+                ref={inputRef}
+                type="number"
+                className={styles.customInput}
+                placeholder={t('autoSaveCustom') || 'Custom...'}
+                value={isCustomValue ? String(tabStore.autoSaveHours) : customValue}
+                onChange={handleCustomInput}
+                onKeyDown={handleCustomKeyDown}
+                min="1"
+              />
+              <span className={styles.customInputLabel}>{t('autoSaveMinutes')}</span>
+            </div>
+
+            <div className={styles.divider} />
+
             {PRESET_OPTIONS.map((option) => (
               <button
                 key={option.value ?? 'disabled'}

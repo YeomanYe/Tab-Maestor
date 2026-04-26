@@ -97,7 +97,7 @@
   min-width: 130px;
 
   &:hover {
-    background: #faecd8; // Slightly darker than bg-tertiary
+    background: #faecd8;
   }
 
   &:focus {
@@ -105,6 +105,16 @@
     background: white;
     border-color: $accent-primary;
     box-shadow: 0 0 0 3px rgb($accent-primary / 15%);
+    color: $text-primary;
+  }
+
+  [data-theme='dark'] & {
+    color-scheme: dark;
+
+    &:focus {
+      background: $bg-primary;
+      color: $text-primary;
+    }
   }
 
   &::-webkit-calendar-picker-indicator {
@@ -112,6 +122,10 @@
     opacity: 0.5;
     filter: saturate(0);
     transition: all $transition-base;
+
+    [data-theme='dark'] & {
+      filter: saturate(0) invert(1);
+    }
 
     &:hover {
       opacity: 1;
