@@ -89,8 +89,17 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 });
 
 async function getStoredTabs(): Promise<SavedTab[]> {
-  const result = await chrome.storage.local.get(STORAGE_KEY);
-  return (result?.[STORAGE_KEY] as SavedTab[]) || [];
+  try {
+    const result = await chrome.storage.local.get(STORAGE_KEY);
+    const tabs = result?.[STORAGE_KEY];
+    if (Array.isArray(tabs)) {
+      return tabs as SavedTab[];
+    }
+    return [];
+  } catch (err) {
+    console.error('[Background] Error getting stored tabs:', err);
+    return [];
+  }
 }
 
 async function saveStoredTabs(tabs: SavedTab[]): Promise<void> {
@@ -99,12 +108,30 @@ async function saveStoredTabs(tabs: SavedTab[]): Promise<void> {
 
 async function showNotification(title: string, message: string): Promise<void> {
   try {
-    // Don't use iconUrl for now since icons may not exist
-    await chrome.notifications.create({
+    // Get icon from manifest if available
+    let iconUrl = '';
+    try {
+      const manifest = chrome.runtime.getManifest();
+      if (manifest.icons && manifest.icons['128']) {
+        iconUrl = chrome.runtime.getURL(manifest.icons['128']);
+      }
+    } catch {
+      // Ignore icon errors
+    }
+
+    // Create notification options
+    const options: chrome.notifications.NotificationOptions = {
       type: 'basic',
       title,
       message,
-    });
+    };
+
+    // Only add iconUrl if we have one
+    if (iconUrl) {
+      options.iconUrl = iconUrl;
+    }
+
+    await chrome.notifications.create(options);
   } catch (err) {
     console.warn('[Background] Notification failed:', err);
   }
