@@ -1,33 +1,36 @@
-// Color Palette using CSS Variables
+// Color Palette using CSS Variables - Light Yellow Theme
+// A warm, fresh, simple aesthetic
 
-// Default Dark Theme (defined in global.scss)
+// Default Light Theme (warm yellow)
 :root {
-  --bg-primary: #0f0f0f;
-  --bg-secondary: #1a1a1a;
-  --bg-tertiary: #252525;
-  --accent-primary: #6366f1;
-  --accent-hover: #818cf8;
-  --text-primary: #fafafa;
-  --text-secondary: #a1a1aa;
-  --text-muted: #71717a;
-  --border-color: #27272a;
-  --success: #22c55e;
-  --danger: #ef4444;
+  --bg-primary: #FFFCF0;
+  --bg-secondary: #FFF8E7;
+  --bg-tertiary: #FFF0D4;
+  --accent-primary: #EAB308;
+  --accent-hover: #CA8A04;
+  --accent-subtle: #FEF3C7;
+  --text-primary: #292524;
+  --text-secondary: #57534E;
+  --text-muted: #A8A29E;
+  --border-color: #E7E5E4;
+  --success: #65A30D;
+  --danger: #DC2626;
 }
 
-// Light Theme
-[data-theme='light'] {
-  --bg-primary: #fff;
-  --bg-secondary: #f4f4f5;
-  --bg-tertiary: #e4e4e7;
-  --accent-primary: #6366f1;
-  --accent-hover: #818cf8;
-  --text-primary: #18181b;
-  --text-secondary: #52525b;
-  --text-muted: #71717a;
-  --border-color: #e4e4e7;
-  --success: #22c55e;
-  --danger: #ef4444;
+// Dark Theme (still warm but darker)
+[data-theme='dark'] {
+  --bg-primary: #1C1917;
+  --bg-secondary: #292524;
+  --bg-tertiary: #44403C;
+  --accent-primary: #FBBF24;
+  --accent-hover: #F59E0B;
+  --accent-subtle: #78350F;
+  --text-primary: #FAFAF9;
+  --text-secondary: #D6D3D1;
+  --text-muted: #78716C;
+  --border-color: #44403C;
+  --success: #84CC16;
+  --danger: #EF4444;
 }
 
 // SCSS Variables mapped to CSS Variables
@@ -36,6 +39,7 @@ $bg-secondary: var(--bg-secondary);
 $bg-tertiary: var(--bg-tertiary);
 $accent-primary: var(--accent-primary);
 $accent-hover: var(--accent-hover);
+$accent-subtle: var(--accent-subtle);
 $text-primary: var(--text-primary);
 $text-secondary: var(--text-secondary);
 $text-muted: var(--text-muted);
@@ -50,16 +54,16 @@ $spacing-md: 16px;
 $spacing-lg: 24px;
 $spacing-xl: 32px;
 
-// Typography
-$font-family: 'Inter', -apple-system, blinkmacsystemfont, 'Segoe UI', sans-serif;
-$font-size-h1: 24px;
-$font-size-h2: 18px;
+// Typography - Warm, friendly font
+$font-family: 'Nunito', -apple-system, blinkmacsystemfont, 'Segoe UI', sans-serif;
+$font-size-h1: 22px;
+$font-size-h2: 16px;
 $font-size-body: 14px;
 $font-size-caption: 12px;
 
 // Effects
-$border-radius-lg: 8px;
-$border-radius-md: 6px;
-$border-radius-sm: 4px;
-$shadow-card: 0 4px 24px rgb(0 0 0 / 40%);
-$transition-base: 150ms ease-out;
+$border-radius-lg: 12px;
+$border-radius-md: 8px;
+$border-radius-sm: 6px;
+$shadow-card: 0 2px 8px rgb(234 179 8 / 8%);
+$transition-base: 200ms ease-out;

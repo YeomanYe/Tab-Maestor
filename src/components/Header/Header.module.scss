@@ -8,9 +8,9 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: $spacing-sm;
+  gap: $spacing-md;
   padding: $spacing-lg $spacing-xl;
-  background-color: $bg-secondary;
+  background: linear-gradient(180deg, $bg-secondary 0%, $bg-primary 100%);
   border-bottom: 1px solid $border-color;
 }
 
@@ -26,8 +26,9 @@
 
 .title {
   font-size: $font-size-h1;
-  font-weight: 600;
+  font-weight: 700;
   color: $text-primary;
+  letter-spacing: -0.5px;
 }
 
 .badge {
@@ -38,7 +39,7 @@
   height: 24px;
   padding: 0 $spacing-sm;
   background-color: $accent-primary;
-  color: $text-primary;
+  color: #fff;
   font-size: $font-size-caption;
   font-weight: 600;
   border-radius: 12px;
@@ -57,7 +58,7 @@
   gap: $spacing-sm;
   padding: $spacing-sm $spacing-md;
   font-size: $font-size-body;
-  font-weight: 500;
+  font-weight: 600;
   border-radius: $border-radius-md;
   transition: all $transition-base;
 
@@ -68,26 +69,29 @@
 }
 
 .buttonPrimary {
-  background-color: $accent-primary;
-  color: $text-primary;
+  background: linear-gradient(135deg, $accent-primary 0%, $accent-hover 100%);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba($accent-primary, 0.25);
 
   &:hover:not(:disabled) {
-    background-color: $accent-hover;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba($accent-primary, 0.35);
   }
 
   &:active:not(:disabled) {
-    transform: scale(0.98);
+    transform: translateY(0);
   }
 }
 
 .buttonSecondary {
-  background-color: transparent;
+  background-color: $bg-tertiary;
   color: $text-primary;
   border: 1px solid $border-color;
 
   &:hover:not(:disabled) {
-    background-color: $bg-tertiary;
-    border-color: $text-muted;
+    background-color: $accent-subtle;
+    border-color: $accent-primary;
+    color: $accent-primary;
   }
 
   &:active:not(:disabled) {

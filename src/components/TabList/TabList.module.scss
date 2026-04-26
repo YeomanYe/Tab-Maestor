@@ -23,13 +23,14 @@
 }
 
 .groupTitle {
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
+  color: $text-primary;
 }
 
 .groupCount {
   font-size: $font-size-caption;
-  font-weight: 400;
+  font-weight: 500;
   color: $text-muted;
   margin-left: $spacing-xs;
 }
@@ -50,8 +51,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   background-color: transparent;
   color: $text-muted;
   border-radius: $border-radius-sm;
@@ -59,7 +60,7 @@
   cursor: pointer;
 
   &:hover {
-    background-color: rgba($accent-primary, 0.1);
+    background-color: $accent-subtle;
     color: $accent-primary;
   }
 
@@ -73,8 +74,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   background-color: transparent;
   color: $text-muted;
   border-radius: $border-radius-sm;

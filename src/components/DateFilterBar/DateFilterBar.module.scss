@@ -24,6 +24,7 @@
   font-size: $font-size-body;
   color: $text-secondary;
   white-space: nowrap;
+  font-weight: 500;
 }
 
 .controls {
@@ -33,59 +34,77 @@
 }
 
 .dateInput {
-  padding: $spacing-xs $spacing-sm;
+  padding: $spacing-sm $spacing-md;
   background-color: $bg-primary;
   border: 1px solid $border-color;
-  border-radius: $border-radius-sm;
+  border-radius: $border-radius-md;
   color: $text-primary;
   font-size: $font-size-body;
+  font-family: inherit;
+  transition: all $transition-base;
 
   &:focus {
     outline: none;
     border-color: $accent-primary;
+    box-shadow: 0 0 0 3px rgba($accent-primary, 0.15);
   }
 
   &::-webkit-calendar-picker-indicator {
     cursor: pointer;
-    filter: invert(0.5);
+    opacity: 0.6;
+    transition: opacity $transition-base;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 }
 
 .timeInput {
-  padding: $spacing-xs $spacing-sm;
+  padding: $spacing-sm $spacing-md;
   background-color: $bg-primary;
   border: 1px solid $border-color;
-  border-radius: $border-radius-sm;
+  border-radius: $border-radius-md;
   color: $text-primary;
   font-size: $font-size-body;
+  font-family: inherit;
 
   &:focus {
     outline: none;
     border-color: $accent-primary;
+    box-shadow: 0 0 0 3px rgba($accent-primary, 0.15);
   }
 
   &::-webkit-calendar-picker-indicator {
     cursor: pointer;
-    filter: invert(0.5);
+    opacity: 0.6;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 }
 
 .timeSeparator {
-  color: $text-muted;
+  color: $accent-primary;
+  font-weight: 600;
   font-size: $font-size-body;
 }
 
 .clearButton {
-  padding: $spacing-xs $spacing-sm;
-  background-color: transparent;
+  padding: $spacing-sm $spacing-md;
+  background-color: $bg-tertiary;
   border: 1px solid $border-color;
-  border-radius: $border-radius-sm;
+  border-radius: $border-radius-md;
   color: $text-secondary;
   font-size: $font-size-caption;
+  font-weight: 600;
   cursor: pointer;
+  transition: all $transition-base;
 
   &:hover {
-    border-color: $text-muted;
-    color: $text-primary;
+    background-color: $accent-subtle;
+    border-color: $accent-primary;
+    color: $accent-primary;
   }
 }
