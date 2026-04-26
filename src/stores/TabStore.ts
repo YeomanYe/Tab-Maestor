@@ -12,6 +12,7 @@ import {
 import { getTabGroupKey } from '@/utils/date';
 
 const DATE_FILTER_KEY = 'tab-maestro-date-filter';
+const DATE_END_DATE_FILTER_KEY = 'tab-maestro-date-end-filter';
 const DATE_START_TIME_KEY = 'tab-maestro-date-start-time';
 const DATE_END_TIME_KEY = 'tab-maestro-date-end-time';
 const AUTO_SAVE_HOURS_KEY = 'tab-maestro-auto-save-hours';
@@ -22,6 +23,7 @@ class TabStore {
   isLoading = false;
   toast: { message: string; type: 'success' | 'error' } | null = null;
   dateFilter: number | null = null; // timestamp, null means no filter (show all)
+  endDateFilter: number | null = null; // end date timestamp for range filter
   startTimeFilter: number | null = null; // minutes from midnight, null means no start time
   endTimeFilter: number | null = null; // minutes from midnight, null means no end time
   autoSaveHours: number | null = null; // hours, null means disabled
@@ -36,6 +38,7 @@ class TabStore {
       if (typeof window !== 'undefined' && window.chrome?.storage?.sync) {
         const keys = [
           DATE_FILTER_KEY,
+          DATE_END_DATE_FILTER_KEY,
           DATE_START_TIME_KEY,
           DATE_END_TIME_KEY,
           AUTO_SAVE_HOURS_KEY,
@@ -43,6 +46,7 @@ class TabStore {
         const result = await window.chrome.storage.sync.get(keys as unknown as string);
         runInAction(() => {
           this.dateFilter = (result[DATE_FILTER_KEY] as number | null) ?? null;
+          this.endDateFilter = (result[DATE_END_DATE_FILTER_KEY] as number | null) ?? null;
           this.startTimeFilter = (result[DATE_START_TIME_KEY] as number | null) ?? null;
           this.endTimeFilter = (result[DATE_END_TIME_KEY] as number | null) ?? null;
           this.autoSaveHours = (result[AUTO_SAVE_HOURS_KEY] as number | null) ?? null;
@@ -58,6 +62,17 @@ class TabStore {
     try {
       if (typeof window !== 'undefined' && window.chrome?.storage?.sync) {
         await window.chrome.storage.sync.set({ [DATE_FILTER_KEY]: timestamp });
+      }
+    } catch {
+      // Silently fail
+    }
+  }
+
+  async setEndDateFilter(timestamp: number | null): Promise<void> {
+    this.endDateFilter = timestamp;
+    try {
+      if (typeof window !== 'undefined' && window.chrome?.storage?.sync) {
+        await window.chrome.storage.sync.set({ [DATE_END_DATE_FILTER_KEY]: timestamp });
       }
     } catch {
       // Silently fail
@@ -276,12 +291,14 @@ class TabStore {
     // Apply date filter
     if (this.dateFilter) {
       const dateStart = this.dateFilter;
-      // End of the selected day (next day at 00:00:00)
-      const dateEnd = dateStart + 24 * 60 * 60 * 1000;
+      // If endDateFilter is set, use it; otherwise use single day
+      const dateEnd = this.endDateFilter
+        ? this.endDateFilter + 24 * 60 * 60 * 1000 // End of end date (next day at 00:00:00)
+        : dateStart + 24 * 60 * 60 * 1000; // End of the selected day (next day at 00:00:00)
 
       result = result.filter((tab) => {
         const tabTime = tab.savedAt;
-        // First check if date matches
+        // Check if date is within range
         if (tabTime < dateStart || tabTime >= dateEnd) {
           return false;
         }

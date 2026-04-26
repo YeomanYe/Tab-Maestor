@@ -46,6 +46,7 @@ export interface Translations {
   dateFilter: string;
   dateFilterAll: string;
   dateFilterPlaceholder: string;
+  dateTo: string;
   timeFrom: string;
   timeTo: string;
   timeStartPlaceholder: string;
@@ -105,6 +106,7 @@ const translations: Record<Language, Translations> = {
     dateFilter: 'Filter by date',
     dateFilterAll: 'All',
     dateFilterPlaceholder: 'Select date',
+    dateTo: 'to',
     timeFrom: 'from',
     timeTo: 'to',
     timeStartPlaceholder: 'Start',
@@ -162,6 +164,7 @@ const translations: Record<Language, Translations> = {
     dateFilter: '按日期筛选',
     dateFilterAll: '全部',
     dateFilterPlaceholder: '选择日期',
+    dateTo: '到',
     timeFrom: '从',
     timeTo: '到',
     timeStartPlaceholder: '开始',

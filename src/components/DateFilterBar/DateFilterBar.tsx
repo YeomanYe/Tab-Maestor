@@ -20,6 +20,22 @@ const DateFilterBar = observer(() => {
     tabStore.setDateFilter(timestamp);
   };
 
+  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (!value) {
+      tabStore.setEndDateFilter(null);
+      return;
+    }
+    // Create timestamp from date input (start of day in local timezone)
+    const date = new Date(value);
+    const timestamp = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate()
+    ).getTime();
+    tabStore.setEndDateFilter(timestamp);
+  };
+
   const handleStartTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (!value) {
@@ -44,6 +60,7 @@ const DateFilterBar = observer(() => {
 
   const handleClearFilter = () => {
     tabStore.setDateFilter(null);
+    tabStore.setEndDateFilter(null);
     tabStore.setStartTimeFilter(null);
     tabStore.setEndTimeFilter(null);
   };
@@ -73,6 +90,14 @@ const DateFilterBar = observer(() => {
             className={styles.dateInput}
             value={formatDateForInput(tabStore.dateFilter)}
             onChange={handleDateChange}
+            placeholder={t('dateFilterPlaceholder')}
+          />
+          <span className={styles.timeSeparator}>{t('dateTo')}</span>
+          <input
+            type="date"
+            className={styles.dateInput}
+            value={formatDateForInput(tabStore.endDateFilter)}
+            onChange={handleEndDateChange}
             placeholder={t('dateFilterPlaceholder')}
           />
           {hasActiveFilter && (
