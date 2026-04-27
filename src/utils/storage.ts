@@ -1,5 +1,6 @@
 import { SavedTab } from '@/types';
 import { mockTabs } from './mockData';
+import { toJS } from 'mobx';
 
 const STORAGE_KEY = 'tab-maestro-tabs';
 
@@ -79,10 +80,13 @@ export const getStoredTabs = async (): Promise<SavedTab[]> => {
 };
 
 export const saveTabs = async (tabs: SavedTab[]): Promise<void> => {
+  // Convert to plain JS array to avoid MobX observable issues
+  const plainTabs = toJS(tabs);
+  
   // Always save to localStorage
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(tabs));
-    console.log('[Storage] Saved', tabs.length, 'tabs to localStorage');
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(plainTabs));
+    console.log('[Storage] Saved', plainTabs.length, 'tabs to localStorage');
   } catch (err) {
     console.warn('[Storage] localStorage write failed:', err);
   }
@@ -92,8 +96,8 @@ export const saveTabs = async (tabs: SavedTab[]): Promise<void> => {
     try {
       const chromeStorage = (window as Window & { chrome: ChromeWithStorage }).chrome?.storage?.local;
       if (chromeStorage) {
-        await chromeStorage.set({ [STORAGE_KEY]: tabs });
-        console.log('[Storage] Saved', tabs.length, 'tabs to chrome.storage');
+        await chromeStorage.set({ [STORAGE_KEY]: plainTabs });
+        console.log('[Storage] Saved', plainTabs.length, 'tabs to chrome.storage');
       }
     } catch (err) {
       console.warn('[Storage] Chrome storage write failed:', err);
