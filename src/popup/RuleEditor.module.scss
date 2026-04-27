@@ -117,6 +117,14 @@
     color: $accent-primary;
     border-style: solid;
   }
+
+  &.active {
+    background-color: $accent-primary;
+    border-color: $accent-primary;
+    color: white;
+    border-style: solid;
+    font-weight: 600;
+  }
 }
 
 .timeRow {

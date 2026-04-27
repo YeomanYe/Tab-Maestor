@@ -18,7 +18,7 @@ body {
 }
 
 #root {
-  min-height: 100vh;
+  /* Removed min-height: 100vh for Chrome extension popup compatibility */
 }
 
 button {

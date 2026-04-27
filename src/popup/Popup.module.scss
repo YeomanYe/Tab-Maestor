@@ -2,10 +2,24 @@
 
 .popup {
   width: 360px;
-  min-height: 400px;
+  height: 500px;
   padding: 0;
+  margin: 0;
   background-color: $bg-primary;
   color: $text-primary;
+  display: flex;
+  flex-direction: column;
+}
+
+// Ensure no default margin on body and root for Chrome extension popup
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  margin: 0;
+  padding: 0;
 }
 
 .header {
@@ -13,6 +27,7 @@
   align-items: center;
   justify-content: space-between;
   padding: $spacing-md $spacing-lg;
+  margin: 0;
   background: linear-gradient(135deg, $accent-primary 0%, $accent-hover 100%);
 }
 
@@ -65,7 +80,7 @@
   flex-direction: column;
   padding: $spacing-md;
   gap: $spacing-sm;
-  max-height: 360px;
+  height: 450px;
   overflow-y: auto;
 }
 
@@ -231,8 +246,6 @@
 }
 
 .footer {
-  position: sticky;
-  bottom: 0;
   display: flex;
   justify-content: center;
   padding: $spacing-md;

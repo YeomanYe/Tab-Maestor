@@ -71,12 +71,16 @@ const TabCard = ({ tab, showPinButton = true }: TabCardProps) => {
           onClick={handlePin}
           title={tab.pinned ? t('unpinTab') : t('pinTab')}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill={tab.pinned ? 'currentColor' : 'none'}>
-            <path
-              d="M12 2C12.55 2 13 2.45 13 3V10L18 15V21C18 21.55 17.55 22 17 22H7C6.45 22 6 21.55 6 21V15L11 10V3C11 2.45 11.45 2 12 2Z"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
+          <svg width="16" height="16" viewBox="0 0 476.258 476.258" fill="currentColor">
+            <path d="M476.235,119.133L357.158,0L206.936,134.654c-19.906-7.082-39.446-10.666-58.205-10.666 
+              c-31.648,0-58.709,10.364-78.259,29.972l-10.574,10.607l115.305,115.298L0.023,455.045l21.213,21.213l175.18-175.181 
+              l115.325,115.318l10.606-10.614c16.936-16.948,27.105-39.913,29.41-66.414c1.905-21.911-1.6-45.947-10.156-70.022L476.235,119.133z 
+               M434.942,120.257L323.736,244.33l-91.784-91.811L356.025,41.303L434.942,120.257z M310.52,372.75L103.519,165.76 
+              c12.401-7.74,27.764-11.773,45.212-11.773c16.56,0,34.831,3.715,53.014,10.748l109.781,109.813 
+              C326.418,312.819,325.869,348.207,310.52,372.75z" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
               strokeLinejoin="round"
             />
           </svg>

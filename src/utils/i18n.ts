@@ -61,19 +61,59 @@ export interface Translations {
   dateThisMonth: string;
   dateRange: string;
   clearFilter: string;
+  
+  // Week days
+  daySun: string;
+  dayMon: string;
+  dayTue: string;
+  dayWed: string;
+  dayThu: string;
+  dayFri: string;
+  daySat: string;
+  // Full week day names
+  fullDaySun: string;
+  fullDayMon: string;
+  fullDayTue: string;
+  fullDayWed: string;
+  fullDayThu: string;
+  fullDayFri: string;
+  fullDaySat: string;
 
   // Auto save
   autoSave: string;
   autoSaveDisabled: string;
   autoSaveMinutes: string;
   autoSaveCustom: string;
+  autoSaveCustomPlaceholder: string;
+
+  // Popup
+  addRule: string;
+  editRule: string;
+  saveRule: string;
+  cancel: string;
+  domain: string;
+  domainHint: string;
+  effectiveDays: string;
+  everyDay: string;
+  weekdays: string;
+  weekends: string;
+  effectiveTime: string;
+  openTabManager: string;
+  noRules: string;
+  noRulesDescription: string;
+  atLeastOneDay: string;
+  enable: string;
+  disable: string;
+  edit: string;
+  delete: string;
+  timeRange: string;
 }
 
 const translations: Record<Language, Translations> = {
   en: {
     // Header
     appTitle: 'Tab Maestro',
-    saveAllTabs: 'Save All Tabs',
+    saveAllTabs: 'Collect All Tabs',
     clearAllTabs: 'Clear All Tabs',
     clearAllConfirm: 'Are you sure you want to clear all saved tabs?',
 
@@ -83,7 +123,7 @@ const translations: Record<Language, Translations> = {
 
     // Tab list
     noSavedTabs: 'No saved tabs',
-    noSavedTabsDescription: 'Use "Save All Tabs" to save and close your open tabs',
+    noSavedTabsDescription: 'Use "Collect All Tabs" to save and close your open tabs',
 
     // Group labels
     today: 'Today',
@@ -131,15 +171,55 @@ const translations: Record<Language, Translations> = {
     dateThisMonth: 'This Month',
     dateRange: 'Date Range',
     clearFilter: 'Clear filter',
+    
+    // Week days
+    daySun: 'Sun',
+    dayMon: 'Mon',
+    dayTue: 'Tue',
+    dayWed: 'Wed',
+    dayThu: 'Thu',
+    dayFri: 'Fri',
+    daySat: 'Sat',
+    // Full week day names
+    fullDaySun: 'Sunday',
+    fullDayMon: 'Monday',
+    fullDayTue: 'Tuesday',
+    fullDayWed: 'Wednesday',
+    fullDayThu: 'Thursday',
+    fullDayFri: 'Friday',
+    fullDaySat: 'Saturday',
     autoSave: 'Auto-save after',
     autoSaveDisabled: 'Disabled',
     autoSaveMinutes: 'minutes',
     autoSaveCustom: 'Custom',
+    autoSaveCustomPlaceholder: 'Custom...',
+
+    // Popup
+    addRule: 'Add',
+    editRule: 'Edit',
+    saveRule: 'Save Rule',
+    cancel: 'Cancel',
+    domain: 'Website Domain',
+    domainHint: 'Supports wildcard * for subdomains',
+    effectiveDays: 'Effective Days',
+    everyDay: 'Every Day',
+    weekdays: 'Weekdays',
+    weekends: 'Weekends',
+    effectiveTime: 'Effective Time',
+    openTabManager: 'Open Tab Manager',
+    noRules: 'No auto-save rules',
+    noRulesDescription: 'Click the "Add" button above\n to create auto-save rules for current website',
+    atLeastOneDay: 'At least one day must be selected',
+    enable: 'Enable',
+    disable: 'Disable',
+    edit: 'Edit',
+    delete: 'Delete',
+    timeRange: 'time range',
   },
   zh: {
     // Header
     appTitle: 'Tab Maestro',
-    saveAllTabs: '保存所有标签页',
+    saveAllTabs: '收集所有标签页',
     clearAllTabs: '清除所有标签页',
     clearAllConfirm: '确定要清除所有已保存的标签页吗？',
 
@@ -149,7 +229,7 @@ const translations: Record<Language, Translations> = {
 
     // Tab list
     noSavedTabs: '暂无保存的标签页',
-    noSavedTabsDescription: '点击"保存所有标签页"来保存并关闭您打开的标签页',
+    noSavedTabsDescription: '点击"收集所有标签页"来保存并关闭您打开的标签页',
 
     // Group labels
     today: '今天',
@@ -197,10 +277,50 @@ const translations: Record<Language, Translations> = {
     dateThisMonth: '本月',
     dateRange: '日期范围',
     clearFilter: '清除筛选',
+    
+    // Week days
+    daySun: '日',
+    dayMon: '一',
+    dayTue: '二',
+    dayWed: '三',
+    dayThu: '四',
+    dayFri: '五',
+    daySat: '六',
+    // Full week day names
+    fullDaySun: '周日',
+    fullDayMon: '周一',
+    fullDayTue: '周二',
+    fullDayWed: '周三',
+    fullDayThu: '周四',
+    fullDayFri: '周五',
+    fullDaySat: '周六',
     autoSave: '自动保存于',
     autoSaveDisabled: '已禁用',
     autoSaveMinutes: '分钟',
     autoSaveCustom: '自定义',
+    autoSaveCustomPlaceholder: '自定义...',
+
+    // Popup
+    addRule: '添加',
+    editRule: '编辑',
+    saveRule: '保存规则',
+    cancel: '取消',
+    domain: '网站域名',
+    domainHint: '支持通配符 * 匹配子域名',
+    effectiveDays: '生效日期',
+    everyDay: '每天',
+    weekdays: '工作日',
+    weekends: '周末',
+    effectiveTime: '生效时间段',
+    openTabManager: '打开标签页管理',
+    noRules: '暂无自动保存规则',
+    noRulesDescription: '点击上方「添加」按钮\n为当前网站创建自动保存规则',
+    atLeastOneDay: '至少需要选择一天',
+    enable: '启用',
+    disable: '禁用',
+    edit: '编辑',
+    delete: '删除',
+    timeRange: '时间段',
   },
 };
 

@@ -44,8 +44,9 @@ const DateFilterBar = observer(() => {
   const handleQuickFilter = (days: number) => {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-    tabStore.setDateFilter(today);
-    tabStore.setEndDateFilter(today + (days - 1) * 24 * 60 * 60 * 1000);
+    const startDate = today - (days - 1) * 24 * 60 * 60 * 1000;
+    tabStore.setDateFilter(startDate);
+    tabStore.setEndDateFilter(today);
   };
 
   const formatDateForInput = (timestamp: number | null): string => {
@@ -76,9 +77,9 @@ const DateFilterBar = observer(() => {
   const isTodayFilter = tabStore.dateFilter && tabStore.endDateFilter &&
     tabStore.dateFilter === tabStore.endDateFilter;
   const isWeekFilter = tabStore.dateFilter && tabStore.endDateFilter &&
-    tabStore.endDateFilter === tabStore.dateFilter + (7 - 1) * 24 * 60 * 60 * 1000;
+    tabStore.dateFilter === tabStore.endDateFilter - (7 - 1) * 24 * 60 * 60 * 1000;
   const isMonthFilter = tabStore.dateFilter && tabStore.endDateFilter &&
-    tabStore.endDateFilter === tabStore.dateFilter + (30 - 1) * 24 * 60 * 60 * 1000;
+    tabStore.dateFilter === tabStore.endDateFilter - (30 - 1) * 24 * 60 * 60 * 1000;
 
   return (
     <div className={styles.container}>

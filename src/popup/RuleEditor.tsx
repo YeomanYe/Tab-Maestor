@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { SaveRule } from '@/types';
+import { t } from '@/utils/i18n';
 import styles from './RuleEditor.module.scss';
 
 interface RuleEditorProps {
@@ -8,7 +9,17 @@ interface RuleEditorProps {
   onCancel: () => void;
 }
 
-const dayNames = ['日', '一', '二', '三', '四', '五', '六'];
+const getDayNames = () => {
+  return [
+    t('daySun'),
+    t('dayMon'),
+    t('dayTue'),
+    t('dayWed'),
+    t('dayThu'),
+    t('dayFri'),
+    t('daySat')
+  ];
+};
 
 const RuleEditor = ({ rule, onSave, onCancel }: RuleEditorProps) => {
   const [domain, setDomain] = useState(rule.domain);
@@ -16,10 +27,34 @@ const RuleEditor = ({ rule, onSave, onCancel }: RuleEditorProps) => {
   const [startTime, setStartTime] = useState(rule.startTime);
   const [endTime, setEndTime] = useState(rule.endTime);
 
+  // Update start time with validation
+  const handleStartTimeChange = (value: string) => {
+    setStartTime(value);
+    // If start time is after end time, update end time to be same as start time
+    if (value > endTime) {
+      setEndTime(value);
+    }
+  };
+
+  // Update end time with validation
+  const handleEndTimeChange = (value: string) => {
+    setEndTime(value);
+    // If end time is before start time, update start time to be same as end time
+    if (value < startTime) {
+      setStartTime(value);
+    }
+  };
+
   const handleDayToggle = (day: number) => {
     // Toggle day selection - add if not selected, remove if selected
+    // But don't allow removing the last selected day
     if (days.includes(day)) {
-      setDays(days.filter(d => d !== day).sort());
+      if (days.length > 1) {
+        setDays(days.filter(d => d !== day).sort());
+      } else {
+        // Show alert when trying to remove the last day
+        alert(t('atLeastOneDay'));
+      }
     } else {
       setDays([...days, day].sort());
     }
@@ -53,7 +88,7 @@ const RuleEditor = ({ rule, onSave, onCancel }: RuleEditorProps) => {
   return (
     <div className={styles.editor}>
       <div className={styles.field}>
-        <label className={styles.label}>网站域名</label>
+        <label className={styles.label}>{t('domain')}</label>
         <input
           type="text"
           className={styles.input}
@@ -61,36 +96,36 @@ const RuleEditor = ({ rule, onSave, onCancel }: RuleEditorProps) => {
           onChange={(e) => setDomain(e.target.value)}
           placeholder="example.com 或 *.example.com"
         />
-        <span className={styles.hint}>支持通配符 * 匹配子域名</span>
+        <span className={styles.hint}>{t('domainHint')}</span>
       </div>
 
       <div className={styles.field}>
-        <label className={styles.label}>生效日期</label>
+        <label className={styles.label}>{t('effectiveDays')}</label>
         <div className={styles.quickSelect}>
           <button
             type="button"
             className={`${styles.quickButton} ${days.length === 7 ? styles.active : ''}`}
             onClick={handleSelectAllDays}
           >
-            每天
+            {t('everyDay')}
           </button>
           <button
             type="button"
-            className={styles.quickButton}
+            className={`${styles.quickButton} ${JSON.stringify(days) === JSON.stringify([1, 2, 3, 4, 5]) ? styles.active : ''}`}
             onClick={handleSelectWeekdays}
           >
-            工作日
+            {t('weekdays')}
           </button>
           <button
             type="button"
-            className={styles.quickButton}
+            className={`${styles.quickButton} ${JSON.stringify(days) === JSON.stringify([0, 6]) ? styles.active : ''}`}
             onClick={handleSelectWeekends}
           >
-            周末
+            {t('weekends')}
           </button>
         </div>
         <div className={styles.daySelector}>
-          {dayNames.map((name, index) => (
+          {getDayNames().map((name, index) => (
             <button
               key={index}
               type="button"
@@ -104,20 +139,20 @@ const RuleEditor = ({ rule, onSave, onCancel }: RuleEditorProps) => {
       </div>
 
       <div className={styles.field}>
-        <label className={styles.label}>生效时间段</label>
+        <label className={styles.label}>{t('effectiveTime')}</label>
         <div className={styles.timeRow}>
           <input
             type="time"
             className={styles.timeInput}
             value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
+            onChange={(e) => handleStartTimeChange(e.target.value)}
           />
-          <span className={styles.timeSeparator}>至</span>
+          <span className={styles.timeSeparator}>{t('dateTo')}</span>
           <input
             type="time"
             className={styles.timeInput}
             value={endTime}
-            onChange={(e) => setEndTime(e.target.value)}
+            onChange={(e) => handleEndTimeChange(e.target.value)}
           />
         </div>
       </div>
@@ -128,7 +163,7 @@ const RuleEditor = ({ rule, onSave, onCancel }: RuleEditorProps) => {
           className={`${styles.button} ${styles.secondary}`}
           onClick={onCancel}
         >
-          取消
+          {t('cancel')}
         </button>
         <button
           type="button"
@@ -138,7 +173,7 @@ const RuleEditor = ({ rule, onSave, onCancel }: RuleEditorProps) => {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <polyline points="20,6 9,17 4,12" />
           </svg>
-          保存规则
+          {t('saveRule')}
         </button>
       </div>
     </div>

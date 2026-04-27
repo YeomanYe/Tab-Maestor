@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 import { tabStore } from '@/stores/TabStore';
 import { ThemeSwitcher } from '@/components/ThemeSwitcher/ThemeSwitcher';
@@ -6,15 +7,52 @@ import SearchBox from '@/components/SearchBox/SearchBox';
 import { t } from '@/utils/i18n';
 import styles from './Header.module.scss';
 
-const PRESET_OPTIONS = [
+// Options in minutes
+const PRESET_OPTIONS: Array<{ value: number | null; label: string }> = [
   { value: null, label: t('autoSaveDisabled') },
   { value: 15, label: '15 ' + t('autoSaveMinutes') },
   { value: 30, label: '30 ' + t('autoSaveMinutes') },
+  { value: 45, label: '45 ' + t('autoSaveMinutes') },
   { value: 60, label: '60 ' + t('autoSaveMinutes') },
+  { value: 90, label: '90 ' + t('autoSaveMinutes') },
   { value: 120, label: '120 ' + t('autoSaveMinutes') },
 ];
 
 const Header = observer(() => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [customValue, setCustomValue] = useState('');
+  const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Check if current value is a custom value (not in presets)
+  const isCustomValue = tabStore.autoSaveHours !== null &&
+    !PRESET_OPTIONS.some(opt => opt.value === tabStore.autoSaveHours);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    // Use setTimeout to allow click events on dropdown items to fire first
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleDropdownClick = (e: React.MouseEvent) => {
+    // Prevent dropdown from closing when clicking inside it
+    e.stopPropagation();
+  };
+
+  // Focus input when dropdown opens
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      setTimeout(() => inputRef.current?.focus(), 50);
+    }
+  }, [isOpen]);
+
   const handleSaveAll = async () => {
     await tabStore.saveAllTabs();
   };
@@ -25,14 +63,38 @@ const Header = observer(() => {
     }
   };
 
-  const handleAutoSaveChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleSelect = (value: number | null) => {
+    tabStore.setAutoSaveHours(value);
+    setIsOpen(false);
+    setCustomValue('');
+  };
+
+  const handleCustomInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    if (value === '') {
+    setCustomValue(value);
+
+    // Allow typing numbers only
+    const minutes = parseInt(value, 10);
+    if (!isNaN(minutes) && minutes > 0) {
+      tabStore.setAutoSaveHours(minutes);
+    } else if (value === '') {
       tabStore.setAutoSaveHours(null);
-    } else {
-      tabStore.setAutoSaveHours(parseInt(value, 10));
     }
   };
+
+  const handleCustomKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === 'Escape') {
+      setIsOpen(false);
+      setCustomValue('');
+    }
+  };
+
+  const currentOption = PRESET_OPTIONS.find(opt => opt.value === tabStore.autoSaveHours);
+  const currentLabel = isCustomValue
+    ? `${tabStore.autoSaveHours} ${t('autoSaveMinutes')}`
+    : currentOption?.value === null
+      ? t('autoSaveDisabled')
+      : currentOption?.label || '';
 
   return (
     <header className={styles.header}>
@@ -57,19 +119,61 @@ const Header = observer(() => {
       </div>
 
       <div className={styles.rightSection}>
-        <div className={styles.autoSave}>
+        <div className={styles.autoSave} ref={containerRef}>
           <span className={styles.autoSaveLabel}>{t('autoSave')}</span>
-          <select
-            className={styles.autoSaveSelect}
-            value={tabStore.autoSaveHours ?? ''}
-            onChange={handleAutoSaveChange}
-          >
-            {PRESET_OPTIONS.map((option) => (
-              <option key={option.value ?? 'disabled'} value={option.value ?? ''}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+          <div className={styles.autoSaveSelector}>
+            <button
+              className={`${styles.autoSaveTrigger} ${isOpen ? styles.active : ''}`}
+              onClick={() => setIsOpen(!isOpen)}
+              type="button"
+            >
+              <span className={`${styles.autoSaveValue} ${tabStore.autoSaveHours === null ? styles.disabled : ''}`}>
+                {currentLabel}
+              </span>
+              <svg className={styles.chevron} viewBox="0 0 24 24" fill="none">
+                <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+
+            {isOpen && (
+              <div className={styles.dropdown} onClick={handleDropdownClick}>
+                {/* Custom input field */}
+                <div className={styles.customInputWrapper}>
+                  <input
+                    ref={inputRef}
+                    type="number"
+                    className={styles.customInput}
+                    placeholder={t('autoSaveCustomPlaceholder')}
+                    value={isCustomValue ? String(tabStore.autoSaveHours) : customValue}
+                    onChange={handleCustomInput}
+                    onKeyDown={handleCustomKeyDown}
+                    min="1"
+                  />
+                  <span className={styles.customInputLabel}>{t('autoSaveMinutes')}</span>
+                </div>
+
+                <div className={styles.divider} />
+
+                {PRESET_OPTIONS.map((option) => (
+                  <button
+                    key={option.value ?? 'disabled'}
+                    className={`${styles.dropdownItem} ${option.value === tabStore.autoSaveHours ? styles.selected : ''}`}
+                    onClick={() => handleSelect(option.value)}
+                    type="button"
+                  >
+                    <div className={styles.dropdownItemValue}>
+                      {option.value === tabStore.autoSaveHours && (
+                        <span className={styles.currentIndicator} />
+                      )}
+                      <span className={option.value === null ? styles.disabledOption : ''}>
+                        {option.label}
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         <div className={styles.actions}>

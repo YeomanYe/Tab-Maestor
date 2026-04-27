@@ -44,7 +44,7 @@ export const createDefaultRule = (domain: string): SaveRule => ({
   id: crypto.randomUUID(),
   domain: domain,
   enabled: true,
-  days: [],
+  days: [0, 1, 2, 3, 4, 5, 6],
   startTime: '00:00',
   endTime: '23:59',
 });

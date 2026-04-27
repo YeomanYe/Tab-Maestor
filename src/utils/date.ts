@@ -7,27 +7,8 @@ import { getCurrentLanguage } from './i18n';
  * - Older: absolute date (e.g., "Feb 15")
  */
 export const formatTabTime = (timestamp: number): string => {
-  const now = new Date();
   const date = new Date(timestamp);
-
-  const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const yesterdayDate = new Date(nowDate.getTime() - 24 * 60 * 60 * 1000);
-  const tabDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-
-  const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-  if (tabDate.getTime() === nowDate.getTime()) {
-    // Today
-    return timeStr;
-  }
-
-  if (tabDate.getTime() === yesterdayDate.getTime()) {
-    // Yesterday
-    return timeStr;
-  }
-
-  // Older - absolute date
-  return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
 
 /**
