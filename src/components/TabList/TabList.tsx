@@ -212,8 +212,10 @@ const TabList = observer(() => {
       {pinnedTabs.length > 0 && (
         <div key={Pinned_TABS_GROUP_KEY} className={styles.group}>
           <div className={styles.groupHeader}>
-            <span className={styles.groupTitle}>{t('pinnedTabs')}</span>
-            <span className={styles.groupCount}>({pinnedTabs.length})</span>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span className={styles.groupTitle}>{t('pinnedTabs')}</span>
+              <span className={styles.groupCount}>({pinnedTabs.length})</span>
+            </div>
             {renderPinnedGroupActions()}
           </div>
           <div className={styles.groupContent}>
@@ -228,8 +230,10 @@ const TabList = observer(() => {
       {sortedGroups.map((groupKey) => (
         <div key={groupKey} className={styles.group}>
           <div className={styles.groupHeader}>
-            <span className={styles.groupTitle}>{getGroupLabel(groupKey)}</span>
-            <span className={styles.groupCount}>({groupedTabs[groupKey].length})</span>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span className={styles.groupTitle}>{getGroupLabel(groupKey)}</span>
+              <span className={styles.groupCount}>({groupedTabs[groupKey].length})</span>
+            </div>
             {renderGroupActions(groupKey)}
           </div>
           <div className={styles.groupContent}>

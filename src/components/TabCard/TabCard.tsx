@@ -73,7 +73,7 @@ const TabCard = ({ tab, showPinButton = true }: TabCardProps) => {
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill={tab.pinned ? 'currentColor' : 'none'}>
             <path
-              d="M12 2L12 8M12 8L8 4M12 8L16 4M5 12H19M5 12L7 22H17L19 12"
+              d="M12 2C12.55 2 13 2.45 13 3V10L18 15V21C18 21.55 17.55 22 17 22H7C6.45 22 6 21.55 6 21V15L11 10V3C11 2.45 11.45 2 12 2Z"
               stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"

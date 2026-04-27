@@ -16,8 +16,7 @@
   }
 
   &.pinned {
-    background-color: $accent-subtle;
-    border-color: rgba($accent-primary, 0.3);
+    // 保持和非固定状态一样的样式
   }
 }
 
@@ -66,8 +65,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 18px;
+  height: 18px;
   background-color: transparent;
   color: $text-muted;
   border-radius: $border-radius-sm;
@@ -93,8 +92,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 18px;
+  height: 18px;
   background-color: transparent;
   color: $text-muted;
   border-radius: $border-radius-sm;

@@ -96,9 +96,7 @@
   transition: all $transition-base;
   min-width: 130px;
 
-  &:hover {
-    background: #faecd8;
-  }
+
 
   &:focus {
     outline: none;
@@ -127,10 +125,7 @@
       filter: saturate(0) invert(1);
     }
 
-    &:hover {
-      opacity: 1;
-      filter: saturate(1);
-    }
+
   }
 }
 
