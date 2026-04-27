@@ -135,11 +135,17 @@
   font-size: $font-size-body;
   font-family: inherit;
   transition: all $transition-base;
+  color-scheme: light dark;
 
   &:focus {
     outline: none;
     border-color: $accent-primary;
     box-shadow: 0 0 0 3px rgba($accent-primary, 0.15);
+  }
+
+  // Remove default browser hover highlight
+  &::-webkit-calendar-picker-indicator:hover {
+    background: transparent;
   }
 
   &:hover {

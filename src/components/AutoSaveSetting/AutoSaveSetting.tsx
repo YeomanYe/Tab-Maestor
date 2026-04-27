@@ -33,9 +33,15 @@ const AutoSaveSetting = observer(() => {
       }
     };
 
+    // Use setTimeout to allow click events on dropdown items to fire first
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const handleDropdownClick = (e: React.MouseEvent) => {
+    // Prevent dropdown from closing when clicking inside it
+    e.stopPropagation();
+  };
 
   // Focus input when dropdown opens
   useEffect(() => {
@@ -101,7 +107,7 @@ const AutoSaveSetting = observer(() => {
         </button>
 
         {isOpen && (
-          <div className={styles.dropdown}>
+          <div className={styles.dropdown} onClick={handleDropdownClick}>
             {/* Custom input field */}
             <div className={styles.customInputWrapper}>
               <input

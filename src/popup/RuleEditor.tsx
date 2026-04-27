@@ -24,9 +24,8 @@ const RuleEditor = ({ rule, onSave, onCancel }: RuleEditorProps) => {
   };
 
   const handleSelectAllDays = () => {
-    if (days.length === 7) {
-      setDays([]);
-    } else {
+    // Only set to all days if not already selected - never deselect
+    if (days.length !== 7) {
       setDays([0, 1, 2, 3, 4, 5, 6]);
     }
   };
