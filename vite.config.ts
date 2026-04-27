@@ -58,6 +58,7 @@ export default defineConfig({
     },
   },
   build: {
+    sourcemap: process.argv.includes('--watch'),
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
