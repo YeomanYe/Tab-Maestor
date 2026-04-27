@@ -88,6 +88,16 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   }
 });
 
+// Handle messages from content scripts and options page
+chrome.runtime.onMessage.addListener((message, _sender, _sendResponse) => {
+  console.log('[Background] Message received:', message);
+  if (message.action === 'saveAllTabs') {
+    saveAllTabs();
+  } else if (message.action === 'saveCurrentTab') {
+    saveCurrentTab();
+  }
+});
+
 async function getStoredTabs(): Promise<SavedTab[]> {
   try {
     const result = await chrome.storage.local.get(STORAGE_KEY);

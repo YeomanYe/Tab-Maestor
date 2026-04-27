@@ -54,7 +54,12 @@ const Header = observer(() => {
   }, [isOpen]);
 
   const handleSaveAll = async () => {
-    await tabStore.saveAllTabs();
+    // Send message to background to save all tabs (same as keyboard shortcut)
+    try {
+      await (window.chrome as typeof window.chrome & { runtime?: { sendMessage?: (message: { action: string }) => Promise<void> } }).runtime?.sendMessage?.({ action: 'saveAllTabs' });
+    } catch {
+      // Silently fail if not in Chrome extension context
+    }
   };
 
   const handleClearAll = async () => {
