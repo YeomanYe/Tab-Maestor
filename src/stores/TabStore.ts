@@ -133,11 +133,8 @@ class TabStore {
       const tabIdsToClose: number[] = [];
 
       for (const tab of tabs) {
-        if (
-          tab.url &&
-          !tab.url.startsWith('chrome://') &&
-          !tab.url.startsWith('chrome-extension://')
-        ) {
+        // Allow all tabs with URL (including chrome:// URLs)
+        if (tab.url) {
           const tabInfo: TabInfo = {
             id: tab.id,
             title: tab.title || 'Untitled',
