@@ -11,6 +11,18 @@ import styles from './App.module.scss';
 const AppContent = observer(() => {
   useEffect(() => {
     tabStore.loadTabs();
+
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        tabStore.loadTabs();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   return (
