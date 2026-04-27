@@ -13,6 +13,10 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-sm;
+
+  &:first-of-type {
+    margin-bottom: $spacing-xs;
+  }
 }
 
 .label {
@@ -136,6 +140,10 @@
     outline: none;
     border-color: $accent-primary;
     box-shadow: 0 0 0 3px rgba($accent-primary, 0.15);
+  }
+
+  &:hover {
+    outline: none;
   }
 }
 

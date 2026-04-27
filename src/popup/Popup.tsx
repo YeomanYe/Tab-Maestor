@@ -30,6 +30,9 @@ const Popup = observer(() => {
           const url = new URL(tab.url);
           const wildcardDomain = toWildcardDomain(url.hostname);
           setCurrentDomain(wildcardDomain);
+          // Set default to rule editor with current domain
+          const newRule = createDefaultRule(wildcardDomain || 'example.com');
+          setEditingRule(newRule);
         } catch {
           // Ignore invalid URLs
         }

@@ -17,9 +17,8 @@ const RuleEditor = ({ rule, onSave, onCancel }: RuleEditorProps) => {
   const [endTime, setEndTime] = useState(rule.endTime);
 
   const handleDayToggle = (day: number) => {
-    if (days.includes(day)) {
-      setDays(days.filter((d) => d !== day));
-    } else {
+    // Only add, never remove - clicking an already selected day does nothing
+    if (!days.includes(day)) {
       setDays([...days, day].sort());
     }
   };
