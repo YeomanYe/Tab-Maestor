@@ -56,3 +56,10 @@ Components use `observer` from `mobx-react-lite` for reactivity.
 - **SCSS Modules**: Components use `.module.scss` files for scoped styles
 - **i18n**: Translation strings are in `src/utils/i18n.ts`
 - **Theme**: Light/dark theme support via `src/contexts/ThemeContext.tsx`
+
+## Documentation
+
+All specification documents are in the `docs/` folder:
+- `SPEC.md` - Main specification
+- `SPEC-*.md` - Detailed specs (functionality, UI, technical, acceptance)
+- `docs/plans/` - Feature design and implementation plans
