@@ -26,14 +26,14 @@ export default defineConfig({
           'save-current-tab': {
             suggested_key: {
               default: 'Ctrl+Q',
-              mac: 'Ctrl+Q',
+              mac: 'MacCtrl+Q',
             },
             description: 'Save the current tab',
           },
           'save-all-tabs': {
             suggested_key: {
               default: 'Ctrl+Shift+Q',
-              mac: 'Ctrl+A',
+              mac: 'MacCtrl+A',
             },
             description: 'Save all tabs',
           },
