@@ -2,16 +2,19 @@
 
 # Tab Maestro
 
-A Chrome extension for saving and managing browser tabs.
+A Chrome extension for saving and managing browser tabs with automatic saving rules.
 
 ## Features
 
-- Save current tab or all tabs from all windows
-- View and manage saved tabs
-- Open saved tabs with one click
-- Delete individual tabs or clear all
-- Dark theme with indigo accent
-- Toast notifications for feedback
+- **Save Tabs**: Save current tab or all tabs from all windows
+- **Auto-Save Rules**: Configure automatic tab saving with custom schedules
+  - Set specific days of the week
+  - Set time ranges (e.g., 9:00 - 18:00)
+  - Support wildcard domains (*.example.com)
+- **Search & Filter**: Search saved tabs and filter by date range
+- **Theme Support**: Light and dark theme with warm yellow accent
+- **Multi-language**: English and Chinese (Simplified)
+- **Tab Management**: View, open, pin, and delete saved tabs
 
 ## Installation
 
@@ -45,7 +48,7 @@ pnpm test:watch
 # Lint code
 pnpm lint
 
-# Fix lint errors
+# fix lint errors
 pnpm lint:fix
 
 # Lint styles
@@ -80,17 +83,34 @@ tab-maestro/
 │   └── manifest.json       # Chrome extension manifest
 ├── src/
 │   ├── background/         # Background scripts
-│   ├── components/         # React components
-│   ├── stores/             # MobX stores
+│   ├── components/        # React components
+│   │   ├── AutoSaveSetting/
+│   │   ├── DateFilterBar/
+│   │   ├── Header/
+│   │   ├── SearchBox/
+│   │   ├── TabCard/
+│   │   ├── TabList/
+│   │   └── ...
+│   ├── contexts/          # React contexts
+│   ├── popup/             # Popup page components
+│   ├── stores/            # MobX stores
 │   ├── styles/            # Global styles
-│   ├── types/              # TypeScript types
-│   └── utils/              # Utility functions
-├── .husky/                 # Git hooks
+│   ├── types/             # TypeScript types
+│   └── utils/            # Utility functions
+├── .husky/                # Git hooks
 ├── package.json
 ├── vite.config.ts
 ├── vitest.config.ts
 └── tsconfig.json
 ```
+
+## Theme
+
+The extension uses a warm yellow theme:
+
+- **Background**: `#FFFCF0` (light) / `#1C1917` (dark)
+- **Accent**: `#EAB308` (light) / `#FBBF24` (dark)
+- **Font**: Nunito
 
 ## License
 
