@@ -193,7 +193,14 @@ const Popup = observer(() => {
       )}
 
       <div className={styles.footer}>
-        <button className={styles.openFullButton} onClick={() => window.open('index.html', '_blank')}>
+        <button className={styles.openFullButton} onClick={() => {
+          const chromeWithOptions = window.chrome as typeof window.chrome & { runtime: { openOptionsPage?: () => void } };
+          if (chromeWithOptions.runtime?.openOptionsPage) {
+            chromeWithOptions.runtime.openOptionsPage();
+          } else {
+            window.open('index.html', '_blank');
+          }
+        }}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
             <polyline points="15,3 21,3 21,9" />
