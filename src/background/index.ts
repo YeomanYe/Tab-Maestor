@@ -207,13 +207,6 @@ async function saveCurrentTab(): Promise<void> {
     }
 
     const storedTabs = await getStoredTabs();
-    const exists = storedTabs.some((t) => t.url === tab.url);
-
-    if (exists) {
-      await showNotification('Tab Maestro', 'Tab already saved');
-      console.log('[Background] Tab already saved');
-      return;
-    }
 
     const tabId = tab.id;
     console.log('[Background] Saving tab:', tab.title, 'id:', tabId);
@@ -235,8 +228,20 @@ async function saveCurrentTab(): Promise<void> {
       await chrome.tabs.remove(tabId);
     }
 
+    // Refresh options page if it's open (without focusing)
+    const extensionOptionsUrl = chrome.runtime.getURL('index.html');
+    const optionsTabs = await chrome.tabs.query({ url: extensionOptionsUrl });
+    for (const tab of optionsTabs) {
+      if (tab.id) {
+        await chrome.tabs.reload(tab.id);
+        console.log('[Background] Refreshed options page tab:', tab.id);
+      }
+    }
+
     await showNotification('Tab Maestro', `Saved: ${newTab.title}`);
     console.log('[Background] Tab saved and closed');
+    console.log('[Background] Options page data refreshed (if open)');
+
   } catch (error) {
     console.error('[Background] saveCurrentTab error:', error);
     await showNotification('Tab Maestro', 'Failed to save tab');
@@ -275,11 +280,13 @@ async function focusOrOpenOptionsPage(): Promise<void> {
 async function saveAllTabs(): Promise<void> {
   try {
     const allTabs = await chrome.tabs.query({});
+    const extensionOptionsUrl = chrome.runtime.getURL('index.html');
 
     const validTabs = allTabs.filter(
       (tab) =>
         tab.url &&
-        !tab.pinned
+        !tab.pinned &&
+        tab.url !== extensionOptionsUrl
     );
 
     if (validTabs.length === 0) {

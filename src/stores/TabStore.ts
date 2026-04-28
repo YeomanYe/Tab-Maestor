@@ -242,11 +242,17 @@ class TabStore {
   }
 
   async openAllTabsInGroup(groupKey: string): Promise<void> {
-    const tabsToOpen = this.tabs.filter((tab) => getTabGroupKey(tab.savedAt) === groupKey);
+    const tabsToOpen = this.tabs.filter((tab) => getTabGroupKey(tab.savedAt) === groupKey && !tab.pinned);
+    const tabIdsToOpen = tabsToOpen.map((tab) => tab.id);
+    
     for (const tab of tabsToOpen) {
       await openTab(tab.url);
     }
-    this.showToast(`${tabsToOpen.length} tabs opened`, 'success');
+    
+    this.tabs = this.tabs.filter((tab) => !tabIdsToOpen.includes(tab.id));
+    await saveTabs(this.tabs);
+    
+    this.showToast(`${tabsToOpen.length} tabs opened and removed from group`, 'success');
   }
 
   async deletePinnedTabs(): Promise<void> {
@@ -258,10 +264,16 @@ class TabStore {
 
   async openPinnedTabs(): Promise<void> {
     const pinnedTabs = this.tabs.filter((tab) => tab.pinned);
+    const pinnedTabIds = pinnedTabs.map((tab) => tab.id);
+    
     for (const tab of pinnedTabs) {
       await openTab(tab.url);
     }
-    this.showToast(`${pinnedTabs.length} pinned tabs opened`, 'success');
+    
+    this.tabs = this.tabs.filter((tab) => !pinnedTabIds.includes(tab.id));
+    await saveTabs(this.tabs);
+    
+    this.showToast(`${pinnedTabs.length} pinned tabs opened and removed`, 'success');
   }
 
   async clearAll(): Promise<void> {
