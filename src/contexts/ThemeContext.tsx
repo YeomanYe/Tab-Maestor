@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, useRef, ReactNode } from 'react';
+import browser from 'webextension-polyfill';
 
 export type Theme = 'light' | 'dark' | 'system';
 
@@ -26,6 +27,15 @@ const resolveTheme = (theme: Theme): 'light' | 'dark' => {
   return theme;
 };
 
+// Check if running in browser extension environment
+const isExtensionEnvironment = (): boolean => {
+  if (typeof browser !== 'undefined' && browser.storage?.sync) {
+    return true;
+  }
+  const win = window as Window & { chrome?: { storage?: { sync?: unknown } } };
+  return !!(win.chrome?.storage?.sync);
+};
+
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setThemeState] = useState<Theme>('light');
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
@@ -45,9 +55,9 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   // Load theme from storage on mount
   useEffect(() => {
     const loadTheme = async () => {
-      if (typeof window !== 'undefined' && window.chrome?.storage?.sync) {
+      if (isExtensionEnvironment()) {
         try {
-          const result = await window.chrome.storage.sync.get(THEME_STORAGE_KEY);
+          const result = await browser.storage.sync.get(THEME_STORAGE_KEY);
           const savedTheme = result?.[THEME_STORAGE_KEY] as Theme | undefined;
           if (savedTheme && ['light', 'dark', 'system'].includes(savedTheme)) {
             setThemeState(savedTheme);
@@ -80,10 +90,10 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     setThemeState(newTheme);
     applyTheme(newTheme);
 
-    // Save to chrome.storage.sync
-    if (typeof window !== 'undefined' && window.chrome?.storage?.sync) {
+    // Save to browser.storage.sync
+    if (isExtensionEnvironment()) {
       try {
-        await window.chrome.storage.sync.set({ [THEME_STORAGE_KEY]: newTheme });
+        await browser.storage.sync.set({ [THEME_STORAGE_KEY]: newTheme });
       } catch {
         // Silently fail
       }

@@ -1,6 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import { v4 as uuidv4 } from 'uuid';
 import { SavedTab, TabInfo } from '@/types';
+import browser from 'webextension-polyfill';
 import {
   getStoredTabs,
   saveTabs,
@@ -15,6 +16,15 @@ import { t } from '@/utils/i18n';
 const DATE_FILTER_KEY = 'tab-maestro-date-filter';
 const DATE_END_DATE_FILTER_KEY = 'tab-maestro-date-end-filter';
 const AUTO_SAVE_HOURS_KEY = 'tab-maestro-auto-save-hours';
+
+// Check if running in browser extension environment
+const isExtensionEnvironment = (): boolean => {
+  if (typeof browser !== 'undefined' && browser.storage?.sync) {
+    return true;
+  }
+  const win = window as Window & { chrome?: { storage?: { sync?: unknown } } };
+  return !!(win.chrome?.storage?.sync);
+};
 
 class TabStore {
   tabs: SavedTab[] = [];
@@ -32,21 +42,21 @@ class TabStore {
 
   private async loadSettings(): Promise<void> {
     try {
-      if (typeof window !== 'undefined' && window.chrome?.storage?.sync) {
+      if (isExtensionEnvironment()) {
         const keys = [
           DATE_FILTER_KEY,
           DATE_END_DATE_FILTER_KEY,
           AUTO_SAVE_HOURS_KEY,
         ];
-        const result = await window.chrome.storage.sync.get(keys as unknown as string);
+        const result = await browser.storage.sync.get(keys as unknown as string);
         runInAction(() => {
           this.dateFilter = (result[DATE_FILTER_KEY] as number | null) ?? null;
           this.endDateFilter = (result[DATE_END_DATE_FILTER_KEY] as number | null) ?? null;
           this.autoSaveHours = (result[AUTO_SAVE_HOURS_KEY] as number | null) ?? null;
         });
         // Sync auto-save setting to background script
-        if (this.autoSaveHours !== null && window.chrome?.runtime?.sendMessage) {
-          window.chrome.runtime.sendMessage({ action: 'updateAutoSaveDelay', delay: this.autoSaveHours });
+        if (this.autoSaveHours !== null && browser.runtime?.sendMessage) {
+          browser.runtime.sendMessage({ action: 'updateAutoSaveDelay', delay: this.autoSaveHours });
         }
       }
     } catch {
@@ -57,8 +67,8 @@ class TabStore {
   async setDateFilter(timestamp: number | null): Promise<void> {
     this.dateFilter = timestamp;
     try {
-      if (typeof window !== 'undefined' && window.chrome?.storage?.sync) {
-        await window.chrome.storage.sync.set({ [DATE_FILTER_KEY]: timestamp });
+      if (isExtensionEnvironment()) {
+        await browser.storage.sync.set({ [DATE_FILTER_KEY]: timestamp });
       }
     } catch {
       // Silently fail
@@ -68,8 +78,8 @@ class TabStore {
   async setEndDateFilter(timestamp: number | null): Promise<void> {
     this.endDateFilter = timestamp;
     try {
-      if (typeof window !== 'undefined' && window.chrome?.storage?.sync) {
-        await window.chrome.storage.sync.set({ [DATE_END_DATE_FILTER_KEY]: timestamp });
+      if (isExtensionEnvironment()) {
+        await browser.storage.sync.set({ [DATE_END_DATE_FILTER_KEY]: timestamp });
       }
     } catch {
       // Silently fail
@@ -79,12 +89,12 @@ class TabStore {
   async setAutoSaveHours(hours: number | null): Promise<void> {
     this.autoSaveHours = hours;
     try {
-      if (typeof window !== 'undefined' && window.chrome?.storage?.sync) {
-        await window.chrome.storage.sync.set({ [AUTO_SAVE_HOURS_KEY]: hours });
+      if (isExtensionEnvironment()) {
+        await browser.storage.sync.set({ [AUTO_SAVE_HOURS_KEY]: hours });
       }
       // Notify background script to update auto-save delay
-      if (typeof window !== 'undefined' && window.chrome?.runtime?.sendMessage) {
-        window.chrome.runtime.sendMessage({ action: 'updateAutoSaveDelay', delay: hours });
+      if (isExtensionEnvironment() && browser.runtime?.sendMessage) {
+        browser.runtime.sendMessage({ action: 'updateAutoSaveDelay', delay: hours });
       }
     } catch {
       // Silently fail
@@ -244,14 +254,14 @@ class TabStore {
   async openAllTabsInGroup(groupKey: string): Promise<void> {
     const tabsToOpen = this.tabs.filter((tab) => getTabGroupKey(tab.savedAt) === groupKey && !tab.pinned);
     const tabIdsToOpen = tabsToOpen.map((tab) => tab.id);
-    
+
     for (const tab of tabsToOpen) {
       await openTab(tab.url);
     }
-    
+
     this.tabs = this.tabs.filter((tab) => !tabIdsToOpen.includes(tab.id));
     await saveTabs(this.tabs);
-    
+
     this.showToast(`${tabsToOpen.length} ${t('tabsOpenedAndRemoved')}`, 'success');
   }
 
@@ -265,14 +275,14 @@ class TabStore {
   async openPinnedTabs(): Promise<void> {
     const pinnedTabs = this.tabs.filter((tab) => tab.pinned);
     const pinnedTabIds = pinnedTabs.map((tab) => tab.id);
-    
+
     for (const tab of pinnedTabs) {
       await openTab(tab.url);
     }
-    
+
     this.tabs = this.tabs.filter((tab) => !pinnedTabIds.includes(tab.id));
     await saveTabs(this.tabs);
-    
+
     this.showToast(`${pinnedTabs.length} ${t('pinnedTabsOpenedAndRemoved')}`, 'success');
   }
 

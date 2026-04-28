@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import type { SaveRule } from '../types';
+import { storage, tabs, runtime, notifications, alarms, windows, contextMenus, commands, isAlarmsSupported, isContextMenusSupported } from '../utils/extension-api';
 
 // Global error handler
 self.onerror = (message, source, lineno, colno, error) => {
@@ -30,11 +31,16 @@ interface SavedTab {
 }
 
 // Create context menu items
-function createContextMenus() {
+function createContextMenus(): void {
+  if (!isContextMenusSupported()) {
+    console.log('[Background] Context menus not supported in this browser');
+    return;
+  }
+
   // Remove existing menus first to avoid duplicates
-  chrome.contextMenus.removeAll(() => {
+  contextMenus.removeAll().then(() => {
     // Create menu for current tab - show on extension icon
-    chrome.contextMenus.create({
+    contextMenus.create({
       id: 'saveCurrentTab',
       title: 'Save Current Tab',
       contexts: ['action'],
@@ -42,7 +48,7 @@ function createContextMenus() {
     console.log('[Background] Created Save Current Tab menu');
 
     // Create menu for all tabs
-    chrome.contextMenus.create({
+    contextMenus.create({
       id: 'saveAllTabs',
       title: 'Save All Tabs',
       contexts: ['action'],
@@ -52,15 +58,15 @@ function createContextMenus() {
 }
 
 // Initialize context menus when extension is installed
-chrome.runtime.onInstalled.addListener(() => {
+runtime.onInstalled.addListener(() => {
   console.log('[Background] Extension installed, initializing...');
   // Initialize storage with empty array
-  chrome.storage.local.set({ [STORAGE_KEY]: [] });
+  storage.local.set({ [STORAGE_KEY]: [] });
   createContextMenus();
 });
 
 // Also create menus when service worker starts (for development)
-chrome.runtime.onStartup.addListener(() => {
+runtime.onStartup.addListener(() => {
   console.log('[Background] Extension started, creating menus...');
   createContextMenus();
 });
@@ -71,7 +77,7 @@ createContextMenus();
 // Load auto-save settings
 async function loadAutoSaveSettings(): Promise<void> {
   try {
-    const result = await chrome.storage.local.get(AUTO_SAVE_DELAY_KEY);
+    const result = await storage.local.get(AUTO_SAVE_DELAY_KEY);
     autoSaveDelay = result[AUTO_SAVE_DELAY_KEY] as number | null;
     console.log('[Background] Auto-save delay loaded:', autoSaveDelay);
   } catch (err) {
@@ -82,7 +88,7 @@ async function loadAutoSaveSettings(): Promise<void> {
 loadAutoSaveSettings();
 
 // Handle tab activation - start timer when user switches away from a tab
-chrome.tabs.onActivated.addListener(async (activeInfo) => {
+tabs.onActivated.addListener(async (activeInfo) => {
   console.log('[Background] Tab activated:', activeInfo.tabId, 'in window:', activeInfo.windowId);
 
   // Clear timer for the newly activated tab (user returned to it)
@@ -97,10 +103,10 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
   }
 
   // Get all tabs from all windows to find the previously active tab
-  const tabs = await chrome.tabs.query({});
+  const allTabs = await tabs.query({});
 
   // Find the tab that is no longer active (the one user switched away from)
-  for (const tab of tabs) {
+  for (const tab of allTabs) {
     // Skip pinned tabs and tabs that already have a timer
     if (tab.id && !tab.active && !tab.pinned) {
       if (tabTimers.has(tab.id)) {
@@ -113,55 +119,89 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
   }
 });
 
-// Check for tabs that need auto-save every 5 seconds using chrome.alarms
+// Check for tabs that need auto-save using chrome.alarms (or fallback)
 const AUTO_SAVE_ALARM_NAME = 'tab-maestro-auto-save-check';
 
-chrome.alarms.create(AUTO_SAVE_ALARM_NAME, {
-  periodInMinutes: 1 / 12, // 5 seconds = 1/12 minute
-});
+if (isAlarmsSupported()) {
+  alarms.create(AUTO_SAVE_ALARM_NAME, {
+    periodInMinutes: 1 / 12, // 5 seconds = 1/12 minute
+  });
 
-chrome.alarms.onAlarm.addListener(async (alarm) => {
-  if (alarm.name !== AUTO_SAVE_ALARM_NAME) {
-    return;
-  }
+  alarms.onAlarm.addListener(async (alarm: { name: string }) => {
+    if (alarm.name !== AUTO_SAVE_ALARM_NAME) {
+      return;
+    }
 
-  if (!autoSaveDelay || autoSaveDelay <= 0) {
-    return;
-  }
+    if (!autoSaveDelay || autoSaveDelay <= 0) {
+      return;
+    }
 
-  const delayMs = autoSaveDelay * 60 * 1000;
-  const now = Date.now();
+    const delayMs = autoSaveDelay * 60 * 1000;
+    const now = Date.now();
 
-  // Check each tracked tab
-  for (const [tabId, startTime] of Array.from(tabTimers.entries())) {
-    if (now - startTime >= delayMs) {
-      console.log('[Background] Auto-save triggered for tab:', tabId);
+    // Check each tracked tab
+    for (const [tabId, startTime] of Array.from(tabTimers.entries())) {
+      if (now - startTime >= delayMs) {
+        console.log('[Background] Auto-save triggered for tab:', tabId);
 
-      // Get the tab info
-      try {
-        const tab = await chrome.tabs.get(tabId);
-        const extensionOptionsUrl = chrome.runtime.getURL('index.html');
+        // Get the tab info
+        try {
+          const tab = await tabs.get(tabId);
+          const extensionOptionsUrl = runtime.getURL('index.html');
 
-        // Check if tab still exists and is not the active tab, and is not the options page, and is not pinned
-        if (tab && !tab.active && !tab.pinned && tab.url && tab.url !== extensionOptionsUrl) {
-          // Save and close the tab
-          await saveAndCloseTab(tabId);
+          // Check if tab still exists and is not the active tab, and is not the options page, and is not pinned
+          if (tab && !tab.active && !tab.pinned && tab.url && tab.url !== extensionOptionsUrl) {
+            // Save and close the tab
+            await saveAndCloseTab(tabId);
+          }
+
+          // Remove from timer tracking
+          tabTimers.delete(tabId);
+        } catch (err) {
+          console.error('[Background] Error auto-saving tab:', err);
+          tabTimers.delete(tabId);
         }
-
-        // Remove from timer tracking
-        tabTimers.delete(tabId);
-      } catch (err) {
-        console.error('[Background] Error auto-saving tab:', err);
-        tabTimers.delete(tabId);
       }
     }
-  }
-});
+  });
+} else {
+  // Safari fallback: use setInterval
+  console.log('[Background] Using setInterval fallback for auto-save (Safari)');
+  setInterval(async () => {
+    if (!autoSaveDelay || autoSaveDelay <= 0) {
+      return;
+    }
+
+    const delayMs = autoSaveDelay * 60 * 1000;
+    const now = Date.now();
+
+    // Check each tracked tab
+    for (const [tabId, startTime] of Array.from(tabTimers.entries())) {
+      if (now - startTime >= delayMs) {
+        console.log('[Background] Auto-save triggered for tab:', tabId);
+
+        try {
+          const tab = await tabs.get(tabId);
+          const extensionOptionsUrl = runtime.getURL('index.html');
+
+          if (tab && !tab.active && !tab.pinned && tab.url && tab.url !== extensionOptionsUrl) {
+            await saveAndCloseTab(tabId);
+          }
+
+          tabTimers.delete(tabId);
+        } catch (err) {
+          console.error('[Background] Error auto-saving tab:', err);
+          tabTimers.delete(tabId);
+        }
+      }
+    }
+  }, 5000); // Check every 5 seconds
+}
 
 // Save and close a specific tab
 async function saveAndCloseTab(tabId: number): Promise<void> {
   try {
-    const tab = await chrome.tabs.get(tabId);
+    const tab = await tabs.get(tabId);
     if (!tab || !tab.url) {
       return;
     }
@@ -189,7 +229,7 @@ async function saveAndCloseTab(tabId: number): Promise<void> {
     await saveStoredTabs(storedTabs);
 
     // Close the tab
-    await chrome.tabs.remove(tabId);
+    await tabs.remove(tabId);
 
     await showNotification('Tab Maestro', `Auto-saved: ${newTab.title}`);
     console.log('[Background] Tab auto-saved and closed:', tabId);
@@ -199,8 +239,8 @@ async function saveAndCloseTab(tabId: number): Promise<void> {
 }
 
 // Handle keyboard commands - with safety check
-if (chrome.commands) {
-  chrome.commands.onCommand.addListener(async (command) => {
+if (commands) {
+  commands.onCommand.addListener(async (command) => {
     console.log('[Background] Command triggered:', command);
     if (command === 'save-current-tab') {
       await saveCurrentTab();
@@ -213,27 +253,30 @@ if (chrome.commands) {
 }
 
 // Handle context menu clicks
-chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  console.log('[Background] Context menu clicked:', info.menuItemId, 'tab:', tab);
+if (isContextMenusSupported()) {
+  contextMenus.onClicked.addListener(async (info, tab) => {
+    console.log('[Background] Context menu clicked:', info.menuItemId, 'tab:', tab);
 
-  if (info.menuItemId === 'saveCurrentTab') {
-    await saveCurrentTab();
-  } else if (info.menuItemId === 'saveAllTabs') {
-    await saveAllTabs();
-  }
-});
+    if (info.menuItemId === 'saveCurrentTab') {
+      await saveCurrentTab();
+    } else if (info.menuItemId === 'saveAllTabs') {
+      await saveAllTabs();
+    }
+  });
+}
 
 // Handle messages from content scripts and options page
-chrome.runtime.onMessage.addListener((message, _sender, _sendResponse) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+runtime.onMessage.addListener((message: any, _sender, _sendResponse): true => {
   console.log('[Background] Message received:', message);
   if (message.action === 'saveAllTabs') {
-    saveAllTabs();
+    void saveAllTabs();
   } else if (message.action === 'saveCurrentTab') {
-    saveCurrentTab();
+    void saveCurrentTab();
   } else if (message.action === 'updateAutoSaveDelay') {
     // Update auto-save delay setting
-    autoSaveDelay = message.delay;
-    chrome.storage.local.set({ [AUTO_SAVE_DELAY_KEY]: message.delay });
+    autoSaveDelay = message.delay ?? null;
+    void storage.local.set({ [AUTO_SAVE_DELAY_KEY]: message.delay });
     console.log('[Background] Auto-save delay updated:', message.delay);
 
     // Clear all timers if auto-save is disabled
@@ -242,11 +285,12 @@ chrome.runtime.onMessage.addListener((message, _sender, _sendResponse) => {
       console.log('[Background] Cleared all tab timers');
     }
   }
+  return true;
 });
 
 async function getStoredTabs(): Promise<SavedTab[]> {
   try {
-    const result = await chrome.storage.local.get(STORAGE_KEY);
+    const result = await storage.local.get(STORAGE_KEY);
     const tabs = result?.[STORAGE_KEY];
     if (Array.isArray(tabs)) {
       return tabs as SavedTab[];
@@ -259,16 +303,16 @@ async function getStoredTabs(): Promise<SavedTab[]> {
 }
 
 async function saveStoredTabs(tabs: SavedTab[]): Promise<void> {
-  await chrome.storage.local.set({ [STORAGE_KEY]: tabs });
+  await storage.local.set({ [STORAGE_KEY]: tabs });
 }
 
 async function showNotification(title: string, message: string): Promise<void> {
   try {
-    await chrome.notifications.create({
+    await notifications.create({
       type: 'basic',
       title,
       message,
-      iconUrl: chrome.runtime.getURL('icon-128.png'),
+      iconUrl: runtime.getURL('icon-128.png'),
     });
   } catch (err) {
     console.warn('[Background] Notification failed:', err);
@@ -278,7 +322,7 @@ async function showNotification(title: string, message: string): Promise<void> {
 // Get saved rules
 async function getRules(): Promise<SaveRule[]> {
   try {
-    const result = await chrome.storage.local.get(RULES_STORAGE_KEY);
+    const result = await storage.local.get(RULES_STORAGE_KEY);
     return (result[RULES_STORAGE_KEY] as SaveRule[]) || [];
   } catch {
     return [];
@@ -342,9 +386,9 @@ async function shouldBlockByRules(url: string): Promise<boolean> {
 async function saveCurrentTab(): Promise<void> {
   console.log('[Background] saveCurrentTab called');
   try {
-    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-    console.log('[Background] Query result tabs:', tabs);
-    const tab = tabs[0];
+    const currentTabs = await tabs.query({ active: true, currentWindow: true });
+    console.log('[Background] Query result tabs:', currentTabs);
+    const tab = currentTabs[0];
 
     // Allow tabs with URL, even chrome:// URLs
     if (!tab || !tab.url) {
@@ -372,16 +416,16 @@ async function saveCurrentTab(): Promise<void> {
 
     // Close the current tab
     if (tabId) {
-      await chrome.tabs.remove(tabId);
+      await tabs.remove(tabId);
     }
 
     // Refresh options page if it's open (without focusing)
-    const extensionOptionsUrl = chrome.runtime.getURL('index.html');
-    const optionsTabs = await chrome.tabs.query({ url: extensionOptionsUrl });
-    for (const tab of optionsTabs) {
-      if (tab.id) {
-        await chrome.tabs.reload(tab.id);
-        console.log('[Background] Refreshed options page tab:', tab.id);
+    const extensionOptionsUrl = runtime.getURL('index.html');
+    const optionsTabs = await tabs.query({ url: extensionOptionsUrl });
+    for (const optTab of optionsTabs) {
+      if (optTab.id) {
+        await tabs.reload(optTab.id);
+        console.log('[Background] Refreshed options page tab:', optTab.id);
       }
     }
 
@@ -397,37 +441,37 @@ async function saveCurrentTab(): Promise<void> {
 
 async function getExtensionUrl(): Promise<string> {
   // Get the extension ID dynamically
-  return chrome.runtime.getURL('index.html');
+  return runtime.getURL('index.html');
 }
 
 async function focusOrOpenOptionsPage(): Promise<void> {
   const extensionUrl = await getExtensionUrl();
 
   // Query for tabs with the options page URL
-  const tabs = await chrome.tabs.query({ url: extensionUrl });
+  const foundTabs = await tabs.query({ url: extensionUrl });
 
-  if (tabs.length > 0) {
+  if (foundTabs.length > 0) {
     // Options page is already open, focus the first match
-    const existingTab = tabs[0];
+    const existingTab = foundTabs[0];
     if (existingTab.id) {
-      await chrome.tabs.update(existingTab.id, { active: true });
+      await tabs.update(existingTab.id, { active: true });
       // Also focus the window if it's in a different window
       if (existingTab.windowId) {
-        await chrome.windows.update(existingTab.windowId, { focused: true });
+        await windows.update(existingTab.windowId, { focused: true });
       }
       // Refresh the options page
-      await chrome.tabs.reload(existingTab.id);
+      await tabs.reload(existingTab.id);
     }
   } else {
     // Options page is not open, open it
-    await chrome.tabs.create({ url: extensionUrl });
+    await tabs.create({ url: extensionUrl });
   }
 }
 
 async function saveAllTabs(): Promise<void> {
   try {
-    const allTabs = await chrome.tabs.query({});
-    const extensionOptionsUrl = chrome.runtime.getURL('index.html');
+    const allTabs = await tabs.query({});
+    const extensionOptionsUrl = runtime.getURL('index.html');
 
     const validTabs = allTabs.filter(
       (tab) =>
@@ -480,7 +524,7 @@ async function saveAllTabs(): Promise<void> {
 
     // Close all valid tabs
     if (tabIdsToClose.length > 0) {
-      await chrome.tabs.remove(tabIdsToClose);
+      await tabs.remove(tabIdsToClose);
     }
 
     // Build notification message

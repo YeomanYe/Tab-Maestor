@@ -1,4 +1,5 @@
 import { SaveRule } from '@/types';
+import browser from 'webextension-polyfill';
 
 const RULES_STORAGE_KEY = 'tab-maestro-rules';
 
@@ -14,29 +15,14 @@ export const toWildcardDomain = (domain: string): string => {
   return result.replace(/^www\./, '');
 };
 
-// Chrome storage API type
-interface ChromeStorage {
-  local: {
-    get: (keys: string | string[] | Record<string, unknown>) => Promise<Record<string, unknown>>;
-    set: (items: Record<string, unknown>) => Promise<void>;
-  };
-}
-
-interface ChromeWithStorage {
-  storage?: ChromeStorage;
-}
-
-// Check if running in Chrome extension environment
-const isChromeExtension = (): boolean => {
-  const win = window as Window & { chrome?: ChromeWithStorage };
-  if (!win.chrome?.storage?.local) {
-    return false;
+// Check if running in browser extension environment
+const isExtensionEnvironment = (): boolean => {
+  if (typeof browser !== 'undefined' && browser.storage?.local) {
+    return true;
   }
-  try {
-    return typeof win.chrome.storage.local.get === 'function';
-  } catch {
-    return false;
-  }
+  // Fallback to chrome for older browsers
+  const win = window as Window & { chrome?: { storage?: { local?: unknown } } };
+  return !!(win.chrome?.storage?.local);
 };
 
 // Default rule with current domain placeholder
@@ -50,21 +36,20 @@ export const createDefaultRule = (domain: string): SaveRule => ({
 });
 
 export const getRules = async (): Promise<SaveRule[]> => {
-  // Try chrome.storage.local first
-  if (isChromeExtension()) {
+  // Try extension storage first
+  if (isExtensionEnvironment()) {
     try {
-      const chromeStorage = (window as Window & { chrome: ChromeWithStorage }).chrome?.storage?.local;
-      if (!chromeStorage) {
-        throw new Error('Chrome storage not available');
+      if (!browser.storage?.local) {
+        throw new Error('Browser storage not available');
       }
-      const result = await chromeStorage.get(RULES_STORAGE_KEY);
+      const result = await browser.storage.local.get(RULES_STORAGE_KEY);
       const rules = (result[RULES_STORAGE_KEY] as SaveRule[]) || [];
       if (rules.length > 0) {
-        console.log('[RulesStorage] Loaded', rules.length, 'rules from chrome.storage');
+        console.log('[RulesStorage] Loaded', rules.length, 'rules from browser.storage');
         return rules;
       }
     } catch (err) {
-      console.warn('[RulesStorage] Chrome storage read failed:', err);
+      console.warn('[RulesStorage] Browser storage read failed:', err);
     }
   }
 
@@ -88,16 +73,15 @@ export const saveRules = async (rules: SaveRule[]): Promise<void> => {
     console.warn('[RulesStorage] localStorage write failed:', err);
   }
 
-  // Only save to chrome.storage when in extension environment
-  if (isChromeExtension()) {
+  // Only save to extension storage when in extension environment
+  if (isExtensionEnvironment()) {
     try {
-      const chromeStorage = (window as Window & { chrome: ChromeWithStorage }).chrome?.storage?.local;
-      if (chromeStorage) {
-        await chromeStorage.set({ [RULES_STORAGE_KEY]: rules });
-        console.log('[RulesStorage] Saved', rules.length, 'rules to chrome.storage');
+      if (browser.storage?.local) {
+        await browser.storage.local.set({ [RULES_STORAGE_KEY]: rules });
+        console.log('[RulesStorage] Saved', rules.length, 'rules to browser.storage');
       }
     } catch (err) {
-      console.warn('[RulesStorage] Chrome storage write failed:', err);
+      console.warn('[RulesStorage] Browser storage write failed:', err);
     }
   }
 };

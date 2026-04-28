@@ -5,6 +5,7 @@ import { getRules, saveRules, createDefaultRule, toWildcardDomain } from '@/util
 import { t } from '@/utils/i18n';
 import RuleEditor from './RuleEditor';
 import styles from './Popup.module.scss';
+import browser from 'webextension-polyfill';
 
 const Popup = observer(() => {
   const [rules, setRules] = useState<SaveRule[]>([]);
@@ -23,7 +24,7 @@ const Popup = observer(() => {
 
   const getCurrentTabDomain = async () => {
     try {
-      const tabs = await chrome?.tabs?.query({ active: true, currentWindow: true });
+      const tabs = await browser.tabs.query({ active: true, currentWindow: true });
       if (!tabs || tabs.length === 0) return;
       const tab = tabs[0];
       if (tab?.url) {
@@ -102,7 +103,7 @@ const Popup = observer(() => {
     const isEveryDay = rule.days.length === 7;
     const isWeekdays = JSON.stringify(rule.days) === JSON.stringify([1, 2, 3, 4, 5]);
     const isWeekends = JSON.stringify(rule.days) === JSON.stringify([0, 6]);
-    
+
     let dayText = '';
     if (isEveryDay) {
       dayText = t('everyDay');
@@ -125,10 +126,10 @@ const Popup = observer(() => {
       <div className={styles.header}>
         <div className={styles.brand}>
           <div className={styles.logo}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" className="trae-browser-inspect-draggable"> 
-              <rect x="2" y="2" width="20" height="20" rx="2"/> 
-              <path d="M7 8h10" stroke-linecap="round"/> 
-              <path d="M12 12v10" stroke-linecap="round"/> 
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" className="trae-browser-inspect-draggable">
+              <rect x="2" y="2" width="20" height="20" rx="2"/>
+              <path d="M7 8h10" stroke-linecap="round"/>
+              <path d="M12 12v10" stroke-linecap="round"/>
             </svg>
           </div>
           <h1 className={styles.title}>{t('appTitle')}</h1>
@@ -214,9 +215,8 @@ const Popup = observer(() => {
 
           <div className={styles.footer}>
             <button className={styles.openFullButton} onClick={() => {
-              const chromeWithOptions = window.chrome as typeof window.chrome & { runtime: { openOptionsPage?: () => void } };
-              if (chromeWithOptions.runtime?.openOptionsPage) {
-                chromeWithOptions.runtime.openOptionsPage();
+              if (browser.runtime?.openOptionsPage) {
+                browser.runtime.openOptionsPage();
               } else {
                 window.open('index.html', '_blank');
               }

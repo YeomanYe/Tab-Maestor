@@ -21,6 +21,7 @@ export default defineConfig({
           default_title: 'Open Tab Maestro',
         },
         options_page: 'index.html',
+        // Cross-browser permissions (some may not be available in all browsers)
         permissions: ['tabs', 'storage', 'contextMenus', 'notifications', 'alarms'],
         commands: {
           'save-current-tab': {
