@@ -106,10 +106,10 @@ const Header = observer(() => {
       <div className={styles.leftSection}>
         <div className={styles.brand}>
           <div className={styles.logo}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <rect x="3" y="4" width="18" height="14" rx="2" />
-              <path d="M7 8h10" strokeLinecap="round" />
-              <path d="M12 12v4" strokeLinecap="round" />
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" class="trae-browser-inspect-draggable"> 
+              <rect x="2" y="2" width="20" height="20" rx="2"/> 
+              <path d="M7 8h10" stroke-linecap="round"/> 
+              <path d="M12 12v10" stroke-linecap="round"/> 
             </svg>
           </div>
           <h1 className={styles.title}>{t('appTitle')}</h1>
