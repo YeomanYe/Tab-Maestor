@@ -32,8 +32,8 @@ export default defineConfig({
           },
           'save-all-tabs': {
             suggested_key: {
-              default: 'Ctrl+Shift+Q',
-              mac: 'MacCtrl+A',
+              default: 'Ctrl+E',
+              mac: 'MacCtrl+E',
             },
             description: 'Save all tabs',
           },
