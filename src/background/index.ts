@@ -142,8 +142,8 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
         const tab = await chrome.tabs.get(tabId);
         const extensionOptionsUrl = chrome.runtime.getURL('index.html');
 
-        // Check if tab still exists and is not the active tab, and is not the options page
-        if (tab && !tab.active && tab.url && tab.url !== extensionOptionsUrl) {
+        // Check if tab still exists and is not the active tab, and is not the options page, and is not pinned
+        if (tab && !tab.active && !tab.pinned && tab.url && tab.url !== extensionOptionsUrl) {
           // Save and close the tab
           await saveAndCloseTab(tabId);
         }
