@@ -83,18 +83,23 @@ loadAutoSaveSettings();
 
 // Handle tab activation - start timer when user switches away from a tab
 chrome.tabs.onActivated.addListener(async (activeInfo) => {
-  console.log('[Background] Tab activated:', activeInfo.tabId);
+  console.log('[Background] Tab activated:', activeInfo.tabId, 'in window:', activeInfo.windowId);
 
   // If auto-save is disabled, do nothing
   if (!autoSaveDelay || autoSaveDelay <= 0) {
     return;
   }
 
-  // Get the tab that was switched away from (the previously active tab)
-  // We need to find it from all windows
-  const tabs = await chrome.tabs.query({ active: false, currentWindow: false });
+  // Get all tabs in the same window to find the previously active tab
+  const tabs = await chrome.tabs.query({ windowId: activeInfo.windowId });
+
+  // Find the tab that is no longer active (the one user switched away from)
   for (const tab of tabs) {
-    if (tab.id && tab.id !== activeInfo.tabId && tab.url && !tab.url.startsWith('chrome://')) {
+    if (tab.id && !tab.active && tab.url && !tab.url.startsWith('chrome://')) {
+      // Skip if already has a timer
+      if (tabTimers.has(tab.id)) {
+        continue;
+      }
       // Start timer for this tab
       tabTimers.set(tab.id, Date.now());
       console.log('[Background] Started timer for tab:', tab.id, 'title:', tab.title);
