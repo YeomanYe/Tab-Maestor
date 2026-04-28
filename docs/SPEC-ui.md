@@ -2,23 +2,73 @@
 
 ## 布局结构
 
-**选项页面布局:**
+### 选项页面布局
 - 单页应用，包含 header、main content 和 footer
 - 最大宽度: 720px，居中
 - 最小高度: 100vh
 - 响应式: 适配所有屏幕尺寸
 
 **页面分区:**
-1. **Header** - 应用标题、logo、自动保存设置、搜索框
-2. **Tab List** - 可滚动的已保存标签页列表
+1. **Header** - 应用标题、自动保存设置、搜索框、主题切换、语言切换
+2. **Tab List** - 可滚动的已保存标签页列表，按日期分组
 3. **DateFilterBar** - 固定底部的日期范围筛选器
 4. **Empty State** - 无保存标签页时显示
 
-**Popup 页面布局:**
+### Popup 页面布局
 - 固定宽度: 360px
 - 固定高度: 最小 400px
 - 默认显示规则编辑器（添加新规则）
 - 可切换到规则列表视图
+
+## 组件层次结构
+
+### 选项页面组件树
+```
+App (根组件)
+├── ThemeProvider (主题上下文)
+├── Header (头部)
+│   ├── Logo (图标 + 文字标题)
+│   ├── SaveAllButton (保存所有按钮)
+│   ├── TabCountBadge (标签页计数徽章)
+│   ├── AutoSaveSetting (自动保存设置下拉菜单)
+│   ├── SearchBox (搜索框)
+│   ├── ThemeSwitcher (主题切换器)
+│   └── LanguageSwitcher (语言切换器)
+├── TabList (标签页列表)
+│   ├── GroupHeader (分组标题)
+│   │   ├── GroupTitle (分组名称)
+│   │   └── GroupActions (分组操作按钮: 打开/删除/置顶)
+│   └── TabCard[] (标签页卡片)
+│       ├── Favicon (网站图标)
+│       ├── TabInfo (标题 + URL)
+│       ├── TimeStamp (保存时间)
+│       └── Actions (打开/删除/置顶按钮)
+├── DateFilterBar (日期筛选栏)
+│   ├── QuickFilterButtons (快捷筛选按钮)
+│   ├── DateRangePicker (日期范围选择)
+│   └── ClearFilterButton (清除筛选按钮)
+├── EmptyState (空状态)
+└── Toast (通知提示)
+```
+
+### Popup 组件树
+```
+Popup (根组件)
+├── ThemeProvider (主题上下文)
+├── RuleEditor (规则编辑器)
+│   ├── DomainInput (域名输入框)
+│   ├── QuickDayButtons (快捷日期按钮)
+│   ├── DaySelector (星期选择网格)
+│   ├── TimeRangePicker (时间范围选择)
+│   └── ActionButtons (保存/取消按钮)
+├── RuleList (规则列表)
+│   └── RuleCard[] (规则卡片)
+│       ├── DomainDisplay (域名显示)
+│       ├── DayDisplay (生效日期显示)
+│       ├── ToggleSwitch (启用/禁用开关)
+│       └── Actions (编辑/删除按钮)
+└── Toast (通知提示)
+```
 
 ## 视觉设计
 
@@ -71,17 +121,17 @@
 - 圆角: 12px (cards), 8px (buttons), 6px (inputs), 50px (pills)
 - 过渡: 200ms ease-out
 
-## 组件
+## 组件详细说明
 
 ### 1. Header
 
-- App logo (图标 + 文字)
+- App logo (图标 + 文字 "Tab Maestro")
 - "Save All Tabs" 按钮
 - 标签页计数徽章
 - 自动保存设置下拉菜单
 - 搜索框
-- 主题切换器
-- 语言切换器
+- 主题切换器 (太阳/月亮/系统图标)
+- 语言切换器 (EN/中文)
 
 ### 2. DateFilterBar (固定底部)
 
@@ -108,13 +158,20 @@
 ### 5. Tab Card
 
 - Favicon (16x16)
+- 标签页标题 (截断显示省略号)
 - 标签页 URL (截断显示省略号)
 - 时间戳 (今天/昨天显示时间，更早显示日期)
+- 置顶徽章 (图钉图标)
 - 删除按钮 (悬停时显示)
-- 置顶徽章
 - 点击 URL 打开并从列表删除
 
-### 6. Popup - Rule Editor
+### 6. Tab Group Header
+
+- 分组标题 (今天/昨天/具体日期)
+- 标签页数量
+- 分组操作按钮: 打开全部/删除全部/置顶全部
+
+### 7. Popup - Rule Editor
 
 - 网站域名输入框
 - 快捷日期选择按钮 (每天/工作日/周末)
@@ -122,19 +179,19 @@
 - 时间范围选择器 (开始时间 - 结束时间)
 - 保存/取消按钮
 
-### 7. Popup - Rule List
+### 8. Popup - Rule List
 
 - 规则卡片显示域名和生效日期
 - 启用/禁用开关
 - 编辑/删除按钮
 - 每天显示特殊徽章
 
-### 8. Empty State
+### 9. Empty State
 
 - 图标 + 文字说明
 - "暂无保存的标签页" 消息
 
-### 9. Toast 通知
+### 10. Toast 通知
 
 - 成功/错误反馈
 - 3秒后自动消失
