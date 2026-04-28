@@ -10,6 +10,7 @@ import {
   closeAllTabs as closeAllStoredTabs,
 } from '@/utils/storage';
 import { getTabGroupKey } from '@/utils/date';
+import { t } from '@/utils/i18n';
 
 const DATE_FILTER_KEY = 'tab-maestro-date-filter';
 const DATE_END_DATE_FILTER_KEY = 'tab-maestro-date-end-filter';
@@ -110,7 +111,7 @@ class TabStore {
     try {
       const tab = await getCurrentTab();
       if (!tab || !tab.url) {
-        this.showToast('No active tab found', 'error');
+        this.showToast(t('noActiveTabFound'), 'error');
         return;
       }
 
@@ -123,9 +124,9 @@ class TabStore {
       };
 
       await this.addTab(tabInfo);
-      this.showToast('Tab saved successfully', 'success');
+      this.showToast(t('tabSaved'), 'success');
     } catch {
-      this.showToast('Failed to save tab', 'error');
+      this.showToast(t('failedToSave'), 'error');
     }
   }
 
@@ -133,7 +134,7 @@ class TabStore {
     try {
       const tabs = await getAllTabs();
       if (tabs.length === 0) {
-        this.showToast('No tabs to save', 'error');
+        this.showToast(t('noTabsToSave'), 'error');
         return;
       }
 
@@ -151,24 +152,21 @@ class TabStore {
             originalTabId: tab.id,
           };
 
-          const exists = this.tabs.some((t) => t.url === tabInfo.url);
-          if (!exists) {
-            const newTab: SavedTab = {
-              id: uuidv4(),
-              title: tabInfo.title,
-              url: tabInfo.url,
-              favicon: tabInfo.favIconUrl,
-              savedAt: Date.now(),
-              originalTabId: tabInfo.originalTabId,
-            };
-            tabsToSave.push(newTab);
-            tabIdsToClose.push(tab.id as number);
-          }
+          const newTab: SavedTab = {
+            id: uuidv4(),
+            title: tabInfo.title,
+            url: tabInfo.url,
+            favicon: tabInfo.favIconUrl,
+            savedAt: Date.now(),
+            originalTabId: tabInfo.originalTabId,
+          };
+          tabsToSave.push(newTab);
+          tabIdsToClose.push(tab.id as number);
         }
       }
 
       if (tabsToSave.length === 0) {
-        this.showToast('All tabs already saved', 'error');
+        this.showToast(t('tabAlreadySaved'), 'error');
         return;
       }
 
@@ -181,19 +179,13 @@ class TabStore {
         await closeAllStoredTabs(tabIdsToClose);
       }
 
-      this.showToast(`Saved and closed ${tabsToSave.length} tab(s)`, 'success');
+      this.showToast(`${tabsToSave.length} ${t('savedAndClosed')}`, 'success');
     } catch {
-      this.showToast('Failed to save tabs', 'error');
+      this.showToast(t('failedToSave'), 'error');
     }
   }
 
   private async addTab(tabInfo: TabInfo): Promise<void> {
-    const exists = this.tabs.some((t) => t.url === tabInfo.url);
-    if (exists) {
-      this.showToast('Tab already saved', 'error');
-      return;
-    }
-
     const newTab: SavedTab = {
       id: uuidv4(),
       title: tabInfo.title,
@@ -228,7 +220,7 @@ class TabStore {
     if (index !== -1) {
       this.tabs.splice(index, 1);
       await saveTabs(this.tabs);
-      this.showToast('Tab deleted', 'success');
+      this.showToast(t('tabDeleted'), 'success');
     }
   }
 
@@ -246,7 +238,7 @@ class TabStore {
       tab.pinned = true;
     });
     await saveTabs(this.tabs);
-    this.showToast(`${tabsToPin.length} tabs pinned`, 'success');
+    this.showToast(`${tabsToPin.length} ${t('tabsPinned')}`, 'success');
   }
 
   async openAllTabsInGroup(groupKey: string): Promise<void> {
@@ -260,14 +252,14 @@ class TabStore {
     this.tabs = this.tabs.filter((tab) => !tabIdsToOpen.includes(tab.id));
     await saveTabs(this.tabs);
     
-    this.showToast(`${tabsToOpen.length} tabs opened and removed from group`, 'success');
+    this.showToast(`${tabsToOpen.length} ${t('tabsOpenedAndRemoved')}`, 'success');
   }
 
   async deletePinnedTabs(): Promise<void> {
     const pinnedTabs = this.tabs.filter((tab) => tab.pinned);
     this.tabs = this.tabs.filter((tab) => !tab.pinned);
     await saveTabs(this.tabs);
-    this.showToast(`${pinnedTabs.length} pinned tabs deleted`, 'success');
+    this.showToast(`${pinnedTabs.length} ${t('pinnedTabsDeleted')}`, 'success');
   }
 
   async openPinnedTabs(): Promise<void> {
@@ -281,13 +273,13 @@ class TabStore {
     this.tabs = this.tabs.filter((tab) => !pinnedTabIds.includes(tab.id));
     await saveTabs(this.tabs);
     
-    this.showToast(`${pinnedTabs.length} pinned tabs opened and removed`, 'success');
+    this.showToast(`${pinnedTabs.length} ${t('pinnedTabsOpenedAndRemoved')}`, 'success');
   }
 
   async clearAll(): Promise<void> {
     this.tabs = [];
     await saveTabs([]);
-    this.showToast('All tabs cleared', 'success');
+    this.showToast(t('allTabsCleared'), 'success');
   }
 
   async deleteTabsByGroup(groupKey: string): Promise<void> {
@@ -296,7 +288,7 @@ class TabStore {
 
     this.tabs = this.tabs.filter((tab) => !tabIds.includes(tab.id));
     await saveTabs(this.tabs);
-    this.showToast(`${tabsToDelete.length} tabs cleared`, 'success');
+    this.showToast(`${tabsToDelete.length} ${t('tabsCleared')}`, 'success');
   }
 
   showToast(message: string, type: 'success' | 'error'): void {

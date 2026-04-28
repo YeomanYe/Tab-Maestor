@@ -2,9 +2,9 @@
 
 .toast {
   position: fixed;
-  bottom: $spacing-lg;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   display: inline-flex;
   align-items: center;
   gap: $spacing-sm;
@@ -13,7 +13,7 @@
   font-weight: 500;
   border-radius: $border-radius-md;
   box-shadow: $shadow-card;
-  animation: slide-up 0.3s ease-out;
+  animation: fade-in 0.3s ease-out;
   z-index: 1000;
 }
 
@@ -27,14 +27,14 @@
   color: $text-primary;
 }
 
-@keyframes slide-up {
+@keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateX(-50%) translateY(20px);
+    transform: translate(-50%, -50%) scale(0.9);
   }
 
   to {
     opacity: 1;
-    transform: translateX(-50%) translateY(0);
+    transform: translate(-50%, -50%) scale(1);
   }
 }

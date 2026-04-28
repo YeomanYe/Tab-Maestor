@@ -123,7 +123,7 @@ setInterval(async () => {
   const now = Date.now();
 
   // Check each tracked tab
-  for (const [tabId, startTime] of tabTimers.entries()) {
+  for (const [tabId, startTime] of Array.from(tabTimers.entries())) {
     if (now - startTime >= delayMs) {
       console.log('[Background] Auto-save triggered for tab:', tabId);
 
@@ -157,13 +157,6 @@ async function saveAndCloseTab(tabId: number): Promise<void> {
     }
 
     const storedTabs = await getStoredTabs();
-    const exists = storedTabs.some((t) => t.url === tab.url);
-
-    if (exists) {
-      console.log('[Background] Tab already saved, just closing:', tabId);
-      await chrome.tabs.remove(tabId);
-      return;
-    }
 
     const newTab: SavedTab = {
       id: uuidv4(),
@@ -257,6 +250,7 @@ async function showNotification(title: string, message: string): Promise<void> {
       type: 'basic',
       title,
       message,
+      iconUrl: chrome.runtime.getURL('icon-128.png'),
     });
   } catch (err) {
     console.warn('[Background] Notification failed:', err);

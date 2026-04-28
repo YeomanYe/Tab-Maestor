@@ -28,6 +28,11 @@ export interface Translations {
   noTabsToSave: string;
   savedAndClosed: string;
   failedToSave: string;
+  noActiveTabFound: string;
+  tabsPinned: string;
+  tabsOpenedAndRemoved: string;
+  pinnedTabsDeleted: string;
+  pinnedTabsOpenedAndRemoved: string;
 
   // Group clear confirm
   clearGroupConfirm: string;
@@ -138,6 +143,11 @@ const translations: Record<Language, Translations> = {
     noTabsToSave: 'No tabs to save',
     savedAndClosed: 'Saved and closed',
     failedToSave: 'Failed to save tabs',
+    noActiveTabFound: 'No active tab found',
+    tabsPinned: 'tabs pinned',
+    tabsOpenedAndRemoved: 'tabs opened and removed from group',
+    pinnedTabsDeleted: 'pinned tabs deleted',
+    pinnedTabsOpenedAndRemoved: 'pinned tabs opened and removed',
 
     // Group clear confirm
     clearGroupConfirm: 'Clear all tabs from',
@@ -207,8 +217,8 @@ const translations: Record<Language, Translations> = {
     weekends: 'Weekends',
     effectiveTime: 'Effective Time',
     openTabManager: 'Open Tab Manager',
-    noRules: 'No auto-save rules',
-    noRulesDescription: 'Click the "Add" button above\n to create auto-save rules for current website',
+    noRules: 'No filter rules',
+    noRulesDescription: 'Click the "Add" button above\n to create filter rules for current website',
     atLeastOneDay: 'At least one day must be selected',
     enable: 'Enable',
     disable: 'Disable',
@@ -244,6 +254,11 @@ const translations: Record<Language, Translations> = {
     noTabsToSave: '没有可保存的标签页',
     savedAndClosed: '已保存并关闭',
     failedToSave: '保存标签页失败',
+    noActiveTabFound: '未找到活动标签页',
+    tabsPinned: '个标签页已固定',
+    tabsOpenedAndRemoved: '个标签页已打开并从组中移除',
+    pinnedTabsDeleted: '个固定标签页已删除',
+    pinnedTabsOpenedAndRemoved: '个固定标签页已打开并移除',
 
     // Group clear confirm
     clearGroupConfirm: '清除该组所有标签页',
@@ -313,8 +328,8 @@ const translations: Record<Language, Translations> = {
     weekends: '周末',
     effectiveTime: '生效时间段',
     openTabManager: '打开标签页管理',
-    noRules: '暂无自动保存规则',
-    noRulesDescription: '点击上方「添加」按钮\n为当前网站创建自动保存规则',
+    noRules: '暂无过滤规则',
+    noRulesDescription: '点击上方「添加」按钮\n为当前网站创建过滤规则',
     atLeastOneDay: '至少需要选择一天',
     enable: '启用',
     disable: '禁用',

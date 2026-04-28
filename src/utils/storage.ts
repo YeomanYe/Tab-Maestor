@@ -4,6 +4,16 @@ import { toJS } from 'mobx';
 
 const STORAGE_KEY = 'tab-maestro-tabs';
 
+interface ChromeTab {
+  id?: number;
+  title?: string;
+  url?: string;
+  favIconUrl?: string;
+  active?: boolean;
+  windowId?: number;
+  pinned?: boolean;
+}
+
 // Chrome storage API type
 interface ChromeStorage {
   local: {

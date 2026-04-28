@@ -6,11 +6,27 @@ A Chrome extension for saving and managing browser tabs with automatic saving ru
 
 ## Features
 
-- **Save Tabs**: Save current tab or all tabs from all windows
-- **Auto-Save Rules**: Configure automatic tab saving with custom schedules
+- **Save Tabs**:
+  - **Save Current Tab**: Save and close the currently active tab
+    - Captures tab title, URL, favicon, and other information
+    - Automatically closes the current tab after saving
+    - Auto-refreshes options page if it's open
+  - **Save All Tabs**: Save and close all non-pinned tabs from all windows
+    - Filters out pinned tabs and the extension's own options page
+    - Checks each tab against rules to determine if it should be blocked
+    - Automatically closes all valid tabs after saving
+    - Displays count of saved and blocked tabs
+    - Automatically opens or focuses the options page
+- **Filter Rules**: Configure tab filtering with custom schedules
   - Set specific days of the week
   - Set time ranges (e.g., 9:00 - 18:00)
   - Support wildcard domains (*.example.com)
+- **Auto-Save**: Automatically save inactive tabs after a configurable time period
+  - Set auto-save delay (15min, 30min, 45min, 1h, 1.5h, 2h or custom)
+  - Auto-saves and closes tabs when they're inactive for the set duration
+  - **Note**: The following tabs will not be saved:
+    - Pinned tabs in the browser
+    - The extension's own options page
 - **Search & Filter**: Search saved tabs and filter by date range
 - **Theme Support**: Light and dark theme with warm yellow accent
 - **Multi-language**: English and Chinese (Simplified)
