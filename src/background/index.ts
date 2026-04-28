@@ -85,6 +85,12 @@ loadAutoSaveSettings();
 chrome.tabs.onActivated.addListener(async (activeInfo) => {
   console.log('[Background] Tab activated:', activeInfo.tabId, 'in window:', activeInfo.windowId);
 
+  // Clear timer for the newly activated tab (user returned to it)
+  if (tabTimers.has(activeInfo.tabId)) {
+    tabTimers.delete(activeInfo.tabId);
+    console.log('[Background] Cleared timer for activated tab:', activeInfo.tabId);
+  }
+
   // If auto-save is disabled, do nothing
   if (!autoSaveDelay || autoSaveDelay <= 0) {
     return;
