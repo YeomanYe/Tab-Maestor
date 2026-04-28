@@ -166,6 +166,14 @@ async function saveAndCloseTab(tabId: number): Promise<void> {
       return;
     }
 
+    // Check if tab should be blocked by rules
+    const isBlocked = await shouldBlockByRules(tab.url);
+    if (isBlocked) {
+      console.log('[Background] Tab blocked by rules:', tab.url);
+      tabTimers.delete(tabId);
+      return;
+    }
+
     const storedTabs = await getStoredTabs();
 
     const newTab: SavedTab = {
