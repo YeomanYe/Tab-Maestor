@@ -113,8 +113,18 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
   }
 });
 
-// Check for tabs that need auto-save every 30 seconds
-setInterval(async () => {
+// Check for tabs that need auto-save every 5 seconds using chrome.alarms
+const AUTO_SAVE_ALARM_NAME = 'tab-maestro-auto-save-check';
+
+chrome.alarms.create(AUTO_SAVE_ALARM_NAME, {
+  periodInMinutes: 1 / 12, // 5 seconds = 1/12 minute
+});
+
+chrome.alarms.onAlarm.addListener(async (alarm) => {
+  if (alarm.name !== AUTO_SAVE_ALARM_NAME) {
+    return;
+  }
+
   if (!autoSaveDelay || autoSaveDelay <= 0) {
     return;
   }
@@ -146,7 +156,7 @@ setInterval(async () => {
       }
     }
   }
-}, 30000);
+});
 
 // Save and close a specific tab
 async function saveAndCloseTab(tabId: number): Promise<void> {

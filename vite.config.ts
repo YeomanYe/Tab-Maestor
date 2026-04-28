@@ -21,7 +21,7 @@ export default defineConfig({
           default_title: 'Open Tab Maestro',
         },
         options_page: 'index.html',
-        permissions: ['tabs', 'storage', 'contextMenus', 'notifications'],
+        permissions: ['tabs', 'storage', 'contextMenus', 'notifications', 'alarms'],
         commands: {
           'save-current-tab': {
             suggested_key: {
