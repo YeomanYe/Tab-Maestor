@@ -14,6 +14,11 @@ console.log('[Background] Service worker starting...');
 
 const STORAGE_KEY = 'tab-maestro-tabs';
 const RULES_STORAGE_KEY = 'tab-maestro-rules';
+const AUTO_SAVE_DELAY_KEY = 'tab-maestro-auto-save-delay';
+
+// Track tab timers for auto-save (tabId -> startTime)
+const tabTimers = new Map<number, number>();
+let autoSaveDelay: number | null = null; // minutes, null means disabled
 
 interface SavedTab {
   id: string;
@@ -63,6 +68,113 @@ chrome.runtime.onStartup.addListener(() => {
 // Create menus immediately on service worker load
 createContextMenus();
 
+// Load auto-save settings
+async function loadAutoSaveSettings(): Promise<void> {
+  try {
+    const result = await chrome.storage.local.get(AUTO_SAVE_DELAY_KEY);
+    autoSaveDelay = result[AUTO_SAVE_DELAY_KEY] as number | null;
+    console.log('[Background] Auto-save delay loaded:', autoSaveDelay);
+  } catch (err) {
+    console.error('[Background] Error loading auto-save settings:', err);
+  }
+}
+
+loadAutoSaveSettings();
+
+// Handle tab activation - start timer when user switches away from a tab
+chrome.tabs.onActivated.addListener(async (activeInfo) => {
+  console.log('[Background] Tab activated:', activeInfo.tabId);
+
+  // If auto-save is disabled, do nothing
+  if (!autoSaveDelay || autoSaveDelay <= 0) {
+    return;
+  }
+
+  // Get the tab that was switched away from (the previously active tab)
+  // We need to find it from all windows
+  const tabs = await chrome.tabs.query({ active: false, currentWindow: false });
+  for (const tab of tabs) {
+    if (tab.id && tab.id !== activeInfo.tabId && tab.url && !tab.url.startsWith('chrome://')) {
+      // Start timer for this tab
+      tabTimers.set(tab.id, Date.now());
+      console.log('[Background] Started timer for tab:', tab.id, 'title:', tab.title);
+    }
+  }
+});
+
+// Check for tabs that need auto-save every 30 seconds
+setInterval(async () => {
+  if (!autoSaveDelay || autoSaveDelay <= 0) {
+    return;
+  }
+
+  const delayMs = autoSaveDelay * 60 * 1000;
+  const now = Date.now();
+
+  // Check each tracked tab
+  for (const [tabId, startTime] of tabTimers.entries()) {
+    if (now - startTime >= delayMs) {
+      console.log('[Background] Auto-save triggered for tab:', tabId);
+
+      // Get the tab info
+      try {
+        const tab = await chrome.tabs.get(tabId);
+
+        // Check if tab still exists and is not the active tab
+        if (tab && !tab.active && tab.url && !tab.url.startsWith('chrome://') && !tab.url.startsWith('chrome-extension://')) {
+          // Save and close the tab
+          await saveAndCloseTab(tabId);
+        }
+
+        // Remove from timer tracking
+        tabTimers.delete(tabId);
+      } catch (err) {
+        console.error('[Background] Error auto-saving tab:', err);
+        tabTimers.delete(tabId);
+      }
+    }
+  }
+}, 30000);
+
+// Save and close a specific tab
+async function saveAndCloseTab(tabId: number): Promise<void> {
+  try {
+    const tab = await chrome.tabs.get(tabId);
+    if (!tab || !tab.url) {
+      return;
+    }
+
+    const storedTabs = await getStoredTabs();
+    const exists = storedTabs.some((t) => t.url === tab.url);
+
+    if (exists) {
+      console.log('[Background] Tab already saved, just closing:', tabId);
+      await chrome.tabs.remove(tabId);
+      return;
+    }
+
+    const newTab: SavedTab = {
+      id: uuidv4(),
+      title: tab.title || 'Untitled',
+      url: tab.url,
+      favicon: tab.favIconUrl || '',
+      savedAt: Date.now(),
+      originalTabId: tabId,
+    };
+
+    storedTabs.unshift(newTab);
+    await saveStoredTabs(storedTabs);
+
+    // Close the tab
+    await chrome.tabs.remove(tabId);
+
+    await showNotification('Tab Maestro', `Auto-saved: ${newTab.title}`);
+    console.log('[Background] Tab auto-saved and closed:', tabId);
+  } catch (err) {
+    console.error('[Background] Error in saveAndCloseTab:', err);
+  }
+}
+
 // Handle keyboard commands - with safety check
 if (chrome.commands) {
   chrome.commands.onCommand.addListener(async (command) => {
@@ -95,6 +207,17 @@ chrome.runtime.onMessage.addListener((message, _sender, _sendResponse) => {
     saveAllTabs();
   } else if (message.action === 'saveCurrentTab') {
     saveCurrentTab();
+  } else if (message.action === 'updateAutoSaveDelay') {
+    // Update auto-save delay setting
+    autoSaveDelay = message.delay;
+    chrome.storage.local.set({ [AUTO_SAVE_DELAY_KEY]: message.delay });
+    console.log('[Background] Auto-save delay updated:', message.delay);
+
+    // Clear all timers if auto-save is disabled
+    if (!autoSaveDelay || autoSaveDelay <= 0) {
+      tabTimers.clear();
+      console.log('[Background] Cleared all tab timers');
+    }
   }
 });
 

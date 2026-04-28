@@ -37,6 +37,7 @@ declare global {
         ) => void;
       };
       getURL?: (path: string) => string;
+      sendMessage?: (message: Record<string, unknown>) => Promise<unknown>;
     };
     contextMenus?: {
       create: (props: Record<string, unknown>, callback?: () => void) => void;

@@ -43,6 +43,10 @@ class TabStore {
           this.endDateFilter = (result[DATE_END_DATE_FILTER_KEY] as number | null) ?? null;
           this.autoSaveHours = (result[AUTO_SAVE_HOURS_KEY] as number | null) ?? null;
         });
+        // Sync auto-save setting to background script
+        if (this.autoSaveHours !== null && window.chrome?.runtime?.sendMessage) {
+          window.chrome.runtime.sendMessage({ action: 'updateAutoSaveDelay', delay: this.autoSaveHours });
+        }
       }
     } catch {
       // Silently fail
@@ -76,6 +80,10 @@ class TabStore {
     try {
       if (typeof window !== 'undefined' && window.chrome?.storage?.sync) {
         await window.chrome.storage.sync.set({ [AUTO_SAVE_HOURS_KEY]: hours });
+      }
+      // Notify background script to update auto-save delay
+      if (typeof window !== 'undefined' && window.chrome?.runtime?.sendMessage) {
+        window.chrome.runtime.sendMessage({ action: 'updateAutoSaveDelay', delay: hours });
       }
     } catch {
       // Silently fail
