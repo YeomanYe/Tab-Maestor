@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Tab Maestro · D1 · Linear Cinema Dark</title>
+<style>
+  :root {
+    --bg-deep: #020203;
+    --bg-base: #050506;
+    --bg-elevated: #0a0a0c;
+    --surface: rgba(255, 255, 255, 0.04);
+    --surface-hover: rgba(255, 255, 255, 0.07);
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.14);
+    --fg: #EDEDEF;
+    --fg-muted: #8A8F98;
+    --fg-dim: #5A5F68;
+    --accent: #5E6AD2;
+    --accent-soft: rgba(94, 106, 210, 0.18);
+    --accent-glow: rgba(94, 106, 210, 0.4);
+    --easing: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: linear-gradient(180deg, #0a0a0f 0%, #020203 100%);
+    background-attachment: fixed;
+    color: var(--fg);
+    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before, body::after {
+    content: ''; position: fixed; pointer-events: none; z-index: 0;
+    border-radius: 50%; filter: blur(80px); opacity: 0.10;
+  }
+  body::before { width: 600px; height: 600px; top: -150px; left: -100px; background: var(--accent); }
+  body::after { width: 500px; height: 500px; bottom: -100px; right: -150px; background: #8B5CF6; }
+
+  .app { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 24px 32px 80px; }
+
+  /* ── Header ── */
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 0 28px;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-mark {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent) 0%, #8B5CF6 100%);
+    box-shadow: 0 0 24px var(--accent-glow);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px; color: #fff;
+  }
+  .brand-name { font-weight: 600; font-size: 14px; letter-spacing: -0.01em; }
+  .brand-name span { color: var(--fg-dim); font-weight: 400; margin-left: 6px; }
+
+  .header-right { display: flex; gap: 6px; align-items: center; }
+  .icon-btn {
+    height: 32px; width: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    color: var(--fg-muted);
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all 200ms var(--easing);
+  }
+  .icon-btn:hover { background: var(--surface-hover); color: var(--fg); border-color: var(--border-strong); }
+  .primary-btn {
+    height: 32px; padding: 0 14px;
+    background: var(--accent);
+    color: #fff; font-weight: 500; font-size: 13px;
+    border: none; border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.05) inset, 0 4px 14px var(--accent-glow);
+    transition: all 200ms var(--easing);
+  }
+  .primary-btn:hover { transform: translateY(-1px); box-shadow: 0 0 0 1px rgba(255,255,255,0.1) inset, 0 6px 20px var(--accent-glow); }
+
+  /* ── Hero ── */
+  .hero { padding: 16px 0 32px; }
+  .hero h1 {
+    font-size: 34px; font-weight: 600;
+    letter-spacing: -0.025em; line-height: 1.1;
+    margin-bottom: 10px;
+  }
+  .hero h1 .muted { color: var(--fg-muted); font-weight: 500; }
+  .hero .sub { color: var(--fg-muted); font-size: 14px; }
+
+  /* ── Stats ── */
+  .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 12px; padding: 20px 0 18px;
+  }
+  .stat {
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    backdrop-filter: blur(20px);
+    transition: all 200ms var(--easing);
+  }
+  .stat:hover { border-color: var(--border-strong); }
+  .stat-label { color: var(--fg-muted); font-size: 11px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .stat-value { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .stat-trend { color: #5BD78F; font-size: 11px; margin-top: 4px; }
+
+  /* ── Search ── */
+  .search-bar { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-bottom: 8px; }
+  .search {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    backdrop-filter: blur(20px);
+    transition: border-color 200ms var(--easing);
+  }
+  .search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .search input {
+    width: 100%; height: 40px;
+    padding: 0 14px 0 40px;
+    background: transparent; border: none; outline: none;
+    color: var(--fg); font: inherit; font-size: 14px;
+  }
+  .search input::placeholder { color: var(--fg-dim); }
+  .search svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--fg-muted); }
+  .kbd {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    padding: 3px 7px; font-size: 11px; color: var(--fg-muted);
+    background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-radius: 5px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .filter-chips { display: flex; gap: 6px; }
+  .chip {
+    height: 40px; padding: 0 12px;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--fg-muted); font: inherit; font-size: 13px; font-weight: 500;
+    border-radius: 10px; cursor: pointer;
+    backdrop-filter: blur(20px);
+    transition: all 200ms var(--easing);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .chip:hover { background: var(--surface-hover); color: var(--fg); }
+  .chip.active { background: var(--accent-soft); border-color: var(--accent); color: var(--fg); }
+  .chip .count { color: var(--fg-dim); font-size: 11px; font-variant-numeric: tabular-nums; }
+
+  /* ── Group ── */
+  .group-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 28px 0 12px;
+  }
+  .group-title {
+    font-size: 11px; font-weight: 600; color: var(--fg-muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .group-title .pulse {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); box-shadow: 0 0 8px var(--accent-glow);
+  }
+  .group-count { color: var(--fg-dim); font-size: 11px; font-variant-numeric: tabular-nums; }
+
+  /* ── Tab list (denser than C) ── */
+  .tab-list {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    backdrop-filter: blur(20px);
+    overflow: hidden;
+  }
+  .tab-row {
+    display: grid;
+    grid-template-columns: 28px 1fr 240px 80px 24px;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 150ms var(--easing);
+  }
+  .tab-row:last-child { border-bottom: none; }
+  .tab-row:hover { background: rgba(255,255,255,0.025); }
+  .tab-row .fav {
+    width: 24px; height: 24px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 11px; color: #fff;
+  }
+  .fav.gh { background: linear-gradient(135deg, #2c2c34, #16161a); }
+  .fav.mdn { background: #000; border: 1px solid var(--border); }
+  .fav.react { background: linear-gradient(135deg, #61dafb, #3aa9d6); color: #16161d; }
+  .fav.vercel { background: #fff; color: #000; }
+  .fav.anthropic { background: linear-gradient(135deg, #d4825c, #b85a30); }
+  .fav.news { background: linear-gradient(135deg, #ff6600, #d8410f); }
+  .fav.figma { background: linear-gradient(135deg, #a259ff, #f24e1e); }
+  .fav.yt { background: linear-gradient(135deg, #ff0000, #cc0000); }
+
+  .tab-row .title {
+    font-weight: 500; color: var(--fg); font-size: 13.5px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .tab-row .url { color: var(--fg-muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tab-row .when { color: var(--fg-muted); font-size: 12px; font-variant-numeric: tabular-nums; text-align: right; }
+  .tab-row .more { color: var(--fg-dim); opacity: 0; transition: opacity 150ms; text-align: center; }
+  .tab-row:hover .more { opacity: 1; }
+  .pinned-marker {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--accent); box-shadow: 0 0 6px var(--accent);
+    display: inline-block; margin-right: 8px; vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="brand">
+        <div class="brand-mark">M</div>
+        <div class="brand-name">Tab Maestro<span>v1.4</span></div>
+      </div>
+      <div class="header-right">
+        <button class="icon-btn" title="Theme">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg>
+        </button>
+        <button class="icon-btn" title="Settings">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 1-.1 1.2l2 1.6-2 3.4-2.4-1a7 7 0 0 1-2.1 1.2l-.4 2.6h-4l-.4-2.6a7 7 0 0 1-2.1-1.2l-2.4 1-2-3.4 2-1.6A7 7 0 0 1 5 12"/></svg>
+        </button>
+        <button class="primary-btn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+          Save current
+        </button>
+      </div>
+    </header>
+
+    <div class="hero">
+      <h1>2,481 tabs <span class="muted">organized.</span></h1>
+      <div class="sub">147 saved this week · 1,204 unique domains · auto-saving every 24 idle hours</div>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-label">Total saved</div>
+        <div class="stat-value">2,481</div>
+        <div class="stat-trend">↑ 6.3% week</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Today</div>
+        <div class="stat-value">8</div>
+        <div class="stat-trend">↑ 2 vs yesterday</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Pinned</div>
+        <div class="stat-value">3</div>
+        <div class="stat-trend" style="color: var(--fg-dim)">always at hand</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Storage</div>
+        <div class="stat-value">3.4<span style="color: var(--fg-dim); font-size: 13px; font-weight: 400;"> / 10 MB</span></div>
+        <div class="stat-trend" style="color: var(--fg-dim)">chrome.storage.local</div>
+      </div>
+    </div>
+
+    <div class="search-bar">
+      <label class="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input placeholder="Search 2,481 tabs · titles, URLs, domains" />
+        <span class="kbd">⌘ K</span>
+      </label>
+      <div class="filter-chips">
+        <button class="chip active">All <span class="count">2,481</span></button>
+        <button class="chip">Today <span class="count">8</span></button>
+        <button class="chip">Week <span class="count">147</span></button>
+      </div>
+    </div>
+
+    <div class="group-head">
+      <div class="group-title"><span class="pulse"></span>Pinned</div>
+      <div class="group-count">3 tabs</div>
+    </div>
+    <div class="tab-list">
+      <div class="tab-row">
+        <span class="fav anthropic">A</span>
+        <span class="title"><span class="pinned-marker"></span>Anthropic Console — Claude API playground</span>
+        <span class="url">console.anthropic.com</span>
+        <span class="when">always</span>
+        <span class="more">⋯</span>
+      </div>
+      <div class="tab-row">
+        <span class="fav gh">G</span>
+        <span class="title"><span class="pinned-marker"></span>tab-maestro · Issue #142 storage migration</span>
+        <span class="url">github.com</span>
+        <span class="when">always</span>
+        <span class="more">⋯</span>
+      </div>
+      <div class="tab-row">
+        <span class="fav figma">F</span>
+        <span class="title"><span class="pinned-marker"></span>Design system · components / v3</span>
+        <span class="url">figma.com</span>
+        <span class="when">always</span>
+        <span class="more">⋯</span>
+      </div>
+    </div>
+
+    <div class="group-head">
+      <div class="group-title">Today · Apr 27</div>
+      <div class="group-count">8 tabs</div>
+    </div>
+    <div class="tab-list">
+      <div class="tab-row">
+        <span class="fav mdn">M</span>
+        <span class="title">CSS container queries — MDN Web Docs</span>
+        <span class="url">developer.mozilla.org</span>
+        <span class="when">14:32</span>
+        <span class="more">⋯</span>
+      </div>
+      <div class="tab-row">
+        <span class="fav react">R</span>
+        <span class="title">useEffect — React Reference</span>
+        <span class="url">react.dev</span>
+        <span class="when">14:01</span>
+        <span class="more">⋯</span>
+      </div>
+      <div class="tab-row">
+        <span class="fav gh">G</span>
+        <span class="title">vercel/next.js — PR #62811: cache invalidation</span>
+        <span class="url">github.com</span>
+        <span class="when">13:24</span>
+        <span class="more">⋯</span>
+      </div>
+      <div class="tab-row">
+        <span class="fav vercel">V</span>
+        <span class="title">Vercel — Build & deploy logs</span>
+        <span class="url">vercel.com</span>
+        <span class="when">12:58</span>
+        <span class="more">⋯</span>
+      </div>
+      <div class="tab-row">
+        <span class="fav news">H</span>
+        <span class="title">Show HN: I built a tab manager that doesn't suck</span>
+        <span class="url">news.ycombinator.com</span>
+        <span class="when">11:40</span>
+        <span class="more">⋯</span>
+      </div>
+      <div class="tab-row">
+        <span class="fav yt">Y</span>
+        <span class="title">Building a Chrome Extension in 2026 — Theo</span>
+        <span class="url">youtube.com</span>
+        <span class="when">10:18</span>
+        <span class="more">⋯</span>
+      </div>
+    </div>
+
+    <div class="group-head">
+      <div class="group-title">Yesterday · Apr 26</div>
+      <div class="group-count">12 tabs</div>
+    </div>
+    <div class="tab-list">
+      <div class="tab-row">
+        <span class="fav gh">G</span>
+        <span class="title">microsoft/TypeScript — Release 5.4.3</span>
+        <span class="url">github.com</span>
+        <span class="when">22:14</span>
+        <span class="more">⋯</span>
+      </div>
+      <div class="tab-row">
+        <span class="fav mdn">M</span>
+        <span class="title">chrome.storage.sync — Extension API reference</span>
+        <span class="url">developer.chrome.com</span>
+        <span class="when">21:02</span>
+        <span class="more">⋯</span>
+      </div>
+      <div class="tab-row">
+        <span class="fav react">R</span>
+        <span class="title">MobX with React 18 — handling concurrent rendering</span>
+        <span class="url">mobx.js.org</span>
+        <span class="when">19:45</span>
+        <span class="more">⋯</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

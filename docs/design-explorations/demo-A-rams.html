@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Tab Maestro · A · Information Architect</title>
+<style>
+  :root {
+    --bg: #FFFFFF;
+    --surface: #FAFAFA;
+    --ink: #0A0A0A;
+    --ink-2: #404040;
+    --ink-3: #737373;
+    --ink-4: #A3A3A3;
+    --line: #E8E8E8;
+    --line-2: #F0F0F0;
+    --accent: #2950DA;
+    --accent-soft: #EEF2FF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+  .app { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+
+  /* ── Header ── */
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 0 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-mark {
+    width: 22px; height: 22px;
+    background: var(--ink);
+    border-radius: 4px;
+    position: relative;
+  }
+  .brand-mark::before, .brand-mark::after {
+    content: ''; position: absolute; background: #fff; border-radius: 1px;
+  }
+  .brand-mark::before { left: 4px; top: 5px; width: 14px; height: 1.5px; }
+  .brand-mark::after { left: 4px; top: 9px; width: 9px; height: 1.5px; }
+  .brand-name {
+    font-weight: 600; font-size: 13px; letter-spacing: -0.01em;
+  }
+  .brand-name span { color: var(--ink-3); font-weight: 400; margin-left: 6px; }
+  .header-actions { display: flex; gap: 4px; align-items: center; }
+  .icon-btn {
+    width: 30px; height: 30px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: none; background: transparent;
+    color: var(--ink-3); cursor: pointer; border-radius: 4px;
+    transition: background 120ms ease;
+  }
+  .icon-btn:hover { background: var(--line-2); color: var(--ink); }
+
+  /* ── Toolbar ── */
+  .toolbar {
+    display: grid; grid-template-columns: 1fr auto auto;
+    gap: 12px; align-items: center;
+    padding: 16px 0;
+  }
+  .search {
+    position: relative;
+  }
+  .search input {
+    width: 100%;
+    height: 34px;
+    padding: 0 12px 0 32px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font: inherit;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 120ms ease, background 120ms ease;
+  }
+  .search input:focus { border-color: var(--accent); background: #fff; }
+  .search svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--ink-4); }
+  .seg {
+    display: inline-flex; height: 34px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 2px;
+  }
+  .seg button {
+    background: transparent; border: none;
+    padding: 0 12px; font: inherit; color: var(--ink-3);
+    cursor: pointer; border-radius: 3px;
+  }
+  .seg button.active { background: #fff; color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+  .btn-primary {
+    height: 34px; padding: 0 14px;
+    background: var(--ink); color: #fff;
+    border: none; border-radius: 4px;
+    font: inherit; font-weight: 500;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+
+  /* ── Stats strip ── */
+  .stats {
+    display: flex; gap: 32px;
+    padding: 14px 0 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  .stat {
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .stat-label { font-size: 11px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.04em; }
+  .stat-value { font-size: 15px; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  /* ── Tab table ── */
+  .group { padding: 22px 0 8px; }
+  .group-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding-bottom: 10px;
+  }
+  .group-title {
+    font-size: 11px; color: var(--ink-3);
+    text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500;
+  }
+  .group-count { font-size: 11px; color: var(--ink-4); font-variant-numeric: tabular-nums; }
+
+  .tab-row {
+    display: grid;
+    grid-template-columns: 18px 1fr 280px 80px 24px;
+    gap: 14px;
+    align-items: center;
+    padding: 10px 0;
+    border-top: 1px solid var(--line-2);
+    cursor: pointer;
+    transition: background 100ms ease;
+  }
+  .tab-row:hover { background: var(--surface); }
+  .tab-row .fav {
+    width: 16px; height: 16px; border-radius: 3px;
+    background: var(--line); display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 600; color: #fff;
+  }
+  .tab-row .title {
+    font-weight: 500; color: var(--ink);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .tab-row .url {
+    color: var(--ink-3); font-size: 12px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .tab-row .when {
+    color: var(--ink-3); font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+  .tab-row .more { color: var(--ink-4); opacity: 0; transition: opacity 100ms; }
+  .tab-row:hover .more { opacity: 1; }
+  .pin-dot {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--accent); display: inline-block; margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  .fav.f-gh { background: #24292e; }
+  .fav.f-mdn { background: #000; }
+  .fav.f-react { background: #61dafb; color: #1a1a1a; }
+  .fav.f-vercel { background: #000; }
+  .fav.f-anthropic { background: #cc785c; }
+  .fav.f-news { background: #d8410f; }
+  .fav.f-figma { background: #0acf83; }
+  .fav.f-yt { background: #ff0000; }
+
+  /* ── Bottom info ── */
+  footer {
+    margin-top: 32px;
+    padding: 16px 0 28px;
+    border-top: 1px solid var(--line);
+    display: flex; justify-content: space-between;
+    color: var(--ink-4); font-size: 11px;
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="brand">
+        <div class="brand-mark"></div>
+        <div class="brand-name">Tab Maestro<span>v1.4</span></div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" title="Theme">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M5 12H3M21 12h-2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4l1.4-1.4M17 7l1.4-1.4"/></svg>
+        </button>
+        <button class="icon-btn" title="Settings">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3h.1a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8v.1a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="toolbar">
+      <div class="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input placeholder="Search tabs by title, URL, or domain" />
+      </div>
+      <div class="seg">
+        <button class="active">All</button>
+        <button>Today</button>
+        <button>Week</button>
+        <button>Custom</button>
+      </div>
+      <button class="btn-primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        Save current
+      </button>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-label">Saved</span>
+        <span class="stat-value">2,481</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">This week</span>
+        <span class="stat-value">147</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Auto-save</span>
+        <span class="stat-value">24h idle</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Storage</span>
+        <span class="stat-value">3.4 / 10 MB</span>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="group-head">
+        <span class="group-title">Pinned</span>
+        <span class="group-count">3</span>
+      </div>
+      <div class="tab-row">
+        <span class="fav f-anthropic">A</span>
+        <span class="title"><span class="pin-dot"></span>Anthropic Console — Claude API playground</span>
+        <span class="url">console.anthropic.com/workbench</span>
+        <span class="when">Pinned</span>
+        <span class="more">⋯</span>
+      </div>
+      <div class="tab-row">
+        <span class="fav f-gh">G</span>
+        <span class="title"><span class="pin-dot"></span>tab-maestro — issues #142 storage migration</span>
+        <span class="url">github.com/you/tab-maestro/issues/142</span>
+        <span class="when">Pinned</span>
+        <span class="more">⋯</span>
+      </div>
+      <div class="tab-row">
+        <span class="fav f-figma">F</span>
+        <span class="title"><span class="pin-dot"></span>Design system — components / v3</span>
+        <span class="url">figma.com/file/abc123/design-system-v3</span>
+        <span class="when">Pinned</span>
+        <span class="more">⋯</span>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="group-head">
+        <span class="group-title">Today · Apr 27</span>
+        <span class="group-count">8</span>
+      </div>
+      <div class="tab-row">
+        <span class="fav f-mdn">M</span>
+        <span class="title">CSS container queries — MDN Web Docs</span>
+        <span class="url">developer.mozilla.org/en-US/docs/Web/CSS/CSS_container_queries</span>
+        <span class="when">14:32</span>
+        <span class="more">⋯</span>
+      </div>
+      <div class="tab-row">
+        <span class="fav f-react">R</span>
+        <span class="title">useEffect — React Reference</span>
+        <span class="url">react.dev/reference/react/useEffect</span>
+        <span class="when">14:01</span>
+        <span class="more">⋯</span>
+      </div>
+      <div class="tab-row">
+        <span class="fav f-gh">G</span>
+        <span class="title">vercel/next.js: Pull request #62811</span>
+        <span class="url">github.com/vercel/next.js/pull/62811</span>
+        <span class="when">13:24</span>
+        <span class="more">⋯</span>
+      </div>
+      <div class="tab-row">
+        <span class="fav f-vercel">V</span>
+        <span class="title">Vercel — Build & deploy logs</span>
+        <span class="url">vercel.com/team/tab-maestro/deployments</span>
+        <span class="when">12:58</span>
+        <span class="more">⋯</span>
+      </div>
+      <div class="tab-row">
+        <span class="fav f-news">H</span>
+        <span class="title">Show HN: I built a tab manager that doesn't suck | Hacker News</span>
+        <span class="url">news.ycombinator.com/item?id=39847122</span>
+        <span class="when">11:40</span>
+        <span class="more">⋯</span>
+      </div>
+      <div class="tab-row">
+        <span class="fav f-yt">Y</span>
+        <span class="title">Building a Chrome Extension in 2026 — Theo</span>
+        <span class="url">youtube.com/watch?v=xY9pZk2_aBQ</span>
+        <span class="when">10:18</span>
+        <span class="more">⋯</span>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="group-head">
+        <span class="group-title">Yesterday · Apr 26</span>
+        <span class="group-count">12</span>
+      </div>
+      <div class="tab-row">
+        <span class="fav f-gh">G</span>
+        <span class="title">microsoft/TypeScript: Release 5.4.3</span>
+        <span class="url">github.com/microsoft/TypeScript/releases/tag/v5.4.3</span>
+        <span class="when">22:14</span>
+        <span class="more">⋯</span>
+      </div>
+      <div class="tab-row">
+        <span class="fav f-mdn">M</span>
+        <span class="title">chrome.storage.sync — Chrome Extensions API</span>
+        <span class="url">developer.chrome.com/docs/extensions/reference/api/storage</span>
+        <span class="when">21:02</span>
+        <span class="more">⋯</span>
+      </div>
+      <div class="tab-row">
+        <span class="fav f-react">R</span>
+        <span class="title">MobX with React 18 — handling concurrent rendering</span>
+        <span class="url">mobx.js.org/react-integration.html</span>
+        <span class="when">19:45</span>
+        <span class="more">⋯</span>
+      </div>
+    </div>
+
+    <footer>
+      <span>2,481 tabs · 1,204 unique domains</span>
+      <span>Sync: chrome.storage.sync · Last sync 2m ago</span>
+    </footer>
+  </div>
+</body>
+</html>

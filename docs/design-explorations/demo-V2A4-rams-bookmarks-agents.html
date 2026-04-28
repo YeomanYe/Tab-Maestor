@@ -1,0 +1,962 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<title>Tab Maestro V2A4 · Rams · Sessions + Bookmarks + Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FFFFFF;
+    --surface: #FAFAFA;
+    --surface-2: #F4F4F4;
+    --ink: #0A0A0A;
+    --ink-2: #404040;
+    --ink-3: #737373;
+    --ink-4: #A3A3A3;
+    --ink-5: #D4D4D4;
+    --line: #E8E8E8;
+    --line-2: #F0F0F0;
+    --accent: #2950DA;
+    --accent-soft: #EEF2FF;
+    --done: #15803D;
+    --done-soft: #ECFDF5;
+    --warn: #B45309;
+    --warn-soft: #FFFBEB;
+    --danger: #B91C1C;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg); color: var(--ink);
+    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    font-size: 13px; line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+  .app { max-width: 1440px; margin: 0 auto; padding: 0 32px; }
+
+  /* Header */
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 0 18px; border-bottom: 1px solid var(--line);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-mark {
+    width: 22px; height: 22px; background: var(--ink);
+    border-radius: 4px; position: relative;
+  }
+  .brand-mark::before, .brand-mark::after {
+    content: ''; position: absolute; background: #fff; border-radius: 1px;
+  }
+  .brand-mark::before { left: 4px; top: 5px; width: 14px; height: 1.5px; }
+  .brand-mark::after  { left: 4px; top: 9px; width: 9px;  height: 1.5px; }
+  .brand-name { font-weight: 600; font-size: 13px; letter-spacing: -0.01em; }
+  .brand-name span { color: var(--ink-3); font-weight: 400; margin-left: 6px; }
+  .header-actions { display: flex; gap: 4px; align-items: center; }
+  .icon-btn {
+    width: 30px; height: 30px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: none; background: transparent; color: var(--ink-3);
+    cursor: pointer; border-radius: 4px;
+  }
+  .icon-btn:hover { background: var(--line-2); color: var(--ink); }
+  .ai-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 10px; background: var(--accent-soft); color: var(--accent);
+    border-radius: 4px; font-size: 11px; font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .ai-status .dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+    box-shadow: 0 0 0 3px rgba(41,80,218,0.18);
+  }
+
+  /* Toolbar */
+  .toolbar {
+    display: grid; grid-template-columns: 1fr auto auto auto;
+    gap: 12px; align-items: center; padding: 16px 0;
+  }
+  .search { position: relative; }
+  .search input {
+    width: 100%; height: 34px; padding: 0 12px 0 32px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 4px; font: inherit; color: var(--ink); outline: none;
+    transition: border-color 120ms ease, background 120ms ease;
+  }
+  .search input:focus { border-color: var(--accent); background: #fff; }
+  .search input::placeholder { color: var(--ink-4); }
+  .search svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--ink-4); }
+  .search-hint {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--ink-4); padding: 1px 5px;
+    border: 1px solid var(--line); border-radius: 3px;
+    background: #fff;
+  }
+  .seg {
+    display: inline-flex; height: 34px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 4px; padding: 2px;
+  }
+  .seg button {
+    background: transparent; border: none;
+    padding: 0 12px; font: inherit; color: var(--ink-3);
+    cursor: pointer; border-radius: 3px;
+  }
+  .seg button.active { background: #fff; color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+  .btn-ghost {
+    height: 34px; padding: 0 12px; background: var(--surface);
+    border: 1px solid var(--line); border-radius: 4px;
+    font: inherit; color: var(--ink-2); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-ghost:hover { background: var(--line-2); }
+
+  /* Stats */
+  .stats {
+    display: flex; gap: 36px;
+    padding: 14px 0 20px; border-bottom: 1px solid var(--line);
+  }
+  .stat { display: flex; flex-direction: column; gap: 4px; }
+  .stat-label {
+    font-size: 10px; color: var(--ink-3); text-transform: uppercase;
+    letter-spacing: 0.06em; font-weight: 500;
+  }
+  .stat-value {
+    font-size: 18px; font-weight: 600; color: var(--ink);
+    font-variant-numeric: tabular-nums; letter-spacing: -0.01em;
+  }
+  .stat-sub { font-size: 11px; color: var(--ink-3); }
+
+  /* Layout · 3 columns: feed | bookmarks | agents */
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px 260px;
+    gap: 28px; padding: 24px 0 64px;
+    position: relative;
+  }
+  .side-col { display: flex; flex-direction: column; gap: 16px; padding-top: 12px; min-width: 0; }
+
+  /* Session timeline */
+  .timeline-section { display: flex; flex-direction: column; gap: 8px; }
+  .group-label {
+    display: flex; align-items: baseline; gap: 12px;
+    padding: 14px 0 10px;
+    border-bottom: 1px solid var(--line);
+    margin-top: 12px;
+  }
+  .group-label:first-child { margin-top: 0; padding-top: 0; }
+  .group-label-text {
+    font-size: 11px; color: var(--ink-2); font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .group-label-meta { font-size: 11px; color: var(--ink-4); font-variant-numeric: tabular-nums; }
+
+  .session {
+    display: grid; grid-template-columns: 24px 1fr;
+    gap: 14px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line-2);
+    cursor: pointer;
+    transition: background 100ms ease;
+  }
+  .session:hover { background: var(--surface); margin: 0 -16px; padding: 16px 16px; border-radius: 4px; }
+  .session-status {
+    width: 8px; height: 8px; border-radius: 50%;
+    margin-top: 6px;
+  }
+  .status-active { background: var(--accent); box-shadow: 0 0 0 3px rgba(41,80,218,0.16); }
+  .status-done { background: var(--done); }
+  .status-paused { background: var(--warn); }
+  .status-discarded { background: var(--ink-5); }
+  .session-body { display: flex; flex-direction: column; gap: 8px; }
+
+  .session-row1 {
+    display: flex; align-items: center; gap: 8px;
+    flex-wrap: wrap;
+  }
+  .session-intent {
+    font-size: 14px; font-weight: 600; color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .session-intent.ai-generated::before {
+    content: '✦'; color: var(--accent);
+    margin-right: 6px; font-size: 11px;
+  }
+  .badge {
+    font-size: 10px; padding: 2px 7px; border-radius: 3px;
+    font-weight: 500; letter-spacing: 0.02em;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .badge-active { background: var(--accent-soft); color: var(--accent); }
+  .badge-done { background: var(--done-soft); color: var(--done); }
+  .badge-paused { background: var(--warn-soft); color: var(--warn); }
+  .badge-tabs { background: var(--surface-2); color: var(--ink-2); }
+
+  .session-summary {
+    color: var(--ink-2); font-size: 12.5px;
+    max-width: 720px;
+  }
+  .session-meta {
+    display: flex; gap: 18px;
+    font-size: 11px; color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+  .session-meta span { display: inline-flex; align-items: center; gap: 4px; }
+
+  .session-tabs {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .tab-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 8px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    font-size: 11.5px; color: var(--ink-2);
+    max-width: 180px;
+  }
+  .tab-chip .favicon {
+    width: 12px; height: 12px;
+    background: var(--ink-5);
+    border-radius: 2px; flex-shrink: 0;
+  }
+  .tab-chip .text {
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .tab-chip-more {
+    padding: 4px 8px; background: transparent; border: 1px dashed var(--line);
+    border-radius: 3px; font-size: 11.5px; color: var(--ink-3);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .session-actions {
+    display: flex; gap: 6px; margin-top: 8px;
+    opacity: 0; transition: opacity 100ms ease;
+  }
+  .session:hover .session-actions { opacity: 1; }
+  .action {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 9px; background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    font-size: 11.5px; color: var(--ink-2);
+    cursor: pointer; font-family: inherit;
+  }
+  .action:hover { border-color: var(--ink-3); color: var(--ink); }
+  .action.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .action.primary:hover { background: var(--ink-2); }
+  .action.danger:hover { color: var(--danger); border-color: var(--danger); }
+  .action svg { width: 11px; height: 11px; }
+
+  /* Sidebar (right) */
+  .sidebar { display: flex; flex-direction: column; gap: 24px; padding-top: 12px; }
+  .panel {
+    border: 1px solid var(--line); border-radius: 6px; padding: 16px;
+    background: #fff;
+  }
+  .panel-title {
+    font-size: 11px; color: var(--ink-3);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    font-weight: 600; margin-bottom: 12px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .panel-title .more { color: var(--ink-4); font-size: 14px; cursor: pointer; }
+
+  .agent-list { display: flex; flex-direction: column; gap: 10px; }
+  .agent {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px; background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+  }
+  .agent-icon {
+    width: 26px; height: 26px;
+    background: var(--ink); border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 11px; font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .agent-icon.notion { background: #000; }
+  .agent-icon.obsidian { background: #6E4FF6; }
+  .agent-icon.bookmarks { background: var(--accent); }
+  .agent-icon.mcp { background: var(--done); }
+  .agent-info { flex: 1; min-width: 0; }
+  .agent-name { font-size: 12px; font-weight: 500; color: var(--ink); }
+  .agent-status { font-size: 10.5px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+  .agent .pulse {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--done); flex-shrink: 0;
+  }
+
+  .insight {
+    display: flex; flex-direction: column; gap: 4px;
+    padding: 10px 0; border-bottom: 1px solid var(--line-2);
+  }
+  .insight:last-child { border-bottom: none; padding-bottom: 0; }
+  .insight-label { font-size: 11px; color: var(--ink-3); }
+  .insight-value {
+    font-size: 13px; font-weight: 600; color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .insight-bar {
+    margin-top: 4px; height: 3px;
+    background: var(--line-2); border-radius: 2px; overflow: hidden;
+  }
+  .insight-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; }
+
+  /* Sidebar mode switch */
+  .side-mode {
+    display: flex; gap: 0;
+    border: 1px solid var(--line); border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 4px;
+  }
+  .side-mode button {
+    flex: 1;
+    background: #fff; border: none; border-right: 1px solid var(--line);
+    padding: 7px 10px;
+    font: inherit; font-size: 11.5px;
+    color: var(--ink-3);
+    cursor: pointer;
+    transition: background 100ms ease, color 100ms ease;
+    display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  }
+  .side-mode button:last-child { border-right: none; }
+  .side-mode button:hover { color: var(--ink); }
+  .side-mode button.active {
+    background: var(--ink); color: #fff; font-weight: 500;
+  }
+  .side-mode button svg { width: 11px; height: 11px; }
+  .side-mode button .num {
+    margin-left: 4px; font-size: 10px;
+    color: var(--ink-4); font-variant-numeric: tabular-nums;
+  }
+  .side-mode button.active .num { color: rgb(255 255 255 / 60%); }
+
+  /* Bookmarks tree panel */
+  .bookmarks-panel {
+    border: 1px solid var(--line); border-radius: 6px;
+    background: #fff;
+    display: flex; flex-direction: column;
+    flex: 1;
+  }
+  .bookmarks-head {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .bookmarks-head .title {
+    font-size: 11px; color: var(--ink-3);
+    text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .bookmarks-head .title svg { width: 12px; height: 12px; color: var(--ink-2); }
+  .bookmarks-head .meta { font-size: 10.5px; color: var(--ink-4); font-variant-numeric: tabular-nums; }
+
+  .bookmarks-search {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--line-2);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .bookmarks-search svg { width: 11px; height: 11px; color: var(--ink-4); flex-shrink: 0; }
+  .bookmarks-search input {
+    flex: 1; border: none; outline: none; background: transparent;
+    font: inherit; font-size: 12px; color: var(--ink);
+  }
+  .bookmarks-search input::placeholder { color: var(--ink-4); }
+  .bookmarks-search .new-folder {
+    font-size: 10px; color: var(--ink-3);
+    font-family: 'JetBrains Mono', monospace;
+    cursor: pointer;
+    padding: 2px 6px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+  }
+  .bookmarks-search .new-folder:hover { color: var(--ink); border-color: var(--ink-3); }
+
+  .bookmarks-tree {
+    padding: 6px 4px 12px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .bm-node { user-select: none; }
+  .bm-row {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 8px;
+    font-size: 12px;
+    color: var(--ink-2);
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background 80ms ease;
+    position: relative;
+  }
+  .bm-row:hover { background: var(--surface); }
+  .bm-row .caret {
+    width: 10px; color: var(--ink-4); font-size: 10px;
+    flex-shrink: 0; text-align: center;
+  }
+  .bm-row .icon {
+    width: 14px; height: 14px;
+    flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--ink-3);
+  }
+  .bm-row .icon svg { width: 13px; height: 13px; }
+  .bm-row .label {
+    flex: 1; min-width: 0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .bm-row .count {
+    font-size: 10.5px; color: var(--ink-4);
+    font-variant-numeric: tabular-nums;
+  }
+  .bm-row.is-folder .label { color: var(--ink); font-weight: 500; }
+  .bm-row.is-leaf .icon { color: var(--ink-4); }
+  .bm-row.is-leaf .label { color: var(--ink-2); font-weight: 400; }
+
+  .bm-row.drop-target {
+    background: var(--accent-soft);
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+  .bm-row.drop-target .label { color: var(--accent); font-weight: 600; }
+  .bm-row.drop-target .icon { color: var(--accent); }
+
+  .bm-children { padding-left: 18px; }
+
+  .drop-hint {
+    margin: 8px 12px 0;
+    padding: 10px 12px;
+    border: 1px dashed var(--accent);
+    border-radius: 4px;
+    background: var(--accent-soft);
+    font-size: 11.5px;
+    color: var(--accent);
+    line-height: 1.4;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .drop-hint svg { width: 12px; height: 12px; flex-shrink: 0; }
+  .drop-hint b { font-weight: 600; }
+
+  /* Drag affordance on session + tab-chip */
+  .session { position: relative; }
+  .session::before {
+    content: '';
+    position: absolute; left: -10px; top: 22px;
+    width: 3px; height: 16px;
+    background: transparent;
+    border-radius: 2px;
+    transition: background 120ms ease;
+  }
+  .session:hover::before { background: var(--ink-5); }
+  .session.dragging { opacity: 0.6; cursor: grabbing; background: var(--surface); }
+  .session.dragging::before { background: var(--accent); }
+  .tab-chip { cursor: grab; }
+  .tab-chip:hover { border-color: var(--ink-4); background: #fff; }
+  .tab-chip.dragging { opacity: 0.6; }
+
+  /* Drag preview floating chip (for the static mockup) */
+  .drag-ghost {
+    position: absolute;
+    /* sits roughly between feed col and bookmarks col, near session 001 */
+    left: 480px; top: 900px;
+    z-index: 50;
+    padding: 8px 12px;
+    background: #fff;
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    box-shadow: 0 8px 24px rgba(41,80,218,0.18), 0 1px 3px rgba(0,0,0,0.08);
+    font-size: 12px; color: var(--ink);
+    display: inline-flex; align-items: center; gap: 8px;
+    pointer-events: none;
+  }
+  .drag-ghost .grip {
+    color: var(--accent); font-size: 14px; font-family: 'JetBrains Mono', monospace;
+  }
+  .drag-ghost .badge {
+    background: var(--accent-soft); color: var(--accent);
+    font-size: 10px; padding: 1px 6px; border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .drag-ghost::after {
+    content: ''; position: absolute;
+    right: -90px; top: 12px; width: 80px; height: 1px;
+    background: var(--accent);
+    background-image: linear-gradient(to right, var(--accent) 50%, transparent 50%);
+    background-size: 6px 1px;
+  }
+
+  /* Footer */
+  footer {
+    margin-top: 32px; padding: 22px 0 28px;
+    border-top: 1px solid var(--line);
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--ink-3);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.02em;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div class="brand-name">Tab Maestro <span>v2 · Sessions</span></div>
+    </div>
+    <div class="header-actions">
+      <div class="ai-status">
+        <span class="dot"></span>
+        Gemini Nano · 本地
+      </div>
+      <button class="icon-btn" title="设置">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <div class="search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input placeholder="搜索 session 或自然语言：上周看的 dark mode 调研" />
+      <span class="search-hint">⌘ K</span>
+    </div>
+    <div class="seg">
+      <button class="active">全部</button>
+      <button>进行中</button>
+      <button>已完成</button>
+      <button>搁置</button>
+    </div>
+    <button class="btn-ghost">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      规则
+    </button>
+    <button class="btn-ghost">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      导出
+    </button>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-label">Active Sessions</div>
+      <div class="stat-value">3</div>
+      <div class="stat-sub">正在进行的浏览轨迹</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Tabs Captured</div>
+      <div class="stat-value">2,481</div>
+      <div class="stat-sub">本月被动捕获</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Avg. Dwell</div>
+      <div class="stat-value">4m 12s</div>
+      <div class="stat-sub">每条 tab 停留</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Sync Targets</div>
+      <div class="stat-value">4</div>
+      <div class="stat-sub">已连接的 agent</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Storage</div>
+      <div class="stat-value">3.4 / 10 MB</div>
+      <div class="stat-sub">本地，零上传</div>
+    </div>
+  </div>
+
+  <div class="layout">
+
+    <div class="timeline-section">
+
+      <div class="group-label">
+        <span class="group-label-text">今天 · 周一</span>
+        <span class="group-label-meta">2026-04-27 · 5 sessions · 23 tabs</span>
+      </div>
+
+      <!-- Session 1: active + AI generated · being dragged -->
+      <div class="session dragging">
+        <div class="session-status status-active"></div>
+        <div class="session-body">
+          <div class="session-row1">
+            <span class="session-intent ai-generated">调研 React 18 Suspense 的边界处理</span>
+            <span class="badge badge-active">ACTIVE</span>
+            <span class="badge badge-tabs">5 TABS</span>
+            <span class="badge" style="background: var(--accent); color: #fff; font-family: 'JetBrains Mono', monospace;">⋮⋮ DRAG</span>
+          </div>
+          <div class="session-summary">
+            从 React 文档进入，对比了官方 examples、Dan Abramov 的 RFC、CSS-Tricks 实战文章；正在比对 streaming SSR 与 client suspense 的 fallback 策略。
+          </div>
+          <div class="session-meta">
+            <span>开始 14:32</span>
+            <span>停留 47 分钟</span>
+            <span>最后激活 12 分钟前</span>
+          </div>
+          <div class="session-tabs">
+            <span class="tab-chip"><span class="favicon"></span><span class="text">Suspense – React</span></span>
+            <span class="tab-chip"><span class="favicon"></span><span class="text">RFC: Suspense + Concurrent Mode</span></span>
+            <span class="tab-chip"><span class="favicon"></span><span class="text">CSS-Tricks: streaming SSR</span></span>
+            <span class="tab-chip"><span class="favicon"></span><span class="text">Vercel docs</span></span>
+            <span class="tab-chip-more">+1</span>
+          </div>
+          <div class="session-actions">
+            <button class="action primary">✓ 完成</button>
+            <button class="action">📁 收藏到书签</button>
+            <button class="action">→ 发送 Obsidian</button>
+            <button class="action">🚀 关闭整组</button>
+            <button class="action danger">丢弃</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Session 2: active -->
+      <div class="session">
+        <div class="session-status status-active"></div>
+        <div class="session-body">
+          <div class="session-row1">
+            <span class="session-intent ai-generated">修复 TabStore 序列化 bug #234</span>
+            <span class="badge badge-active">ACTIVE</span>
+            <span class="badge badge-tabs">3 TABS</span>
+          </div>
+          <div class="session-summary">
+            从 GitHub Issue 进入，对比了 MobX 的 toJS 行为与 structuredClone 的边界差异；StackOverflow 上有相似 case 的回复。
+          </div>
+          <div class="session-meta">
+            <span>开始 13:08</span>
+            <span>停留 1h 24m</span>
+            <span>最后激活 6 分钟前</span>
+          </div>
+          <div class="session-tabs">
+            <span class="tab-chip"><span class="favicon"></span><span class="text">Issue #234 · GitHub</span></span>
+            <span class="tab-chip"><span class="favicon"></span><span class="text">MobX toJS docs</span></span>
+            <span class="tab-chip"><span class="favicon"></span><span class="text">SO: structuredClone vs toJS</span></span>
+          </div>
+          <div class="session-actions">
+            <button class="action primary">✓ 完成</button>
+            <button class="action">📁 收藏到书签</button>
+            <button class="action">→ 发送 Obsidian</button>
+            <button class="action">🚀 关闭整组</button>
+            <button class="action danger">丢弃</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Session 3: paused -->
+      <div class="session">
+        <div class="session-status status-paused"></div>
+        <div class="session-body">
+          <div class="session-row1">
+            <span class="session-intent ai-generated">选购 14 寸笔记本（候选 5 款）</span>
+            <span class="badge badge-paused">搁置 · 3 天后提醒</span>
+            <span class="badge badge-tabs">12 TABS</span>
+          </div>
+          <div class="session-summary">
+            横向对比 MacBook Pro M4、ThinkPad X1 Carbon、Framework 13、Asus Zenbook S14、Dell XPS 13；已收集 5 篇评测、3 个 spec 页面、2 个 Reddit 讨论。倾向于 Framework，但价格在等促销。
+          </div>
+          <div class="session-meta">
+            <span>开始 上周三</span>
+            <span>累计停留 3h 18m</span>
+            <span>最后激活 4 天前</span>
+          </div>
+          <div class="session-actions">
+            <button class="action primary">恢复</button>
+            <button class="action">📁 收藏到书签</button>
+            <button class="action">→ 发送 Obsidian</button>
+            <button class="action">🚀 关闭整组</button>
+            <button class="action danger">丢弃</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Session 4: done -->
+      <div class="session">
+        <div class="session-status status-done"></div>
+        <div class="session-body">
+          <div class="session-row1">
+            <span class="session-intent">阅读 Dan Luu 关于 BigCo 文化的长文</span>
+            <span class="badge badge-done">DONE · 09:14 完成</span>
+            <span class="badge badge-tabs">2 TABS</span>
+          </div>
+          <div class="session-summary">
+            读完原文 + HN 讨论；已发送到 Readwise，待周回顾时提取金句。
+          </div>
+          <div class="session-meta">
+            <span>开始 08:51</span>
+            <span>停留 23 分钟</span>
+            <span>已发送 → Readwise</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Session 5: discarded -->
+      <div class="session">
+        <div class="session-status status-discarded"></div>
+        <div class="session-body">
+          <div class="session-row1">
+            <span class="session-intent">YouTube 漫游（被算法吸走）</span>
+            <span class="badge badge-tabs">8 TABS</span>
+          </div>
+          <div class="session-summary" style="color: var(--ink-4);">
+            已标记为低价值漫游，AI 不再为此类聚类生成摘要。
+          </div>
+          <div class="session-meta">
+            <span>10:22 – 11:48</span>
+            <span>已丢弃</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="group-label">
+        <span class="group-label-text">昨天 · 周日</span>
+        <span class="group-label-meta">2026-04-26 · 4 sessions · 18 tabs</span>
+      </div>
+
+      <div class="session">
+        <div class="session-status status-done"></div>
+        <div class="session-body">
+          <div class="session-row1">
+            <span class="session-intent ai-generated">为博客挑选 light/dark 主题切换方案</span>
+            <span class="badge badge-done">DONE · 21:40 完成</span>
+            <span class="badge badge-tabs">6 TABS</span>
+          </div>
+          <div class="session-summary">
+            最终选定 prefers-color-scheme + CSS 变量；笔记已写入 Obsidian / Engineering / web-styling.md。
+          </div>
+          <div class="session-meta">
+            <span>累计停留 1h 04m</span>
+            <span>已发送 → Obsidian</span>
+            <span>已收藏 3 条到 Bookmarks/Reference/Theming</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="session">
+        <div class="session-status status-done"></div>
+        <div class="session-body">
+          <div class="session-row1">
+            <span class="session-intent">查询北京到上海的高铁班次</span>
+            <span class="badge badge-done">DONE · 19:12 完成</span>
+            <span class="badge badge-tabs">2 TABS</span>
+          </div>
+          <div class="session-meta">
+            <span>停留 6 分钟</span>
+            <span>未发送（短时操作）</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Column 2: Bookmarks -->
+    <aside class="side-col">
+
+      <div class="bookmarks-panel">
+        <div class="bookmarks-head">
+          <span class="title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            Chrome 书签
+          </span>
+          <span class="meta">412 项 · 18 文件夹</span>
+        </div>
+
+        <div class="bookmarks-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input placeholder="搜索文件夹或书签…" />
+          <span class="new-folder">+ 新建</span>
+        </div>
+
+        <div class="bookmarks-tree">
+
+          <div class="bm-node">
+            <div class="bm-row is-folder">
+              <span class="caret">▾</span>
+              <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+              <span class="label">书签栏</span>
+              <span class="count">128</span>
+            </div>
+            <div class="bm-children">
+              <div class="bm-node">
+                <div class="bm-row is-folder">
+                  <span class="caret">▾</span>
+                  <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+                  <span class="label">Engineering</span>
+                  <span class="count">42</span>
+                </div>
+                <div class="bm-children">
+                  <div class="bm-row is-folder drop-target">
+                    <span class="caret">▾</span>
+                    <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+                    <span class="label">React / Suspense</span>
+                    <span class="count">+ 5</span>
+                  </div>
+                  <div class="bm-children">
+                    <div class="bm-row is-leaf">
+                      <span class="caret"></span>
+                      <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span>
+                      <span class="label">React docs · &lt;Suspense&gt;</span>
+                    </div>
+                    <div class="bm-row is-leaf">
+                      <span class="caret"></span>
+                      <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span>
+                      <span class="label">Dan Abramov — RFC #418</span>
+                    </div>
+                    <div class="bm-row is-leaf">
+                      <span class="caret"></span>
+                      <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span>
+                      <span class="label">Next.js streaming guide</span>
+                    </div>
+                  </div>
+                  <div class="bm-row is-folder">
+                    <span class="caret">▸</span>
+                    <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+                    <span class="label">Chrome Extension API</span>
+                    <span class="count">14</span>
+                  </div>
+                  <div class="bm-row is-folder">
+                    <span class="caret">▸</span>
+                    <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+                    <span class="label">TypeScript</span>
+                    <span class="count">8</span>
+                  </div>
+                  <div class="bm-row is-folder">
+                    <span class="caret">▸</span>
+                    <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+                    <span class="label">Build tools</span>
+                    <span class="count">6</span>
+                  </div>
+                </div>
+              </div>
+              <div class="bm-row is-folder">
+                <span class="caret">▸</span>
+                <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+                <span class="label">Reading / 长文</span>
+                <span class="count">36</span>
+              </div>
+              <div class="bm-row is-folder">
+                <span class="caret">▸</span>
+                <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+                <span class="label">Design / Inspiration</span>
+                <span class="count">28</span>
+              </div>
+              <div class="bm-row is-folder">
+                <span class="caret">▸</span>
+                <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+                <span class="label">Hardware · 选购</span>
+                <span class="count">9</span>
+              </div>
+              <div class="bm-row is-folder">
+                <span class="caret">▸</span>
+                <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+                <span class="label">/Tab Maestro/Auto</span>
+                <span class="count">163</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bm-row is-folder">
+            <span class="caret">▸</span>
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+            <span class="label">其他书签</span>
+            <span class="count">284</span>
+          </div>
+
+        </div>
+
+        <div class="drop-hint">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+          <span>正在拖入 <b>session 001</b> · 7 个 tab → <b>React / Suspense</b></span>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- Column 3: Agents -->
+    <aside class="side-col">
+      <div class="panel">
+        <div class="panel-title">已连接 Agent / 笔记<span class="more">+</span></div>
+        <div class="agent-list">
+          <div class="agent">
+            <div class="agent-icon obsidian">Obs</div>
+            <div class="agent-info">
+              <div class="agent-name">Obsidian</div>
+              <div class="agent-status">本地路径 · 14 条今日</div>
+            </div>
+            <span class="pulse"></span>
+          </div>
+          <div class="agent">
+            <div class="agent-icon notion">N</div>
+            <div class="agent-info">
+              <div class="agent-name">Notion · Research</div>
+              <div class="agent-status">已同步 · 8 条今日</div>
+            </div>
+            <span class="pulse"></span>
+          </div>
+          <div class="agent">
+            <div class="agent-icon bookmarks">B</div>
+            <div class="agent-info">
+              <div class="agent-name">Chrome Bookmarks</div>
+              <div class="agent-status">/Reference · 3 条今日</div>
+            </div>
+            <span class="pulse"></span>
+          </div>
+          <div class="agent">
+            <div class="agent-icon mcp">MCP</div>
+            <div class="agent-info">
+              <div class="agent-name">Local MCP</div>
+              <div class="agent-status">localhost:7842 · ready</div>
+            </div>
+            <span class="pulse"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">最近同步</div>
+        <div style="display: flex; flex-direction: column; gap: 10px; font-size: 11.5px;">
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="color: var(--ink); font-weight: 500;">Dan Luu — focus duration</span>
+            <span style="color: var(--ink-3); font-family: 'JetBrains Mono', monospace; font-size: 10.5px;">→ Obsidian/Reading · 09:36</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 2px; padding-top: 8px; border-top: 1px solid var(--line-2);">
+            <span style="color: var(--ink); font-weight: 500;">Suspense RFC #418</span>
+            <span style="color: var(--ink-3); font-family: 'JetBrains Mono', monospace; font-size: 10.5px;">→ Notion/Research · 14:02</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 2px; padding-top: 8px; border-top: 1px solid var(--line-2);">
+            <span style="color: var(--ink); font-weight: 500;">M4 Air vs ThinkPad X1</span>
+            <span style="color: var(--ink-3); font-family: 'JetBrains Mono', monospace; font-size: 10.5px;">→ Bookmarks/Hardware · 11:30</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" style="padding: 12px 14px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--ink-3);">
+          <span style="display: inline-flex; align-items: center; gap: 6px;">
+            <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--done);"></span>
+            <span style="text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;">隐私</span>
+            <span>云端 0 · 出境从未</span>
+          </span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px;">Gemini Nano</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Drag ghost: session-001 being dragged toward bookmarks column -->
+    <div class="drag-ghost">
+      <span class="grip">⋮⋮</span>
+      <span>React Suspense in 2026</span>
+      <span class="badge">7 tabs</span>
+    </div>
+
+  </div>
+
+  <footer>
+    <span>tab-maestro v2.0.0 · sessions over storage</span>
+    <span>data lives on this machine only</span>
+  </footer>
+
+</div>
+</body>
+</html>
