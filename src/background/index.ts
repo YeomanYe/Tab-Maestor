@@ -90,13 +90,13 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
     return;
   }
 
-  // Get all tabs in the same window to find the previously active tab
-  const tabs = await chrome.tabs.query({ windowId: activeInfo.windowId });
+  // Get all tabs from all windows to find the previously active tab
+  const tabs = await chrome.tabs.query({});
 
   // Find the tab that is no longer active (the one user switched away from)
   for (const tab of tabs) {
-    if (tab.id && !tab.active && tab.url && !tab.url.startsWith('chrome://')) {
-      // Skip if already has a timer
+    // Skip pinned tabs, chrome URLs, and tabs that already have a timer
+    if (tab.id && !tab.active && !tab.pinned && tab.url && !tab.url.startsWith('chrome://')) {
       if (tabTimers.has(tab.id)) {
         continue;
       }
