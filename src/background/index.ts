@@ -95,8 +95,8 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
 
   // Find the tab that is no longer active (the one user switched away from)
   for (const tab of tabs) {
-    // Skip pinned tabs, chrome URLs, and tabs that already have a timer
-    if (tab.id && !tab.active && !tab.pinned && tab.url && !tab.url.startsWith('chrome://')) {
+    // Skip pinned tabs and tabs that already have a timer
+    if (tab.id && !tab.active && !tab.pinned) {
       if (tabTimers.has(tab.id)) {
         continue;
       }
