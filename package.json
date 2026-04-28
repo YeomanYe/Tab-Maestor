@@ -1,7 +1,7 @@
 {
-  "name": "tab-maestro",
+  "name": "Tab Maestro",
   "version": "1.0.0",
-  "description": "Chrome extension for saving and managing browser tabs",
+  "description": "A Chrome extension for saving and managing browser tabs with automatic saving rules.",
   "type": "module",
   "scripts": {
     "dev": "vite",
