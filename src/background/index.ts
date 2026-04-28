@@ -266,7 +266,6 @@ if (isContextMenusSupported()) {
 }
 
 // Handle messages from content scripts and options page
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 runtime.onMessage.addListener((message: any, _sender, _sendResponse): true => {
   console.log('[Background] Message received:', message);
   if (message.action === 'saveAllTabs') {

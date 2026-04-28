@@ -22,11 +22,10 @@ interface AlarmInfo {
   periodInMinutes: number;
 }
 
-let alarmsFallback: Map<string, AlarmInfo> = new Map();
+const alarmsFallback: Map<string, AlarmInfo> = new Map();
 let alarmsCallback: ((alarm: AlarmInfo) => void) | null = null;
 let alarmsInterval: ReturnType<typeof setInterval> | null = null;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const safeAlarms: any = browser.alarms;
 
 function startAlarmsFallback(): void {
@@ -36,7 +35,7 @@ function startAlarmsFallback(): void {
     if (!alarmsCallback) return;
 
     const now = Date.now();
-    for (const [name, alarm] of alarmsFallback.entries()) {
+    for (const [, alarm] of alarmsFallback.entries()) {
       const intervalMs = alarm.periodInMinutes * 60 * 1000;
       if (now - (alarm as unknown as { lastTriggered: number }).lastTriggered >= intervalMs) {
         alarmsCallback(alarm);
@@ -46,7 +45,6 @@ function startAlarmsFallback(): void {
   }, 1000); // Check every second
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const alarmsAPI: any = {
   create: (name: string, alarmInfo: { periodInMinutes?: number }): void => {
     if (safeAlarms?.create) {
